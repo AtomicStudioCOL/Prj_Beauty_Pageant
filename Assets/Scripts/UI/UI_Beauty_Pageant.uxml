@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="UnityEngine.UIElements"
+    xmlns:hr="Highrise.UI"
+    xmlns:editor="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
+>
+
+  <hr:UILuaView class="beauty_pageant">
+    <hr:UILabel class="countdownGame" name="Countdown" picking-mode="Ignore"></hr:UILabel>
+    <hr:UIImage class="bg_customization" name="Bg_Customization" picking-mode="Ignore">
+      <hr:UILabel class="title_customization txt_customization" name="Title_Customization" picking-mode="Ignore"></hr:UILabel>
+      <hr:UILabel class="timer_customization txt_customization" name="Timer_Customization" picking-mode="Ignore"></hr:UILabel>
+      
+      <hr:UIImage class="category_face categories" name="Customization_Face" />
+      <hr:UIImage class="category_body categories" name="Customization_Body" />
+      <hr:UIImage class="category_feet categories" name="Customization_feet" />
+
+      <hr:UIImage class="opt_category_01 opt_categories" name="Option_Category_01" />
+      <hr:UIImage class="opt_category_02 opt_categories" name="Option_Category_02" />
+      <hr:UIImage class="opt_category_03 opt_categories" name="Option_Category_03" />
+      <hr:UIImage class="opt_category_04 opt_categories" name="Option_Category_04" />
+      <hr:UIImage class="opt_category_05 opt_categories" name="Option_Category_05" />
+      <hr:UIImage class="opt_category_06 opt_categories" name="Option_Category_06" />
+
+      <hr:UIImage class="beauty_model" name="model" />
+    </hr:UIImage>
+  </hr:UILuaView>
+</UXML>
