@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="UnityEngine.UIElements"
+    xmlns:hr="Highrise.UI"
+    xmlns:editor="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
+>
+
+  <hr:UILuaView class="pop_up_confirmation" name= "Pop_up_Confirmation">
+    <hr:UIImage class="bg_pop_up_confirmation" name="Bg_Pop_up_Confirmation" picking-mode="Ignore">
+      <hr:UIImage class="close_pop_up_confirmation" name="Close_Pop_up_Confirmation" />
+      
+      <hr:UILabel class="txt_confirmation" name="Txt_Confirmation" picking-mode="Ignore"></hr:UILabel>
+      <hr:UIImage class="img_contest" name="Img_Contest" picking-mode="Ignore" />
+
+      <hr:UIButton class="btn_confirm" name="Btn_Confirm" />
+      <hr:UILabel class="txt_btn_confirm" name="Txt_Btn_Confirm" />
+
+      <hr:UIButton class="btn_cancel" name="Btn_Cancel" />
+      <hr:UILabel class="txt_btn_cancel" name="Txt_Btn_Cancel" />
+    </hr:UIImage>
+  </hr:UILuaView>
+
+</UXML>

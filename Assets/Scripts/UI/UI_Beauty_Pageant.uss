@@ -1,169 +1,112 @@
 :root {
-    --container-width: 90%;
+    --container-width: 95%;
+    --fontSize-waitingPlayers: 160%;
+    --colorTxt: rgba(255, 235, 249, 1);
 }
 
 .beauty_pageant {
-    display: flex;
-    align-self: center;
-    justify-content: center;
-    align-items: center;
-    -unity-text-align: middle-center;
-    
     position: relative;
     margin-top: auto;
     width: var(--container-width);
     height: 100%;
 }
 
-.beauty_pageant .countdownGame {
-    font-size: 32px;
+.waiting_players, .timer_general, .timer_theme, .txt_theme {
+    font-size: var(--fontSize-waitingPlayers);
+    color: var(--colorTxt);
     white-space: normal;
-    color: rgba(255, 50, 200, 1);
-    -unity-font-style: bold;
-
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 65%;
-}
-
-.bg_customization {
-    background-color: rgba(255, 225, 241, 0.8);
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: right center;
-
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-}
-
-.txt_customization {
-    font-size: 34px;
-    white-space: normal;
-    color: rgba(255, 50, 200, 1);
     -unity-font-style: bold;
     -unity-text-align: upper-center;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    text-shadow: 1px 1px 2px rgba(255, 0, 178, 0.9);
 }
 
-.title_customization {
-    top: 5%;
+.timer_general {
+    margin-top: 5%;
 }
 
-.categories {
-    background-color: rgba(29, 57, 208, 1);
+.spectator_lobby {
+    background-image: url('project://database/Assets/Images/Spectator_Voting.png');
     background-size: contain;
     background-repeat: no-repeat;
-    background-position: left top;
+    background-position: right bottom;
 
-    width: 26%;
-    height: 5%;
-}
-
-.category_face {
     position: absolute;
-    left: 7%;
-    top: 20%;
+    top: 0;
     right: 0;
     bottom: 0;
+
+    width: 18%;
 }
 
-.category_body {
-    position: absolute;
-    left: 37%;
-    top: 20%;
-    right: 0;
-    bottom: 0;
+.pop_up_theme_contest {
+    background-color: rgba(242, 91, 53, 0.75);
+    background-position: center;
+
+    margin-top: 15%;
+    height: 55%;
+    border-radius: 10px;
 }
 
-.category_feet {
-    position: absolute;
-    left: 67%;
-    top: 20%;
-    right: 0;
-    bottom: 0;
-}
-
-.opt_categories {
-    background-color: rgba(82, 249, 240, 0.75);
+.btn_return_lobby {
+    background-image: url('project://database/Assets/Images/home_lobby.png');
     background-size: contain;
     background-repeat: no-repeat;
-    background-position: left top;
+    background-position: right top;
 
-    width: 20%;
-    height: 10%;
-}
-
-.opt_category_01 {
     position: absolute;
-    left: 10%;
-    top: 30%;
-    right: 0;
+    top: 6%;
+    right: 20%;
     bottom: 0;
+
+    width: 12%;
 }
 
-.opt_category_02 {
-    position: absolute;
-    left: 40%;
-    top: 30%;
-    right: 0;
-    bottom: 0;
-}
-
-.opt_category_03 {
-    position: absolute;
-    left: 70%;
-    top: 30%;
-    right: 0;
-    bottom: 0;
-}
-
-.opt_category_04 {
-    position: absolute;
-    left: 10%;
-    top: 45%;
-    right: 0;
-    bottom: 0;
-}
-
-.opt_category_05 {
-    position: absolute;
-    left: 40%;
-    top: 45%;
-    right: 0;
-    bottom: 0;
-}
-
-.opt_category_06 {
-    position: absolute;
-    left: 70%;
-    top: 45%;
-    right: 0;
-    bottom: 0;
-}
-
-.beauty_model {
-    background-image: url('project://database/Assets/Images/Personaje_Highrise.png');
+.close_pop_up_theme {
+    background-image: url('project://database/Assets/Images/btn_close.png');
     background-size: contain;
     background-repeat: no-repeat;
-    background-position: center bottom;
-    
-    height: 42%;
-    
+    background-position: right top;
+
     position: absolute;
-    left: 0;
-    top: 58%;
-    right: 0;
-    bottom: 0;
+    top: 6%;
+    right: 6%;
+
+    width: 11%;
+    height: 12%;
 }
 
-.timer_customization {
-    top: 12%;
+.timer_theme {
+    margin: 21% 0 0 8%;
+}
+
+.img_timer_theme {
+    background-image: url('project://database/Assets/Images/Timer.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center top;
+
+    position: absolute;
+    top: 20%;
+    left: 32%;
+    bottom: 0;
+
+    width: 14%;
+}
+
+.txt_theme {
+    margin-top: 10%;
+}
+
+.img_cosmetic {
+    background-image: url('project://database/Assets/Images/Cosmetic.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left center;
+
+    position: absolute;
+    top: 50%;
+    left: 38%;
+    bottom: 0;
+
+    width: 28%;
 }

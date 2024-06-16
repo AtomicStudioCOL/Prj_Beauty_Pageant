@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.66171074, g: 0.82992834, b: 0.9763487, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -532,12 +531,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!20 &877443470
 Camera:
   m_ObjectHideFlags: 0
@@ -705,6 +704,11 @@ GameObject:
   m_Component:
   - component: {fileID: 928806392}
   - component: {fileID: 928806391}
+  - component: {fileID: 928806397}
+  - component: {fileID: 928806396}
+  - component: {fileID: 928806395}
+  - component: {fileID: 928806394}
+  - component: {fileID: 928806393}
   m_Layer: 0
   m_Name: UIManager
   m_TagString: Untagged
@@ -750,6 +754,121 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &928806393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 928806390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55624c368d83dfc112fd45926131c667, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _networkId: 0
+  _script: {fileID: -974389366465450183, guid: efbd4ce3375cdf14a8224547dbeec6b2, type: 3}
+  _properties: []
+  _uiOutput: 3
+  _uiOutputSettings:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!114 &928806394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 928806390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19667fa48dfe6931c004ee6d93334f74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _networkId: 0
+  _script: {fileID: -974389366465450183, guid: a3b97f71372169e47adbeeb829ec4fa1, type: 3}
+  _properties: []
+  _uiOutput: 3
+  _uiOutputSettings:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!114 &928806395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 928806390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85fe7ff7ca154311a3baf5529a9d7854, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _networkId: 0
+  _script: {fileID: -974389366465450183, guid: 3f217f2270ca43c41965f58720427881, type: 3}
+  _properties: []
+  _uiOutput: 3
+  _uiOutputSettings:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!114 &928806396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 928806390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c61b3e14825a151935447d35046e35d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _networkId: 0
+  _script: {fileID: -974389366465450183, guid: e6beb334f2faa184298b4706ea99e388, type: 3}
+  _properties: []
+  _uiOutput: 3
+  _uiOutputSettings:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!114 &928806397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 928806390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01731be97ce63d41d33eb72d89fffac4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _networkId: 0
+  _script: {fileID: -974389366465450183, guid: bbac1b3cc6393d9469e1b7f83320fa11, type: 3}
+  _properties: []
+  _uiOutput: 3
+  _uiOutputSettings:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!1 &1161118024
 GameObject:
   m_ObjectHideFlags: 0

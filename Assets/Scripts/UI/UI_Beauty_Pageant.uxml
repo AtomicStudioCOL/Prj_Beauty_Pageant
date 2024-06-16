@@ -7,24 +7,20 @@
     xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
 >
 
-  <hr:UILuaView class="beauty_pageant">
-    <hr:UILabel class="countdownGame" name="Countdown" picking-mode="Ignore"></hr:UILabel>
-    <hr:UIImage class="bg_customization" name="Bg_Customization" picking-mode="Ignore">
-      <hr:UILabel class="title_customization txt_customization" name="Title_Customization" picking-mode="Ignore"></hr:UILabel>
-      <hr:UILabel class="timer_customization txt_customization" name="Timer_Customization" picking-mode="Ignore"></hr:UILabel>
+  <hr:UILuaView class="beauty_pageant" name="Beauty_Pageant">
+    <hr:UILabel class="waiting_players" name="Waiting_Players" picking-mode="Ignore"></hr:UILabel>
+    <hr:UILabel class="timer_general" name="Timer_General" picking-mode="Ignore"></hr:UILabel>
+    <hr:UIImage class="spectator_lobby" name="Spectator_Lobby" />
+
+    <hr:UIImage class="pop_up_theme_contest" name="Pop_up_Theme_Contest" picking-mode="Ignore">
+      <hr:UIImage class="btn_return_lobby" name="Btn_Return_Lobby" />
+      <hr:UIImage class="close_pop_up_theme" name="Close_Pop_up_Theme" />
       
-      <hr:UIImage class="category_face categories" name="Customization_Face" />
-      <hr:UIImage class="category_body categories" name="Customization_Body" />
-      <hr:UIImage class="category_feet categories" name="Customization_feet" />
+      <hr:UIImage class="img_timer_theme" name="Img_Timer_Theme" />
+      <hr:UILabel class="timer_theme" name="Timer_Theme" picking-mode="Ignore"></hr:UILabel>
 
-      <hr:UIImage class="opt_category_01 opt_categories" name="Option_Category_01" />
-      <hr:UIImage class="opt_category_02 opt_categories" name="Option_Category_02" />
-      <hr:UIImage class="opt_category_03 opt_categories" name="Option_Category_03" />
-      <hr:UIImage class="opt_category_04 opt_categories" name="Option_Category_04" />
-      <hr:UIImage class="opt_category_05 opt_categories" name="Option_Category_05" />
-      <hr:UIImage class="opt_category_06 opt_categories" name="Option_Category_06" />
-
-      <hr:UIImage class="beauty_model" name="model" />
+      <hr:UILabel class="txt_theme" name="Txt_Theme" picking-mode="Ignore"></hr:UILabel>
+      <hr:UIImage class="img_cosmetic" name="Img_cosmetic" picking-mode="Ignore" />
     </hr:UIImage>
   </hr:UILuaView>
 </UXML>
