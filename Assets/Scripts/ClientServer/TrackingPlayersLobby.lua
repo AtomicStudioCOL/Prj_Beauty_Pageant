@@ -9,7 +9,7 @@ local minNumPlayersStartRound : number = 4
 -- Local Variables
 local uiManager = nil
 local localCharacterInstantiatedEvent = nil
-local themesBeautyContest = {
+themesBeautyContest = {
     [1] = 'Rock and Roll',
     [2] = 'Gothic',
     [3] = 'Kawaii',
@@ -22,7 +22,7 @@ local stopTimerSendPlayersToLockerRoom = Event.new('StopTimerSendPlayersToLocker
 
 --Network values
 local hasStartedCountdownSendPlayersLockerRoom = BoolValue.new('StartedCountdownSendPlayersLockerRoom', false)
-local randomTheme = IntValue.new('RandomTheme', 0)
+randomTheme = IntValue.new('RandomTheme', 0)
 
 local function numPlayersInLobby()
     local numPlayers = 0

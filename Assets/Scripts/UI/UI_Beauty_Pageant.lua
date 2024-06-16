@@ -21,28 +21,31 @@ local Txt_Theme : UILabel = nil
 --!Bind
 local Timer_Theme : UILabel = nil
 
+--UIs
+local UI_Pop_up_Confirmation = nil
+
 --Local functions
-local function settingStartUI()
+local function SettingStartUI()
     Waiting_Players:SetPrelocalizedText('')
     Timer_General:SetPrelocalizedText('')
     Txt_Theme:SetPrelocalizedText('')
     Timer_Theme:SetPrelocalizedText('')
     
-    Pop_up_Theme_Contest.visible = false
-    Spectator_Lobby.visible = false
+    EnablePopupThemeContest(false)
+    EnableSpectatorModeLobby(false)
+
+    UI_Pop_up_Confirmation = self.gameObject:GetComponent(Pop_up_Confirmation)
 end
 
 --Unity Function
 function self:ClientAwake()
-    settingStartUI()
+    SettingStartUI()
 
     Btn_Return_Lobby:RegisterPressCallback(function()
-        SetWaitingPlayersRound('Running Round. RIGHT NOW!')
-        EnableSpectatorModeLobby(true)
-
         EnablePopupThemeContest(false)
-        SetTimerCloseWindowTheme('')
-        SetThemeBeautyContest('')
+        UI_Pop_up_Confirmation.SetTypePopupConfirmation('return_lobby')
+        UI_Pop_up_Confirmation.SetStatusPopupConfirmation(true)
+        countdownsGame.StopCountdownCurrentGame() --Stop timer for that user 
     end)
 
     Close_Pop_up_Theme:RegisterPressCallback(function()
@@ -53,6 +56,8 @@ function self:ClientAwake()
     end)
 
     Spectator_Lobby:RegisterPressCallback(function()
+        UI_Pop_up_Confirmation.SetTypePopupConfirmation('spectator_contest')
+        UI_Pop_up_Confirmation.SetStatusPopupConfirmation(true)
     end)
 end
 

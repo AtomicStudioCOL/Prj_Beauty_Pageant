@@ -9,7 +9,7 @@ playerWentSentToLockerRoom = BoolValue.new('PlayerWentSentToLockerRoom', false)
 selectThemeBeautyContest = BoolValue.new('SelectThemeBeautyContest', false)
 
 -- Countdown to close window theme
-countdownCloseWindowTheme = IntValue.new('CountdownCloseWindowTheme', 5)
+countdownCloseWindowTheme = IntValue.new('CountdownCloseWindowTheme', 20)
 
 -- Player master
 local playerMaster = StringValue.new('PlayerMaster', '')
@@ -25,7 +25,7 @@ function resetCountdowns()
     playerMaster.value = ''
     updateWhoIsPlayerMaster.value = true
     countdownSendPlayersToLockerRoom.value = 30
-    countdownCloseWindowTheme.value = 5
+    countdownCloseWindowTheme.value = 20
 end
 
 function selectMainPlayer(mainClient, namePlayer, countdownCurrent, canUpdate)

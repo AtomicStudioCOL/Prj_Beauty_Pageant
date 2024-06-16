@@ -13,6 +13,7 @@ amountPlayersLobby = IntValue.new('AmountPlayersLobby', 0)
 hasStartedRound = BoolValue.new('HasStartedRound', false)
 
 -- Global Variables
+gameObjectManager = self.gameObject
 UIManagerGlobal = nil
 pointRespawnLobbyGlobal = nil
 pointRespawnLockerRoomGlobal = nil

@@ -5,8 +5,12 @@
 }
 
 .beauty_pageant {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+
     position: relative;
-    margin-top: auto;
     width: var(--container-width);
     height: 100%;
 }
@@ -16,7 +20,8 @@
     color: var(--colorTxt);
     white-space: normal;
     -unity-font-style: bold;
-    -unity-text-align: upper-center;
+    -unity-text-align: middle-center;
+    -unity-text-overflow-position: middle;
     text-shadow: 1px 1px 2px rgba(255, 0, 178, 0.9);
 }
 
@@ -24,10 +29,22 @@
     margin-top: 5%;
 }
 
+.container_spectator {
+    background-position: center;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+    height: 500%;
+}
+
 .spectator_lobby {
     background-image: url('project://database/Assets/Images/Spectator_Voting.png');
     background-size: contain;
-    background-repeat: no-repeat;
     background-position: right bottom;
 
     position: absolute;
@@ -35,15 +52,21 @@
     right: 0;
     bottom: 0;
 
-    width: 18%;
+    width: 16%;
 }
 
 .pop_up_theme_contest {
     background-color: rgba(242, 91, 53, 0.75);
     background-position: center;
 
-    margin-top: 15%;
-    height: 55%;
+    position: absolute;
+    top: 120%;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+    height: 300%;
     border-radius: 10px;
 }
 
@@ -76,37 +99,50 @@
 }
 
 .timer_theme {
-    margin: 21% 0 0 8%;
+    position: absolute;
+    top: 28%;
+    left: 10%;
+    right: 0;
 }
 
 .img_timer_theme {
     background-image: url('project://database/Assets/Images/Timer.png');
     background-size: contain;
     background-repeat: no-repeat;
-    background-position: center top;
+    background-position: left top;
+
+    display: flex;
+    align-self: center;
+    align-items: center;
 
     position: absolute;
-    top: 20%;
-    left: 32%;
-    bottom: 0;
+    top: 24%;
+    left: 33%;
+    bottom: 28%;
 
     width: 14%;
 }
 
 .txt_theme {
-    margin-top: 10%;
+    position: absolute;
+    top: 48%;
+    left: 0;
+    right: 0;
 }
 
 .img_cosmetic {
     background-image: url('project://database/Assets/Images/Cosmetic.png');
     background-size: contain;
     background-repeat: no-repeat;
-    background-position: left center;
+    background-position: center;
+
+    display: flex;
+    align-self: center;
+    align-items: center;
 
     position: absolute;
-    top: 50%;
-    left: 38%;
+    top: 55%;
     bottom: 0;
 
-    width: 28%;
+    width: 26%;
 }

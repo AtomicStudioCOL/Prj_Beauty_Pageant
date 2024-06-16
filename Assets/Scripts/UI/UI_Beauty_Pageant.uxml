@@ -10,7 +10,9 @@
   <hr:UILuaView class="beauty_pageant" name="Beauty_Pageant">
     <hr:UILabel class="waiting_players" name="Waiting_Players" picking-mode="Ignore"></hr:UILabel>
     <hr:UILabel class="timer_general" name="Timer_General" picking-mode="Ignore"></hr:UILabel>
-    <hr:UIImage class="spectator_lobby" name="Spectator_Lobby" />
+    <hr:UIView class="container_spectator" name="Container_Spectator">
+      <hr:UIImage class="spectator_lobby" name="Spectator_Lobby" />
+    </hr:UIView>
 
     <hr:UIImage class="pop_up_theme_contest" name="Pop_up_Theme_Contest" picking-mode="Ignore">
       <hr:UIImage class="btn_return_lobby" name="Btn_Return_Lobby" />
