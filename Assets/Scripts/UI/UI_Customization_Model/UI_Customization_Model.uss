@@ -1,2 +1,283 @@
-.-customization_-model {
+:root {
+    --container-width: 95%;
+    --fontSize-txtCustomization: 140%;
+    --fontSize-txtBtnsCustomization: 100%;
+    --colorTxt: rgba(255, 235, 249, 1);
+    --backgroundColor: rgba(255, 0, 167, 0.4);
+    --btn-backgroundColor: rgba(0, 255, 187, 0.8);
+    --backgroundColor-element: rgba(30, 30, 30, 0.55);
+    --borderColor-element: rgba(30, 30, 30, 1);
+}
+
+.customization_model {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+    
+    background-color: var(--backgroundColor);
+    border-radius: 15px;
+
+    position: absolute;
+    top: 15%;
+
+    width: var(--container-width);
+    height: 80%;
+}
+
+.info_customization {
+    background-position: center top;
+    flex-direction: row;
+
+    position: absolute;
+    top: 0;
+
+    width: 100%;
+    height: 10%;
+}
+
+.img_clock {
+    background-image: url('project://database/Assets/Images/Timer.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left center;
+
+    position: absolute;
+    top: 0;
+    left: 8%;
+    bottom: 0;
+
+    width: 20%;
+}
+
+.lbl_clock, .theme_contest, .txt_btn_finish {
+    font-size: var(--fontSize-txtCustomization);
+    color: var(--colorTxt);
+    white-space: normal;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    -unity-text-overflow-position: middle;
+}
+
+.lbl_clock {
+    margin-left: 22%;
+    text-shadow: 1px 1px 2px rgba(255, 77, 0, 0.9);
+}
+
+.theme_contest {
+    margin-left: 12%;
+    text-shadow: 1px 1px 2px rgba(255, 77, 0, 0.9);
+}
+
+.txt_btn_finish {
+    text-shadow: 1px 1px 2px rgba(255, 0, 178, 0.9);
+}
+
+.container_customization {
+    background-position: center;
+    flex-direction: column;
+
+    position: absolute;
+    top: 10%;
+
+    width: 100%;
+    height: 90%;
+}
+
+.categories_customization {
+    background-position: center top;
+    flex-direction: row;
+
+    width: 100%;
+    height: 12%;
+}
+
+.clothes_body, .hats, .shoes, .decor_eyes, .style_hair, .decor_mouth {
+    background-size: contain;
+    background-position: left center;
+
+    position: absolute;
+    top: 10%;
+    right: 0;
+    bottom: 10%;
+
+    height: 80%;
+}
+
+.clothes_body {
+    background-image: url('project://database/Assets/Images/Categories/Shirt.png');
+    left: 5%;
+}
+
+.hats {
+    background-image: url('project://database/Assets/Images/Categories/Hat.png');
+    left: 21%;
+}
+
+.shoes {
+    background-image: url('project://database/Assets/Images/Categories/Heel.png');
+    left: 37%;
+}
+
+.decor_eyes {
+    background-image: url('project://database/Assets/Images/Categories/Eyes.png');
+    left: 53%;
+}
+
+.style_hair {
+    background-image: url('project://database/Assets/Images/Categories/Haircut.png');
+    left: 69%;
+}
+
+.decor_mouth {
+    background-image: url('project://database/Assets/Images/Categories/Mouth.png');
+    left: 85%;
+}
+
+.zone_customization {
+    background-position: center top;
+    flex-direction: row;
+
+    position: absolute;
+    top: 12%;
+
+    width: 100%;
+    height: 88%;
+}
+
+.view_customization {
+    background-position: left center;
+    flex-direction: column;
+
+    width: 50%;
+}
+
+.model {
+    background-image: url('project://database/Assets/Images/Personaje_Highrise.png');
+    background-size: contain;
+    background-position: center;
+
+    position: absolute;
+    top: 0;
+    right: 18%;
+    bottom: 16%;
+    left: 18%;
+
+    width: 70%;
+}
+
+.finish_customization {
+    background-color: var(--btn-backgroundColor);
+
+    position: absolute;
+    right: 8%;
+    bottom: 5%;
+    left: 8%;
+}
+
+.elements_category {
+    background-position: left center;
+    flex-direction: column;
+    width: 50%;
+}
+
+.box_element_01, .box_element_03 {
+    background-color: var(--backgroundColor-element);
+    border-color: var(--borderColor-element);
+    border-width: 2px;
+
+    position: absolute;
+    top: 10%;
+    right: 20%;
+    bottom: 0;
+    left: 20%;
+
+    width: 60%;
+    height: 30%;
+}
+
+.element_01 {
+    background-image: url('project://database/Assets/Images/Clothes/camisa_1.png');
+    background-size: contain;
+    background-position: center;
+
+    position: absolute;
+    top: 0;
+    right: 10%;
+    bottom: 0;
+    left: 10%;
+
+    width: 80%;
+}
+
+.box_element_02, .box_element_04 {
+    background-color: var(--backgroundColor-element);
+    border-color: var(--borderColor-element);
+    border-width: 2px;
+
+    position: absolute;
+    top: 48%;
+    right: 20%;
+    bottom: 0;
+    left: 20%;
+
+    width: 60%;
+    height: 30%;
+}
+
+.element_02 {
+    background-image: url('project://database/Assets/Images/Clothes/Cintura.png');
+    background-size: contain;
+    background-position: center;
+
+    position: absolute;
+    top: 0;
+    right: 10%;
+    bottom: 0;
+    left: 10%;
+
+    width: 80%;
+}
+
+.element_03 {
+    background-image: url('project://database/Assets/Images/Clothes/dress_clothing.png');
+    background-size: contain;
+    background-position: center;
+
+    position: absolute;
+    top: 0;
+    right: 10%;
+    bottom: 0;
+    left: 10%;
+
+    width: 80%;
+}
+
+.element_04 {
+    background-image: url('project://database/Assets/Images/Clothes/shorts_clothes.png');
+    background-size: contain;
+    background-position: center;
+
+    position: absolute;
+    top: 0;
+    right: 10%;
+    bottom: 0;
+    left: 10%;
+
+    width: 80%;
+}
+
+.down_upward_element {
+    background-image: url('project://database/Assets/Images/up_for_back_downward.png');
+    background-size: contain;
+    background-position: center bottom;
+
+    position: absolute;
+    top: 80%;
+    right: 39%;
+    bottom: 0;
+    left: 39%;
+
+    width: 22%;
+    height: 10%;
 }

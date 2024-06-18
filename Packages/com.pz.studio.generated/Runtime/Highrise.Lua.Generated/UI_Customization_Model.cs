@@ -31,6 +31,25 @@ namespace Highrise.Lua.Generated
 
             return new SerializedPropertyValue[]
             {
+                CreateSerializedProperty(_script.GetPropertyAt(0), null),
+                CreateSerializedProperty(_script.GetPropertyAt(1), null),
+                CreateSerializedProperty(_script.GetPropertyAt(2), null),
+                CreateSerializedProperty(_script.GetPropertyAt(3), null),
+                CreateSerializedProperty(_script.GetPropertyAt(4), null),
+                CreateSerializedProperty(_script.GetPropertyAt(5), null),
+                CreateSerializedProperty(_script.GetPropertyAt(6), null),
+                CreateSerializedProperty(_script.GetPropertyAt(7), null),
+                CreateSerializedProperty(_script.GetPropertyAt(8), null),
+                CreateSerializedProperty(_script.GetPropertyAt(9), null),
+                CreateSerializedProperty(_script.GetPropertyAt(10), null),
+                CreateSerializedProperty(_script.GetPropertyAt(11), null),
+                CreateSerializedProperty(_script.GetPropertyAt(12), null),
+                CreateSerializedProperty(_script.GetPropertyAt(13), null),
+                CreateSerializedProperty(_script.GetPropertyAt(14), null),
+                CreateSerializedProperty(_script.GetPropertyAt(15), null),
+                CreateSerializedProperty(_script.GetPropertyAt(16), null),
+                CreateSerializedProperty(_script.GetPropertyAt(17), null),
+                CreateSerializedProperty(_script.GetPropertyAt(18), null),
             };
         }
     }
