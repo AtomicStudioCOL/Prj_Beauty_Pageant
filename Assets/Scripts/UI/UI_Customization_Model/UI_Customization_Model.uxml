@@ -7,7 +7,7 @@
     xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
 >
 
-  <hr:UILuaView class="customization_model">
+  <hr:UILuaView class="customization_model" name="Customization_Model">
     <hr:UIView class="info_customization" name="Info_Customization" picking-mode="Ignore">
       <hr:UIImage class="img_clock" name="Img_Clock" picking-mode="Ignore"/>
       <hr:UILabel class="lbl_clock" name="Lbl_Clock" picking-mode="Ignore"></hr:UILabel>

@@ -7,7 +7,15 @@
     xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
 >
 
-  <hr:UILuaView class="-contest_-voting">
+  <hr:UILuaView class="contest_voting" name="Contest_Voting">
+    <hr:UILabel class="name_contest" name="Name_Contest"></hr:UILabel>
+    <hr:UIImage class="decor_model" name="Decor_model" />
+    <hr:UIView class="container_rating" name="Container_Rating">
+      <hr:UIImage class="rating_5" name="rating_5" />
+      <hr:UIImage class="rating_4" name="rating_4" />
+      <hr:UIImage class="rating_3" name="rating_3" />
+      <hr:UIImage class="rating_2" name="rating_2" />
+      <hr:UIImage class="rating_1" name="rating_1" />
+    </hr:UIView>
   </hr:UILuaView>
-
 </UXML>

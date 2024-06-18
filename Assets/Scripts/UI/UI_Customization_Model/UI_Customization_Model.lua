@@ -1,5 +1,8 @@
 --!Type(UI)
 --!Bind
+local Customization_Model : UILuaView = nil
+
+--!Bind
 local Lbl_Clock : UILabel = nil
 --!Bind
 local Theme_Contest : UILabel = nil
@@ -42,6 +45,18 @@ local Box_Element_04 : UIView = nil
 
 --!Bind
 local Down_Upward_Element : UIImage = nil
+--!Bind
+local Model : UIImage = nil
+
+--Variables
+local statusCurrentElementsVisible = 'first' --There're two status 'first' - 'second'
+local wasAddedShirt = false
+local wasAddedPant = false
+
+local element01 : UIImage = nil
+local element02 : UIImage = nil
+local element03 : UIImage = nil
+local element04 : UIImage = nil
 
 --Unity Functions
 function self:ClientAwake()
@@ -62,12 +77,89 @@ function self:ClientAwake()
     Decor_mouth:RegisterPressCallback(function()end)
 
     --Elements
-    Element_01:RegisterPressCallback(function()end)
-    Element_02:RegisterPressCallback(function()end)
-    Element_03:RegisterPressCallback(function()end)
-    Element_04:RegisterPressCallback(function()end)
-    Down_Upward_Element:RegisterPressCallback(function()end)
+    Element_01:RegisterPressCallback(function()
+        if element03 then element03.visible = false end
+
+        if not wasAddedShirt then
+            element01 = UIImage.new(true)
+            Model:Add(element01)
+            element01:AddToClassList('clothes_01')
+            element01.visible = true
+
+            wasAddedShirt = true
+        end
+    end)
+    Element_02:RegisterPressCallback(function()
+        if element04 then element04.visible = false end
+
+        if not wasAddedPant then
+            element02 = UIImage.new(true)
+            Model:Add(element02)
+            element02:AddToClassList('clothes_02')
+            element02.visible = true
+
+            wasAddedPant = true
+        end
+    end)
+
+    Element_03:RegisterPressCallback(function()
+        if element01 then element01.visible = false end
+        if element02 then element02.visible = false end
+        if element04 then element04.visible = false end
+
+        if not wasAddedShirt then
+            element03 = UIImage.new(true)
+            Model:Add(element03)
+            element03:AddToClassList('clothes_03')
+            element03.visible = true
+
+            wasAddedShirt = true
+        end
+    end)
+
+    Element_04:RegisterPressCallback(function()
+        if element02 then element02.visible = false end
+
+        if not wasAddedPant then
+            element04 = UIImage.new(true)
+            Model:Add(element04)
+            element04:AddToClassList('clothes_04')
+            element04.visible = true
+
+            wasAddedPant = true
+        end
+    end)
+    
+    Down_Upward_Element:RegisterPressCallback(function()
+        if statusCurrentElementsVisible == 'first' then
+            Box_Element_01.visible = false
+            Box_Element_02.visible = false
+            Box_Element_03.visible = true
+            Box_Element_04.visible = true
+
+            wasAddedShirt = false
+            wasAddedPant = false
+            statusCurrentElementsVisible = 'second'
+
+            Down_Upward_Element:RemoveFromClassList('downwards_element')
+            Down_Upward_Element:AddToClassList('upwards_element')
+        elseif statusCurrentElementsVisible == 'second' then
+            Box_Element_01.visible = true
+            Box_Element_02.visible = true
+            Box_Element_03.visible = false
+            Box_Element_04.visible = false
+            
+            wasAddedShirt = false
+            wasAddedPant = false
+            statusCurrentElementsVisible = 'first'
+
+            Down_Upward_Element:RemoveFromClassList('upwards_element')
+            Down_Upward_Element:AddToClassList('downwards_element')
+        end
+    end)
 
     --Finish
     Finish_Customization:RegisterPressCallback(function()end)
+
+    Customization_Model.visible = false
 end

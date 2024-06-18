@@ -31,6 +31,8 @@ namespace Highrise.Lua.Generated
 
             return new SerializedPropertyValue[]
             {
+                CreateSerializedProperty(_script.GetPropertyAt(0), null),
+                CreateSerializedProperty(_script.GetPropertyAt(1), null),
             };
         }
     }

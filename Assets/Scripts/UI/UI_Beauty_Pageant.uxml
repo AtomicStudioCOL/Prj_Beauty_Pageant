@@ -11,6 +11,7 @@
     <hr:UILabel class="waiting_players" name="Waiting_Players" picking-mode="Ignore"></hr:UILabel>
     <hr:UILabel class="timer_general" name="Timer_General" picking-mode="Ignore"></hr:UILabel>
     <hr:UIView class="container_spectator" name="Container_Spectator">
+      <hr:UILabel class="info_btn_spectator" name="Info_Btn_Spectator"></hr:UILabel>
       <hr:UIImage class="spectator_lobby" name="Spectator_Lobby" />
     </hr:UIView>
 

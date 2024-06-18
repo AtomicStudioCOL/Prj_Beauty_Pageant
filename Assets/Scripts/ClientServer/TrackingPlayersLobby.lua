@@ -44,7 +44,7 @@ function settingLobbyPlayer()
     end
 
     if countdownsGame.playerWentSentToLockerRoom.value and hasStartedCountdownSendPlayersLockerRoom.value then
-        uiManager.SetWaitingPlayersRound('Running Round. RIGHT NOW!')
+        uiManager.SetWaitingPlayersRound('Pageant in Progress!')
         uiManager.EnableSpectatorModeLobby(true)
         countdownsGame.playerWentSentToLockerRoom.value = false
     else

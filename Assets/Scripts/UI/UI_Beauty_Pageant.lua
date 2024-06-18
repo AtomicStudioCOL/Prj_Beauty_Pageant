@@ -7,6 +7,8 @@ local Waiting_Players : UILabel = nil
 --!Bind
 local Timer_General : UILabel = nil
 --!Bind
+local Info_Btn_Spectator : UILabel = nil
+--!Bind
 local Spectator_Lobby : UIImage = nil
 
 --Pop up selecting Theme
@@ -30,8 +32,9 @@ local function SettingStartUI()
     Timer_General:SetPrelocalizedText('')
     Txt_Theme:SetPrelocalizedText('')
     Timer_Theme:SetPrelocalizedText('')
+    Info_Btn_Spectator:SetPrelocalizedText('')
     
-    EnablePopupThemeContest(false)
+    EnablePopupThemeContest(false) 
     EnableSpectatorModeLobby(false)
 
     UI_Pop_up_Confirmation = self.gameObject:GetComponent(Pop_up_Confirmation)
@@ -72,6 +75,11 @@ end
 
 function EnableSpectatorModeLobby(status)
     Spectator_Lobby.visible = status
+    Info_Btn_Spectator.visible = status
+
+    if status then
+        Info_Btn_Spectator:SetPrelocalizedText('Click on the spectate button and vote for the on-going pageant')
+    end
 end
 
 function EnablePopupThemeContest(status)
@@ -83,5 +91,5 @@ function SetTimerCloseWindowTheme(text)
 end
 
 function SetThemeBeautyContest(text)
-    Txt_Theme:SetPrelocalizedText(text)
+    Txt_Theme:SetPrelocalizedText('Theme: ' .. text)
 end

@@ -42,7 +42,7 @@ local function SettingStartGame()
 end
 
 local function ReturnLobbyWithRunningRound()
-    UI_Beauty_Contest.SetWaitingPlayersRound('Running Round. RIGHT NOW!')
+    UI_Beauty_Contest.SetWaitingPlayersRound('Pageant in Progress!')
     UI_Beauty_Contest.EnableSpectatorModeLobby(true)
     UI_Beauty_Contest.SetTimerCloseWindowTheme('')
     UI_Beauty_Contest.SetThemeBeautyContest('')

@@ -1,6 +1,7 @@
 :root {
     --container-width: 95%;
     --fontSize-waitingPlayers: 160%;
+    --fontSize-infoSpectator: 100%;
     --colorTxt: rgba(255, 235, 249, 1);
 }
 
@@ -31,6 +32,7 @@
 
 .container_spectator {
     background-position: center;
+    flex-direction: row;
 
     position: absolute;
     top: 0;
@@ -40,6 +42,18 @@
 
     width: 100%;
     height: 500%;
+}
+
+.info_btn_spectator {
+    font-size: var(--fontSize-infoSpectator);
+    color: var(--colorTxt);
+    white-space: normal;
+    -unity-font-style: bold;
+    -unity-text-align: lower-left;
+    -unity-text-overflow-position: middle;
+    text-shadow: 0.5px 0.5px 1px rgba(255, 0, 178, 0.9);
+
+    width: 84%;
 }
 
 .spectator_lobby {

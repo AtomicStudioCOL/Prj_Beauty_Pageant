@@ -153,17 +153,16 @@
 }
 
 .model {
-    background-image: url('project://database/Assets/Images/Personaje_Highrise.png');
+    /* background-image: url('project://database/Assets/Images/Personaje_Highrise.png'); */
+    background-image: url('project://database/Assets/Images/Clothes/Body_Clothes/Atuendos.png#Atuendos_4');
     background-size: contain;
     background-position: center;
 
     position: absolute;
-    top: 0;
+    top: 8%;
     right: 18%;
-    bottom: 16%;
+    bottom: 24%;
     left: 18%;
-
-    width: 70%;
 }
 
 .finish_customization {
@@ -196,8 +195,20 @@
     height: 30%;
 }
 
+.clothes_01 {
+    background-image: url('project://database/Assets/Images/Clothes/Body_Clothes/camisa_1.png');
+    background-size: contain;
+    background-position: center;
+
+    position: absolute;
+    top: 0;
+    right: 28%;
+    bottom: 24%;
+    left: 24%;
+}
+
 .element_01 {
-    background-image: url('project://database/Assets/Images/Clothes/camisa_1.png');
+    background-image: url('project://database/Assets/Images/Clothes/Body_Clothes/camisa_1.png');
     background-size: contain;
     background-position: center;
 
@@ -225,8 +236,22 @@
     height: 30%;
 }
 
+.clothes_02 {
+    background-image: url('project://database/Assets/Images/Clothes/Body_Clothes/shorts_clothes.png');
+    background-size: contain;
+    background-position: center;
+
+    position: absolute;
+    top: 16%;
+    right: 32%;
+    bottom: 0;
+    left: 31%;
+
+    width: 37%;
+}
+
 .element_02 {
-    background-image: url('project://database/Assets/Images/Clothes/Cintura.png');
+    background-image: url('project://database/Assets/Images/Clothes/Body_Clothes/shorts_clothes.png');
     background-size: contain;
     background-position: center;
 
@@ -237,10 +262,22 @@
     left: 10%;
 
     width: 80%;
+}
+
+.clothes_03 {
+    background-image: url('project://database/Assets/Images/Clothes/Body_Clothes/dress_clothing.png');
+    background-size: contain;
+    background-position: center;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
 }
 
 .element_03 {
-    background-image: url('project://database/Assets/Images/Clothes/dress_clothing.png');
+    background-image: url('project://database/Assets/Images/Clothes/Body_Clothes/dress_clothing.png');
     background-size: contain;
     background-position: center;
 
@@ -253,8 +290,20 @@
     width: 80%;
 }
 
+.clothes_04 {
+    background-image: url('project://database/Assets/Images/Clothes/Body_Clothes/Atuendos.png#Atuendos_9');
+    background-size: contain;
+    background-position: center;
+
+    position: absolute;
+    top: 22%;
+    right: 28%;
+    bottom: 0;
+    left: 28%;
+}
+
 .element_04 {
-    background-image: url('project://database/Assets/Images/Clothes/shorts_clothes.png');
+    background-image: url('project://database/Assets/Images/Clothes/Body_Clothes/Atuendos.png#Atuendos_9');
     background-size: contain;
     background-position: center;
 
@@ -265,6 +314,14 @@
     left: 10%;
 
     width: 80%;
+}
+
+.upwards_element {
+    rotate: 180deg;
+}
+
+.downwards_element {
+    rotate: 0deg;
 }
 
 .down_upward_element {

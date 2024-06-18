@@ -1,2 +1,105 @@
-.-contest_-voting {
+:root {
+    --container-width: 95%;
+    --fontSize-txtRating: 140%;
+    --backgroundColor: rgba(255, 0, 167, 0.4);
+    --colorTxt: rgba(255, 235, 249, 1);
+    --backgroundColor-element: rgba(30, 30, 30, 0.55);
+    --borderColor-element: rgba(30, 30, 30, 1);
+}
+
+.contest_voting {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    background-color: var(--backgroundColor);
+    border-radius: 15px;
+
+    position: absolute;
+    top: 15%;
+
+    width: var(--container-width);
+    height: 80%;
+}
+
+.name_contest {
+    background-color: var(--backgroundColor-element);
+    border-radius: 15px;
+    
+    width: 100%;
+    height: 10%;
+
+    font-size: var(--fontSize-txtRating);
+    color: var(--colorTxt);
+    white-space: normal;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    -unity-text-overflow-position: middle;
+
+    position: absolute;
+    top: 0;
+}
+
+.decor_model {
+    background-image: url('project://database/Assets/Images/Clothes/Body_Clothes/Atuendos.png#Atuendos_4');
+    background-size: contain;
+    background-position: center;
+
+    position: absolute;
+    top: 20%;
+    right: 0;
+    bottom: 20%;
+    left: 0;
+}
+
+.container_rating {
+    background-color: var(--backgroundColor-element);
+    background-position: center bottom;
+    border-radius: 15px;
+    flex-direction: row;
+
+    position: absolute;
+    bottom: 0;
+
+    width: 100%;
+    height: 12%;
+}
+
+.rating_1, .rating_2, .rating_3, .rating_4, .rating_5 {
+    background-size: contain;
+    background-position: left center;
+
+    position: absolute;
+    top: 15%;
+    right: 0;
+    bottom: 15%;
+
+    height: 70%;
+}
+
+.rating_5 {
+    background-image: url('project://database/Assets/Images/Rating/Rating_5.png');
+    left: 8%;
+}
+
+.rating_4 {
+    background-image: url('project://database/Assets/Images/Rating/Rating_4.png');
+    left: 26%;
+}
+
+.rating_3 {
+    background-image: url('project://database/Assets/Images/Rating/Rating_3.png');
+    left: 44%;
+}
+
+.rating_2 {
+    background-image: url('project://database/Assets/Images/Rating/Rating_2.png');
+    left: 62%;
+}
+
+.rating_1 {
+    background-image: url('project://database/Assets/Images/Rating/Rating_1.png');
+    left: 80%;
 }
