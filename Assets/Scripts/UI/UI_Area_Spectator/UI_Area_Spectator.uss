@@ -1,2 +1,100 @@
-.-area_-spectator {
+:root {
+    --container-width: 95%;
+    --fontSize-txtRating: 140%;
+    --backgroundColor: rgba(255, 0, 167, 0.4);
+    --colorTxt: rgba(255, 235, 249, 1);
+    --backgroundColor-element: rgba(30, 30, 30, 0.55);
+}
+
+.area_spectator {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    position: absolute;
+    top: 15%;
+
+    width: var(--container-width);
+    height: 85%;
+}
+
+.btns_area_spectator {
+    flex-direction: row;
+
+    position: absolute;
+    bottom: 0;
+
+    width: 100%;
+    height: 10%;
+}
+
+.btns_area {
+    background-size: contain;
+    background-position: left bottom;
+
+    position: absolute;
+    top: 10%;
+    right: 0;
+    bottom: 10%;
+}
+
+.btn_leaderboard {
+    background-image: url('project://database/Assets/Images/Ranking.png');
+    left: 60%;
+}
+
+.btn_spectator {
+    background-image: url('project://database/Assets/Images/Spectator_Voting.png');
+    left: 74%;
+}
+
+.btn_return_lobby {
+    background-image: url('project://database/Assets/Images/home_lobby.png');
+    left: 88%;
+}
+
+.leaderboard_contest {
+    background-color: var(--backgroundColor-element);
+    border-radius: 15px;
+    flex-direction: column;
+
+    position: absolute;
+    top: 5%;
+
+    width: 100%;
+    height: 80%;
+}
+
+.btn_close {
+    background-image: url('project://database/Assets/Images/btn_close.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: right top;
+
+    position: absolute;
+    top: 6%;
+    right: 6%;
+
+    width: 11%;
+    height: 12%;
+}
+
+.position_players {
+    position: absolute;
+    top: 20%;
+    left: 10%;
+
+    width: 80%;
+    height: 80%;
+}
+
+.pos_player_1, .pos_player_2 {
+    font-size: var(--fontSize-txtRating);
+    color: var(--colorTxt);
+    white-space: normal;
+    -unity-font-style: bold;
+    -unity-text-align: upper-left;
+    -unity-text-overflow-position: middle;
 }

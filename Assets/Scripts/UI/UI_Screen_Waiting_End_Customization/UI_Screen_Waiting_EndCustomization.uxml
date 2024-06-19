@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="UnityEngine.UIElements"
+    xmlns:hr="Highrise.UI"
+    xmlns:editor="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+>
+
+  <hr:UILuaView class="waiting_end_customization" name="Waiting_End_Customization">
+    <hr:UIImage class="btn_return_lobby" name="Btn_Return_Lobby" />
+    <hr:UIImage class="close_pop_up" name="Close_Pop_up" />
+    
+    <hr:UIImage class="decor_model" name="Decor_model" />
+
+    <hr:UILabel class="txt_info" name="Txt_Info" picking-mode="Ignore"></hr:UILabel>
+  </hr:UILuaView>
+
+</UXML>

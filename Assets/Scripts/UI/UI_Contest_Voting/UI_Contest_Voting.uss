@@ -4,7 +4,6 @@
     --backgroundColor: rgba(255, 0, 167, 0.4);
     --colorTxt: rgba(255, 235, 249, 1);
     --backgroundColor-element: rgba(30, 30, 30, 0.55);
-    --borderColor-element: rgba(30, 30, 30, 1);
 }
 
 .contest_voting {

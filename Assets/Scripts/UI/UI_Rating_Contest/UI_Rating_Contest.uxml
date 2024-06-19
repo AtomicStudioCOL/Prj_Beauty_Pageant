@@ -7,7 +7,16 @@
     xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
 >
 
-  <hr:UILuaView class="-rating_-contest">
+  <hr:UILuaView class="rating_contest" name="Rating_Contest">
+    <hr:UILabel class="name_contest" name="Name_Contest"></hr:UILabel>
+    <hr:UILabel class="txt_info_rating" name="Txt_Info_Rating"></hr:UILabel>
+    <hr:UIView class="container_pos" name="Container_Pos">
+      <hr:UIImage class="model_player" name="Model_Player" />
+      
+      <hr:UIImage class="img_trophy img_win_lose" name="Img_Trophy" />
+      <hr:UIImage class="img_no_trophy img_win_lose" name="Img_no_Trophy" />
+      <hr:UIImage class="img_crown img_win_lose" name="Img_Crown" />
+    </hr:UIView>
   </hr:UILuaView>
 
 </UXML>

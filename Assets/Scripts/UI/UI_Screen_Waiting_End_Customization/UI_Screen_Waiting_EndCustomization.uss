@@ -1,0 +1,78 @@
+:root {
+    --container-width: 95%;
+    --fontSize-txtEndCustomization: 120%;
+    --backgroundColor: rgba(255, 0, 167, 0.4);
+    --colorTxt: rgba(255, 235, 249, 1);
+}
+
+.waiting_end_customization {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    background-color: var(--backgroundColor);
+    border-radius: 15px;
+
+    position: absolute;
+    top: 15%;
+
+    width: var(--container-width);
+    height: 80%;
+}
+
+.btn_return_lobby {
+    background-image: url('project://database/Assets/Images/home_lobby.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: right top;
+
+    position: absolute;
+    top: 6%;
+    right: 20%;
+    bottom: 0;
+
+    width: 12%;
+}
+
+.close_pop_up {
+    background-image: url('project://database/Assets/Images/btn_close.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: right top;
+
+    position: absolute;
+    top: 6%;
+    right: 6%;
+
+    width: 11%;
+    height: 12%;
+}
+
+.decor_model {
+    background-image: url('project://database/Assets/Images/Personaje_Highrise.png');
+    background-size: contain;
+    background-position: center;
+
+    position: absolute;
+    top: 22%;
+    right: 0;
+    bottom: 22%;
+    left: 0;
+}
+
+.txt_info {
+    font-size: var(--fontSize-txtEndCustomization);
+    color: var(--colorTxt);
+    white-space: normal;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    -unity-text-overflow-position: middle;
+
+    position: absolute;
+    bottom: 4%;
+
+    width: 85%;
+    height: 12%;
+}

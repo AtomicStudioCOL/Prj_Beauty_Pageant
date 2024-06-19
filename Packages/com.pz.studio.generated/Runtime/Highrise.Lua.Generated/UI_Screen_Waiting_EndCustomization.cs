@@ -16,11 +16,11 @@ using Highrise.Client;
 
 namespace Highrise.Lua.Generated
 {
-    [AddComponentMenu("Lua/UI_Area_Spectator")]
+    [AddComponentMenu("Lua/UI_Screen_Waiting_EndCustomization")]
     [LuaBehaviourScript(s_scriptGUID)]
-    public class UI_Area_Spectator : LuaBehaviourThunk
+    public class UI_Screen_Waiting_EndCustomization : LuaBehaviourThunk
     {
-        private const string s_scriptGUID = "e6beb334f2faa184298b4706ea99e388";
+        private const string s_scriptGUID = "ad1a3a71f41a4224598c2d32279fc8a3";
         public override string ScriptGUID => s_scriptGUID;
 
 
@@ -33,8 +33,6 @@ namespace Highrise.Lua.Generated
             {
                 CreateSerializedProperty(_script.GetPropertyAt(0), null),
                 CreateSerializedProperty(_script.GetPropertyAt(1), null),
-                CreateSerializedProperty(_script.GetPropertyAt(2), null),
-                CreateSerializedProperty(_script.GetPropertyAt(3), null),
             };
         }
     }

@@ -1,2 +1,102 @@
-.-rating_-contest {
+:root {
+    --container-width: 95%;
+    --fontSize-txtPos: 140%;
+    --fontSize-txtInfoRating: 180%;
+    --backgroundColor: rgba(255, 0, 167, 0.4);
+    --colorTxt: rgba(255, 235, 249, 1);
+    --backgroundColor-element: rgba(30, 30, 30, 0.55);
+}
+
+.rating_contest {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    background-color: var(--backgroundColor);
+    border-radius: 15px;
+
+    position: absolute;
+    top: 15%;
+
+    width: var(--container-width);
+    height: 80%;
+}
+
+.name_contest {
+    background-color: var(--backgroundColor-element);
+    border-radius: 0 0 15px 15px;
+
+    font-size: var(--fontSize-txtPos);
+    color: var(--colorTxt);
+    white-space: normal;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    -unity-text-overflow-position: middle;
+
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 8%;
+}
+
+.txt_info_rating {
+    font-size: var(--fontSize-txtInfoRating);
+    color: var(--colorTxt);
+    white-space: normal;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    -unity-text-overflow-position: middle;
+
+    position: absolute;
+    top: 5%;
+    width: 100%;
+    height: 10%;
+}
+
+.container_pos {
+    flex-direction: row;
+
+    position: absolute;
+    top: 20%;
+    right: 0;
+    bottom: 15%;
+    left: 0;
+}
+
+.model_player {
+    background-image: url('project://database/Assets/Images/Personaje_Highrise.png');
+    background-size: contain;
+    background-position: center;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.img_win_lose {
+    background-size: contain;
+    background-position: right bottom;
+
+    position: absolute;
+    top: 0;
+    right: 5%;
+    bottom: 0;
+
+    width: 25%;
+}
+
+.img_trophy {
+    background-image: url('project://database/Assets/Images/Win_Lose/Medal.png');
+}
+
+.img_no_trophy {
+    background-image: url('project://database/Assets/Images/Win_Lose/No_Medal.png');
+}
+
+.img_crown {
+    background-image: url('project://database/Assets/Images/Win_Lose/Crown.png');
 }

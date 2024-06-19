@@ -7,7 +7,20 @@
     xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
 >
 
-  <hr:UILuaView class="-area_-spectator">
+  <hr:UILuaView class="area_spectator" name="Area_Spectator">
+    <hr:UIView class="leaderboard_contest" name="Leaderboard_Contest">
+      <hr:UIImage class="btn_close" name="Btn_Close" />
+      <hr:UIView class="position_players" name="Position_Players">
+        <hr:UILabel class="pos_player_1" name="Pos_Player_1"></hr:UILabel> <!--temp-->
+        <hr:UILabel class="pos_player_2" name="Pos_Player_2"></hr:UILabel> <!--temp-->
+      </hr:UIView>
+    </hr:UIView>
+
+    <hr:UIView class="btns_area_spectator" name="Btns_Area_Spectator">
+      <hr:UIImage class="btn_leaderboard btns_area" name="Btn_Leaderboard" />
+      <hr:UIImage class="btn_spectator btns_area" name="Btn_Spectator" />
+      <hr:UIImage class="btn_return_lobby btns_area" name="Btn_Return_Lobby" />
+    </hr:UIView>
   </hr:UILuaView>
 
 </UXML>
