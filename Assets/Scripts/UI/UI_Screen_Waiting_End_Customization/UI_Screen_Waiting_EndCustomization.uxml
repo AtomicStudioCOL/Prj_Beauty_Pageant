@@ -8,8 +8,12 @@
 >
 
   <hr:UILuaView class="waiting_end_customization" name="Waiting_End_Customization">
-    <hr:UIImage class="btn_return_lobby" name="Btn_Return_Lobby" />
-    <hr:UIImage class="close_pop_up" name="Close_Pop_up" />
+    <hr:UIView class="container_up" name="Container_Up">
+      <hr:UIImage class="img_clock" name="Img_Clock" picking-mode="Ignore"/>
+      <hr:UILabel class="lbl_clock" name="Lbl_Clock" picking-mode="Ignore"></hr:UILabel>
+      <hr:UIImage class="btn_return_lobby" name="Btn_Return_Lobby" />
+      <hr:UIImage class="close_pop_up" name="Close_Pop_up" />
+    </hr:UIView>
     
     <hr:UIImage class="decor_model" name="Decor_model" />
 

@@ -9,13 +9,20 @@
 
   <hr:UILuaView class="contest_voting" name="Contest_Voting">
     <hr:UILabel class="name_contest" name="Name_Contest"></hr:UILabel>
-    <hr:UIImage class="decor_model" name="Decor_model" />
+    <!-- <hr:UIImage class="decor_model" name="Decor_model" /> -->
+
+    <hr:UIView class="container_timer" name="Container_Timer">
+      <hr:UIImage class="img_clock" name="Img_Clock" picking-mode="Ignore"/>
+      <hr:UILabel class="lbl_clock" name="Lbl_Clock" picking-mode="Ignore"></hr:UILabel>
+    </hr:UIView>
+
+    <hr:UILabel class="info_voting" name="Info_Voting"></hr:UILabel>
     <hr:UIView class="container_rating" name="Container_Rating">
-      <hr:UIImage class="rating_5" name="rating_5" />
-      <hr:UIImage class="rating_4" name="rating_4" />
-      <hr:UIImage class="rating_3" name="rating_3" />
-      <hr:UIImage class="rating_2" name="rating_2" />
-      <hr:UIImage class="rating_1" name="rating_1" />
+      <hr:UIImage class="rating_5" name="Rating_5" />
+      <hr:UIImage class="rating_4" name="Rating_4" />
+      <hr:UIImage class="rating_3" name="Rating_3" />
+      <hr:UIImage class="rating_2" name="Rating_2" />
+      <hr:UIImage class="rating_1" name="Rating_1" />
     </hr:UIView>
   </hr:UILuaView>
 </UXML>

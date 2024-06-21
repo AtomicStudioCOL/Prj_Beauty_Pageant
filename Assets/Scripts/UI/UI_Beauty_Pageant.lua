@@ -25,6 +25,7 @@ local Timer_Theme : UILabel = nil
 
 --UIs
 local UI_Pop_up_Confirmation = nil
+local UI_Customization_Player = nil
 
 --Local functions
 local function SettingStartUI()
@@ -34,10 +35,11 @@ local function SettingStartUI()
     Timer_Theme:SetPrelocalizedText('')
     Info_Btn_Spectator:SetPrelocalizedText('')
     
-    EnablePopupThemeContest(false) 
+    EnablePopupThemeContest(false)
     EnableSpectatorModeLobby(false)
-
+    
     UI_Pop_up_Confirmation = self.gameObject:GetComponent(Pop_up_Confirmation)
+    UI_Customization_Player = self.gameObject:GetComponent(UI_Customization_Model)
 end
 
 --Unity Function
@@ -47,15 +49,23 @@ function self:ClientAwake()
     Btn_Return_Lobby:RegisterPressCallback(function()
         EnablePopupThemeContest(false)
         UI_Pop_up_Confirmation.SetTypePopupConfirmation('return_lobby')
+        UI_Pop_up_Confirmation.SetWhichUIReturnCancel('PopUp_Theme')
         UI_Pop_up_Confirmation.SetStatusPopupConfirmation(true)
         countdownsGame.StopCountdownCurrentGame() --Stop timer for that user 
     end)
 
     Close_Pop_up_Theme:RegisterPressCallback(function()
+        countdownsGame.StopCountdownCurrentGame()
+        countdownsGame.resetCountdowns()
+
         EnablePopupThemeContest(false)
         SetTimerCloseWindowTheme('')
         SetThemeBeautyContest('')
-        countdownsGame.StopCountdownCurrentGame()
+        SetWaitingPlayersRound('LOCKER ROOM')
+
+        UI_Customization_Player.EnableCustomizationPlayer(true)
+        UI_Customization_Player.EnablePopupInfoCustomization(true)
+        countdownsGame.StartCountdownCustomizationPlayer(UI_Customization_Player)
     end)
 
     Spectator_Lobby:RegisterPressCallback(function()

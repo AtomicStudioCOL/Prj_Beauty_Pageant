@@ -17,7 +17,7 @@
 }
 
 .bg_pop_up_confirmation {
-    background-color: rgba(242, 91, 53, 0.75);
+    background-color: rgba(64, 0, 41, 0.7);
     background-position: center center;
 
     width: 100%;

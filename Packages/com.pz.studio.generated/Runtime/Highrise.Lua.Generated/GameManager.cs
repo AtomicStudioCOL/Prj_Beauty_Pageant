@@ -23,8 +23,15 @@ namespace Highrise.Lua.Generated
         private const string s_scriptGUID = "30d91acb6a84a454bba7b0ff8cd9d7d7";
         public override string ScriptGUID => s_scriptGUID;
 
+        [Header("Respawn points")]
         [SerializeField] public UnityEngine.GameObject m_pointRespawnLobby = default;
         [SerializeField] public UnityEngine.GameObject m_pointRespawnLockerRoom = default;
+        [SerializeField] public UnityEngine.GameObject m_pointRespawnZoneVoting = default;
+        [SerializeField] public UnityEngine.GameObject m_pointRespawnModelingArea = default;
+        [Header("Cameras")]
+        [SerializeField] public UnityEngine.GameObject m_mainCamera = default;
+        [SerializeField] public UnityEngine.GameObject m_cameraModeling = default;
+        [Header("UI")]
         [SerializeField] public UnityEngine.GameObject m_uiManager = default;
 
         protected override SerializedPropertyValue[] SerializeProperties()
@@ -36,7 +43,11 @@ namespace Highrise.Lua.Generated
             {
                 CreateSerializedProperty(_script.GetPropertyAt(0), m_pointRespawnLobby),
                 CreateSerializedProperty(_script.GetPropertyAt(1), m_pointRespawnLockerRoom),
-                CreateSerializedProperty(_script.GetPropertyAt(2), m_uiManager),
+                CreateSerializedProperty(_script.GetPropertyAt(2), m_pointRespawnZoneVoting),
+                CreateSerializedProperty(_script.GetPropertyAt(3), m_pointRespawnModelingArea),
+                CreateSerializedProperty(_script.GetPropertyAt(4), m_mainCamera),
+                CreateSerializedProperty(_script.GetPropertyAt(5), m_cameraModeling),
+                CreateSerializedProperty(_script.GetPropertyAt(6), m_uiManager),
             };
         }
     }

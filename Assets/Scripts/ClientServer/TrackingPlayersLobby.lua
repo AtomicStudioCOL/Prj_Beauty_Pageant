@@ -8,6 +8,7 @@ local minNumPlayersStartRound : number = 4
 
 -- Local Variables
 local uiManager = nil
+local UI_Customization_Player = nil
 local localCharacterInstantiatedEvent = nil
 themesBeautyContest = {
     [1] = 'Rock and Roll',
@@ -19,6 +20,7 @@ themesBeautyContest = {
 local updateNumPlayersLobbyBeforeStartRound = Event.new('UpdateNumPlayersLobbyBeforeStartRound')
 local timerSendPlayersToLockerRoom = Event.new('TimerSendPlayersToLockerRoom')
 local stopTimerSendPlayersToLockerRoom = Event.new('StopTimerSendPlayersToLockerRoom')
+local updateNumberPlayersCurrentContest = Event.new('UpdateNumberPlayersCurrentContest')
 
 --Network values
 local hasStartedCountdownSendPlayersLockerRoom = BoolValue.new('StartedCountdownSendPlayersLockerRoom', false)
@@ -59,6 +61,7 @@ end
 
 function self:ClientAwake()
     uiManager = gameManager.UIManagerGlobal:GetComponent(UI_Beauty_Pageant)
+    UI_Customization_Player = gameManager.UIManagerGlobal:GetComponent(UI_Customization_Model)
     
     localCharacterInstantiatedEvent = client.localPlayer.CharacterChanged:Connect(function(player : Player, character : Character)
         if character then
@@ -80,6 +83,10 @@ function self:ServerAwake()
         gameManager.amountPlayersLobby.value = numPlayersInLobby()
     end)
 
+    updateNumberPlayersCurrentContest:Connect(function(player : Player)
+        gameManager.numberPlayersCurrentContest.value += 1
+    end)
+
     server.PlayerDisconnected:Connect(function(player : Player)
         gameManager.amountPlayersLobby.value = numPlayersInLobby()
     end)
@@ -99,6 +106,7 @@ function self:ServerUpdate()
     if countdownsGame.selectThemeBeautyContest.value then
         randomTheme.value = math.random(1, 3)
         countdownsGame.selectThemeBeautyContest.value = false
+        countdownsGame.themeSelectedContest.value = themesBeautyContest[randomTheme.value]
     end
 end
 
@@ -109,7 +117,15 @@ function self:ClientUpdate()
         uiManager.EnablePopupThemeContest(true)
 
         uiManager.SetThemeBeautyContest(themesBeautyContest[randomTheme.value])
-        countdownsGame.StartCountdownCloseWindowTheme(uiManager)
+        countdownsGame.StartCountdownCloseWindowTheme(uiManager, UI_Customization_Player)
+
+        updateNumberPlayersCurrentContest:FireServer()
+        gameManager.playersCurrentlyCompeting[game.localPlayer.name] = true
         countdownsGame.playerWentSentToLockerRoom.value = false
     end
+
+    --Testing--Crear luego otro script
+    --[[ if countdownsGame.finishedTimeCustomizationPlayer.value then
+        game.localPlayer.character:Teleport(gameManager.pointRespawnModelingAreaGlobal.transform.position, function()end)
+    end ]]
 end

@@ -9,49 +9,18 @@
 
   <hr:UILuaView class="customization_model" name="Customization_Model">
     <hr:UIView class="info_customization" name="Info_Customization" picking-mode="Ignore">
+      <hr:UILabel class="theme_contest" name="Theme_Contest" picking-mode="Ignore"></hr:UILabel>
       <hr:UIImage class="img_clock" name="Img_Clock" picking-mode="Ignore"/>
       <hr:UILabel class="lbl_clock" name="Lbl_Clock" picking-mode="Ignore"></hr:UILabel>
-      <hr:UILabel class="theme_contest" name="Theme_Contest" picking-mode="Ignore"></hr:UILabel>
     </hr:UIView>
 
-    <hr:UIView class="container_customization" name="Container_Customization" picking-mode="Ignore">
-      <hr:UIView class="categories_customization" name="Categories_Customization" picking-mode="Ignore">
-        <hr:UIImage class="clothes_body" name="Clothes_Body" />
-        <hr:UIImage class="hats" name="Hats" />
-        <hr:UIImage class="shoes" name="Shoes" />
-        <hr:UIImage class="decor_eyes" name="Decor_Eyes" />
-        <hr:UIImage class="style_hair" name="Style_Hair" />
-        <hr:UIImage class="decor_mouth" name="Decor_mouth" />
-      </hr:UIView>
-
-      <hr:UIView class="zone_customization" name="Zone_Customization" picking-mode="Ignore">
-        <hr:UIView class="view_customization" name="View_Customization" picking-mode="Ignore">
-          <hr:UIImage class="model" name="Model" />
-          <hr:UIButton class="finish_customization" name="Finish_Customization" />
-          <hr:UILabel class="txt_btn_finish" name="Txt_Btn_Finish" picking-mode="Ignore"></hr:UILabel>
-        </hr:UIView>
-        
-        <hr:UIView class="elements_category" name="Elements_Category" picking-mode="Ignore">
-          <hr:UIView class="box_element_01" name="Box_Element_01" picking-mode="Ignore">
-            <hr:UIImage class="element_01" name="Element_01" />
-          </hr:UIView>
-
-          <hr:UIView class="box_element_02" name="Box_Element_02" picking-mode="Ignore">
-            <hr:UIImage class="element_02" name="Element_02" />
-          </hr:UIView>
-          
-          <hr:UIView class="box_element_03" name="Box_Element_03" picking-mode="Ignore">
-            <hr:UIImage class="element_03" name="Element_03" />
-          </hr:UIView>
-          
-          <hr:UIView class="box_element_04" name="Box_Element_04" picking-mode="Ignore">
-            <hr:UIImage class="element_04" name="Element_04" />
-          </hr:UIView>
-          
-          <hr:UIImage class="down_upward_element" name="Down_Upward_Element" />
-        </hr:UIView>
-      </hr:UIView>
+    <hr:UIView class="pop_up_info"  name="Pop_Up_Info">
+      <hr:UIImage class="btn_close" name="Btn_Close" />
+      <hr:UILabel class="txt_info_customization" name="Txt_Info_Customization" />
     </hr:UIView>
+
+    <hr:UIButton class="finish_customization" name="Finish_Customization" />
+    <hr:UILabel class="txt_btn_finish" name="Txt_Btn_Finish" picking-mode="Ignore"></hr:UILabel>
   </hr:UILuaView>
 
 </UXML>

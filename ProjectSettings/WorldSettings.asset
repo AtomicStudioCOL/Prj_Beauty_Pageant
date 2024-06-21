@@ -20,7 +20,7 @@ MonoBehaviour:
     type: 3}
   _uiFactory: {fileID: -2017830929143987780, guid: 83e7f5f7d97bec849a22256f27c121e2,
     type: 3}
-  _hideVirtualPlayerScenes: 1
+  _hideVirtualPlayerScenes: 0
   _scenes:
   - Name: Lobby
     Scene: {fileID: 102900000, guid: 3d97b014f52721147ba461f2a8133078, type: 3}

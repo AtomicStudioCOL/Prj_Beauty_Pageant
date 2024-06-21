@@ -22,10 +22,13 @@ local Txt_Btn_Cancel : UILabel = nil
 
 --UIs
 local UI_Beauty_Contest = nil
+local UI_Waiting_EndCustomization = nil
+local UI_CustomizationPlayer = nil
 
 --Variables
 local trackingPlayersScript = nil
 local typePopupConfirmation = ''
+local whichUIReturnCancel = ''
 
 --Functions
 local function SettingStartGame()
@@ -39,6 +42,8 @@ local function SettingStartGame()
 
     UI_Beauty_Contest = self.gameObject:GetComponent(UI_Beauty_Pageant)
     trackingPlayersScript = gameManager.gameObjectManager:GetComponent(TrackingPlayersLobby)
+    UI_Waiting_EndCustomization = self.gameObject:GetComponent(UI_Screen_Waiting_EndCustomization)
+    UI_CustomizationPlayer = self.gameObject:GetComponent(UI_Customization_Model)
 end
 
 local function ReturnLobbyWithRunningRound()
@@ -50,18 +55,24 @@ local function ReturnLobbyWithRunningRound()
     SetStatusPopupConfirmation(false)
 end
 
-local function CancelOperationPopup()
-    if typePopupConfirmation == 'return_lobby' then
-        SetStatusPopupConfirmation(false)
-
+local function SetWhichWindowReturn(window)
+    if window == 'PopUp_Theme' then
         UI_Beauty_Contest.SetWaitingPlayersRound('')
         UI_Beauty_Contest.SetTimerSendPlayerToLockerRoom('')
         UI_Beauty_Contest.EnablePopupThemeContest(true)
         UI_Beauty_Contest.SetThemeBeautyContest(
             trackingPlayersScript.themesBeautyContest[trackingPlayersScript.randomTheme.value]
         )
+        countdownsGame.StartCountdownCloseWindowTheme(UI_Beauty_Contest, UI_CustomizationPlayer)
+    elseif window == 'Waiting_EndCustomization' then
+        UI_Waiting_EndCustomization.EnableWaitingEndCustomization(true)
+    end
+end
 
-        countdownsGame.StartCountdownCloseWindowTheme(UI_Beauty_Contest)
+local function CancelOperationPopup()
+    if typePopupConfirmation == 'return_lobby' then
+        SetStatusPopupConfirmation(false)
+        SetWhichWindowReturn(whichUIReturnCancel)
     elseif typePopupConfirmation == 'spectator_contest' then
         ReturnLobbyWithRunningRound()
     end
@@ -105,4 +116,8 @@ end
 
 function SetTypePopupConfirmation(text)
     typePopupConfirmation = text
+end
+
+function SetWhichUIReturnCancel(text)
+    whichUIReturnCancel = text
 end
