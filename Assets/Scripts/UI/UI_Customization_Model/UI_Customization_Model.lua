@@ -28,7 +28,7 @@ local UI_Waiting_EndCustomization = nil
 
 --Functions
 function SettingStart()
-    Lbl_Clock:SetPrelocalizedText('')
+    Lbl_Clock:SetPrelocalizedText('') 
     Theme_Contest:SetPrelocalizedText('')
     Txt_Info_Customization:SetPrelocalizedText("Head to your profile's closet, dress up according to the theme as best you can, then come back to this screen and click on 'Confirm' when you're done! You have 3 minutes.")
 

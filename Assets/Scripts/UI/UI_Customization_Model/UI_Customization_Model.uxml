@@ -17,6 +17,7 @@
     <hr:UIView class="pop_up_info"  name="Pop_Up_Info">
       <hr:UIImage class="btn_close" name="Btn_Close" />
       <hr:UILabel class="txt_info_customization" name="Txt_Info_Customization" />
+      <hr:UIImage class="img_instruction" name="Img_Instruction" />
     </hr:UIView>
 
     <hr:UIButton class="finish_customization" name="Finish_Customization" />

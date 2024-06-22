@@ -1,7 +1,7 @@
 :root {
     --container-width: 95%;
     --fontSize-txtCustomization: 125%;
-    --fontSize-txtCustomizationInfo: 120%;
+    --fontSize-txtCustomizationInfo: 100%;
     --colorTxt: rgba(255, 235, 249, 1);
     --backgroundColor: rgba(64, 0, 41, 0.7);
     --btn-backgroundColor: rgba(0, 118, 255, 1);
@@ -76,10 +76,10 @@
     border-radius: 15px;
 
     position: absolute;
-    top: 22%;
+    top: 15%;
 
     width: 80%;
-    height: 54%;
+    height: 70%;
     flex-direction: column;
 }
 
@@ -90,8 +90,8 @@
     background-position: right top;
 
     position: absolute;
-    top: 6%;
-    right: 6%;
+    top: 4%;
+    right: 4%;
 
     width: 14%;
     height: 14%;
@@ -99,14 +99,25 @@
 
 .txt_info_customization {
     position: absolute;
-    top: 24%;
-    right: 10%;
-    left: 10%;
+    top: 18%;
+    right: 5%;
+    left: 5%;
 
-    width: 80%;
-    height: 70%;
+    width: 90%;
     font-size: var(--fontSize-txtCustomizationInfo);
     -unity-text-align: middle-left;
+}
+
+.img_instruction {
+    background-image: url('project://database/Assets/Images/Customization_Intruction.png');
+    background-size: contain;
+    background-position: center bottom;
+
+    position: absolute;
+    top: 44%;
+    right: 0;
+    bottom: 2%;
+    left: 0;
 }
 
 .finish_customization {

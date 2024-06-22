@@ -3,6 +3,7 @@
     --fontSize-txtRating: 140%;
     --fontSize-txtRatingInfo: 110%;
     --fontSize-txtRatingWatch: 140%;
+    --fontSize-txtRatingPoses: 100%;
     --colorTxt: rgba(255, 235, 249, 1);
     --backgroundColor-element: rgba(64, 0, 41, 0.7)/* rgba(30, 30, 30, 0.55) */;
 }
@@ -21,7 +22,7 @@
     height: 85%;
 }
 
-.name_contest, .info_voting, .lbl_clock {
+.name_contest, .info_voting, .lbl_clock, .info_poses {
     color: var(--colorTxt);
     white-space: normal;
     -unity-font-style: bold;
@@ -115,12 +116,12 @@
     height: 70%;
 }
 
-.rating_5 {
+.rating_1 {
     background-image: url('project://database/Assets/Images/Rating/StarDisable.png');
     left: 8%;
 }
 
-.rating_4 {
+.rating_2 {
     background-image: url('project://database/Assets/Images/Rating/StarDisable.png');
     left: 26%;
 }
@@ -130,34 +131,14 @@
     left: 44%;
 }
 
-.rating_2 {
+.rating_4 {
     background-image: url('project://database/Assets/Images/Rating/StarDisable.png');
     left: 62%;
 }
 
-.rating_1 {
+.rating_5 {
     background-image: url('project://database/Assets/Images/Rating/StarDisable.png');
     left: 80%;
-}
-
-.rating_5:hover {
-    background-image: url('project://database/Assets/Images/Rating/StarEnable.png');
-}
-
-.rating_4:hover {
-    background-image: url('project://database/Assets/Images/Rating/StarEnable.png');
-}
-
-.rating_3:hover {
-    background-image: url('project://database/Assets/Images/Rating/StarEnable.png');
-}
-
-.rating_2:hover {
-    background-image: url('project://database/Assets/Images/Rating/StarEnable.png');
-}
-
-.rating_1:hover {
-    background-image: url('project://database/Assets/Images/Rating/StarEnable.png');
 }
 
 .enableStar_01 {
@@ -178,4 +159,35 @@
 
 .enableStar_05 {
     background-image: url('project://database/Assets/Images/Rating/StarEnable.png');
+}
+
+.container_poses {
+    background-color: var(--backgroundColor-element);
+    background-position: center bottom;
+    border-radius: 15px;
+    flex-direction: row;
+
+    position: absolute;
+    bottom: 0;
+
+    width: 100%;
+    height: 12%;
+}
+
+.info_poses {
+    font-size: var(--fontSize-txtRatingPoses);
+    -unity-text-align: middle-left;
+    margin: 0 15% 0 4%;
+}
+
+.img_pose {
+    background-image: url('project://database/Assets/Images/arrow_right_down.png');
+    background-size: contain;
+    background-position: right center;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 85%;
 }

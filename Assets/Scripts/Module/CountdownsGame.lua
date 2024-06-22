@@ -7,13 +7,16 @@ local seconds : string = ''
 countdownSendPlayersToLockerRoom = IntValue.new('CountdownStartHiddenPlayers', 30)
 playerWentSentToLockerRoom = BoolValue.new('PlayerWentSentToLockerRoom', false)
 selectThemeBeautyContest = BoolValue.new('SelectThemeBeautyContest', false)
-finishedTimeCustomizationPlayer = BoolValue.new('FinishedTimeCustomizationPlayer', false)
 
 -- Countdown to close window theme
-countdownCloseWindowTheme = IntValue.new('CountdownCloseWindowTheme', 20)
+countdownCloseWindowTheme = IntValue.new('CountdownCloseWindowTheme', 5)
 
 -- Countdown customization of the player
 countdownCustomizationPlayer = IntValue.new('CountdownCustomizationPlayer', 180)
+
+-- Countdown voting area
+countdownVotingArea = IntValue.new('CountdownVotingArea', 30)
+nextPlayerModelingArea = BoolValue.new('NextPlayerModelingArea', false)
 
 -- Player master
 local playerMaster = StringValue.new('PlayerMaster', '')
@@ -24,17 +27,20 @@ themeSelectedContest = StringValue.new('ThemeSelectedContest', '')
 
 --Events
 local updateIfPlayersWentSendToLockerRoom = Event.new('UpdateIfPlayersWentSendToLockerRoom')
-local updateIfTimeCustomizationPlayerFinished = Event.new('UpdateIfTimeCustomizationPlayerFinished')
 local updateTimerSendPlayersToLockerRoom = Event.new('UpdateTimerSendPlayersToLockerRoom')
 local updateTimerWindowTheme = Event.new('UpdateTimerWindowTheme')
 local updateTimerCustomizationPlayer = Event.new('UpdateTimerCustomizationPlayer')
+local updateTimerVotingArea = Event.new('UpdateTimerVotingArea')
+local eventNextPlayerVoting = Event.new('NextPlayerVoting')
+eventResetNextPlayerVoting = Event.new('ResetNextPlayerVoting')
 
 -- Functions
 function resetCountdowns()
     playerMaster.value = ''
     updateWhoIsPlayerMaster.value = true
     countdownSendPlayersToLockerRoom.value = 30
-    countdownCloseWindowTheme.value = 20
+    countdownCloseWindowTheme.value = 5
+    countdownVotingArea.value = 30
 end
 
 function selectMainPlayer(mainClient, namePlayer, countdownCurrent, canUpdate)
@@ -120,10 +126,30 @@ function StartCountdownCustomizationPlayer(uiManager)
         updateTimerCustomizationPlayer:FireServer()
 
         if countdownCustomizationPlayer.value <= 0 then
-            updateIfTimeCustomizationPlayerFinished:FireServer()
             uiManager.finishedTimerCustomizationPlayers()
             countdownGame:Stop()
             resetCountdowns()
+        end
+    end, true)
+end
+
+function StartCountdownVotingArea(uiManager)
+    if countdownGame then countdownGame:Stop() end
+
+    countdownGame = Timer.new(1, function()
+        seconds = countdownVotingArea.value
+
+        if tonumber(seconds) < 10 then
+            seconds = `0{seconds}`
+        end
+
+        uiManager.SetTimerForVoting('00:' .. seconds)
+        updateTimerVotingArea:FireServer()
+
+        if countdownVotingArea.value <= 0 then
+            eventNextPlayerVoting:FireServer()
+            resetCountdowns()
+            countdownGame:Stop()
         end
     end, true)
 end
@@ -142,8 +168,13 @@ function self:ServerAwake()
         selectThemeBeautyContest.value = true
     end)
 
-    updateIfTimeCustomizationPlayerFinished:Connect(function(player : Player)
-        finishedTimeCustomizationPlayer.value = true
+    eventNextPlayerVoting:Connect(function(player : Player)
+        nextPlayerModelingArea.value = true
+        resetCountdowns()
+    end)
+
+    eventResetNextPlayerVoting:Connect(function(player : Player)
+        nextPlayerModelingArea.value = false
     end)
 
     updateTimerSendPlayersToLockerRoom:Connect(function(player : Player)
@@ -156,5 +187,9 @@ function self:ServerAwake()
 
     updateTimerCustomizationPlayer:Connect(function (player : Player)
         selectMainPlayer(playerMaster, player.name, countdownCustomizationPlayer, updateWhoIsPlayerMaster)
+    end)
+
+    updateTimerVotingArea:Connect(function(player : Player)        
+        selectMainPlayer(playerMaster, player.name, countdownVotingArea, updateWhoIsPlayerMaster)
     end)
 end

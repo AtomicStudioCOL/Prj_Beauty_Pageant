@@ -26,6 +26,7 @@ amountPlayersLobby = IntValue.new('AmountPlayersLobby', 0)
 hasStartedRound = BoolValue.new('HasStartedRound', false)
 numberPlayersCurrentContest = IntValue.new('NumberPlayersCurrentContest', 0)
 numberPlayersSendModelingArea = IntValue.new('NumberPlayersSendModelingArea', 0)
+numberPlayersModeled = IntValue.new('NumberPlayersModeled', 0)
 numPlayersFinishCustomization = IntValue.new('NumPlayersFinishCustomization', 0)
 startingAvatarContest = BoolValue.new('StartingAvatarContest', false)
 
@@ -36,10 +37,9 @@ local updateNumPlayersFinishCustomization = Event.new('UpdateNumPlayersFinishCus
 local showUIAfterCustomization = Event.new('ShowUIAfterCustomization')
 local sendAvatarToBackstageServer = Event.new('SendAvatarToBackstageServer')
 local sendAvatarToBackstageClient = Event.new('SendAvatarToBackstageClient')
-local sendPlayerModelingAreaServer = Event.new('SendPlayerModelingAreaServer')
 local sendPlayerModelingAreaClient = Event.new('SendPlayerModelingAreaClient')
-local sendPlayerContestServer = Event.new('SendPlayerContestServer')
-local sendPlayerContestClient = Event.new('SendPlayerContestClient')
+local sendPlayerBackstageContestClient = Event.new('SendPlayerBackstageContestClient')
+goNextPlayerContest = Event.new('GoNextPlayerContest')
 
 -- Global Variables
 gameObjectManager = self.gameObject
@@ -60,6 +60,9 @@ local UI_EndCustomization = nil
 local UI_ConstestVoting = nil
 local UI_BeautyContest = nil
 
+--Countdowns
+local countdownGameObj = nil
+
 --Fucntions
 function updateNumPlayersFinish()
     updateNumPlayersFinishCustomization:FireServer()
@@ -77,6 +80,7 @@ end
 function sendPlayerModelingArea(character : Character, objCharacter : GameObject)
     objCharacter.transform.position = pointRespawnModelingArea.transform.position
     character:MoveTo(pointRespawnModelingArea.transform.position, 6, function()end)
+    character.transform:LookAt(cameraModeling.transform.position)
 end
 
 --Unity Functions
@@ -91,6 +95,8 @@ function self:ClientAwake()
     UI_ConstestVoting = uiManager:GetComponent(UI_Contest_Voting)
     UI_BeautyContest = uiManager:GetComponent(UI_Beauty_Pageant)
 
+    countdownGameObj = self.gameObject:GetComponent(CountdownsGame)
+
     showUIAfterCustomization:Connect(function()
         UI_Customization.ShowUIFinishPlayerCustomization()
     end)
@@ -102,7 +108,6 @@ function self:ClientAwake()
             UI_Customization.StopCurrentTimerPlaying()
             UI_EndCustomization.SettingStart()
             UI_ConstestVoting.EnableContestVoting(true)
-            UI_ConstestVoting.SetNamePlayerContestant(game.localPlayer.name)
 
             sendPlayersToModelingArea(game.localPlayer.character, game.localPlayer.character.gameObject)
             sendAvatarToBackstageServer:FireServer()
@@ -117,18 +122,22 @@ function self:ClientAwake()
         end
     end)
 
-    sendPlayerModelingAreaClient:Connect(function()
-        if not playersAlreadyModeling[game.localPlayer.name] then
-            sendPlayerModelingArea(game.localPlayer.character, game.localPlayer.character.gameObject)
-            sendPlayerContestServer:FireServer()
+    sendPlayerModelingAreaClient:Connect(function(namePlayer)
+        sendPlayerModelingArea(previousPlayers[namePlayer], playerWithGameObject[namePlayer])
+        UI_ConstestVoting.SetNamePlayerContestant(namePlayer)
+        countdownGameObj.StartCountdownVotingArea(UI_ConstestVoting)
+
+        if game.localPlayer.name == namePlayer then
+            UI_ConstestVoting.SetPlayerVotingStatus(false)
+        else
+            UI_ConstestVoting.SetPlayerVotingStatus(true)
         end
     end)
 
-    sendPlayerContestClient:Connect(function(namePlayer)
-        if namePlayer ~= game.localPlayer.name and playersCurrentlyCompeting[game.localPlayer.name] then
-            sendPlayersToModelingArea(previousPlayers[namePlayer], playerWithGameObject[namePlayer])
-            playersAlreadyModeling[namePlayer] = true
-        end
+    sendPlayerBackstageContestClient:Connect(function(namePlayer)
+        sendPlayersToModelingArea(previousPlayers[namePlayer], playerWithGameObject[namePlayer])
+        countdownGameObj.resetCountdowns()
+        countdownGameObj.StopCountdownCurrentGame()
     end)
 end
 
@@ -147,20 +156,29 @@ function self:ServerAwake()
         sendAvatarToBackstageClient:FireAllClients(player.name)
     end)
 
-    sendPlayerContestServer:Connect(function(player : Player)
-        sendPlayerContestClient:FireAllClients(player.name)
+    goNextPlayerContest:Connect(function(player : Player)
+        for namePlayer, value in pairs(playersAlreadyModeling) do
+            sendPlayerBackstageContestClient:FireAllClients(namePlayer)
+        end
 
-        Timer.After(10, function()
-            sendPlayerModelingAreaClient:FireAllClients()
+        Timer.After(0.15, function()
+            startingAvatarContest.value = false
         end)
     end)
 end
 
 function self:ServerUpdate()
     if numberPlayersCurrentContest.value == numberPlayersSendModelingArea.value and not startingAvatarContest.value and numberPlayersCurrentContest.value > 0 then --Ya todos estan tras banbalinas
-        print(`{numberPlayersCurrentContest.value} - {numberPlayersSendModelingArea.value}`)
-        sendPlayerModelingAreaClient:FireAllClients()
+        for namePlayer, objPlayer in pairs(playerWithGameObject) do
+            if playersCurrentlyCompeting[namePlayer] and not playersAlreadyModeling[namePlayer] then
+                sendPlayerModelingAreaClient:FireAllClients(namePlayer)
+                playersAlreadyModeling[namePlayer] = true
+                break
+            end
+        end
+
         startingAvatarContest.value = true
+        numberPlayersModeled.value += 1
     end
 end
 

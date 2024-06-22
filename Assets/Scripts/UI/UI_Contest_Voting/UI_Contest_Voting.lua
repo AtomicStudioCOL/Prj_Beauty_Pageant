@@ -13,6 +13,8 @@ local Info_Voting : UILabel = nil
 
 --Rating
 --!Bind
+local Container_Rating : UIView = nil
+--!Bind
 local Rating_1 : UIImage = nil
 --!Bind
 local Rating_2 : UIImage = nil
@@ -23,11 +25,18 @@ local Rating_4 : UIImage = nil
 --!Bind
 local Rating_5 : UIImage = nil
 
+--Show poses
+--!Bind
+local Container_Poses : UIView = nil
+--!Bind
+local Info_Poses : UILabel = nil
+
 --Functions
 function SettingStart()
     Name_Contest:SetPrelocalizedText('')
-    Lbl_Clock:SetPrelocalizedText('00:30')
+    Lbl_Clock:SetPrelocalizedText('')
     Info_Voting:SetPrelocalizedText('Please rate from 1 to 5, where 5 is the best and 1 is the worst.')
+    Info_Poses:SetPrelocalizedText('Select the best Highrise emotes for your avatar’s runway poses.')
 
     EnableContestVoting(false)
 end
@@ -46,6 +55,12 @@ function EnableContestVoting(status)
     if status then
         countdownsGame.StopCountdownCurrentGame()
     end
+end
+
+function SetPlayerVotingStatus(status)
+    Container_Rating.visible = status
+    Info_Voting.visible = status
+    Container_Poses.visible = not status
 end
 
 --Unity Functions

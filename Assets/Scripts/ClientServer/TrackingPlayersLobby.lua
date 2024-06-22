@@ -85,6 +85,7 @@ function self:ServerAwake()
 
     updateNumberPlayersCurrentContest:Connect(function(player : Player)
         gameManager.numberPlayersCurrentContest.value += 1
+        gameManager.playersCurrentlyCompeting[player.name] = true
     end)
 
     server.PlayerDisconnected:Connect(function(player : Player)
@@ -123,9 +124,4 @@ function self:ClientUpdate()
         gameManager.playersCurrentlyCompeting[game.localPlayer.name] = true
         countdownsGame.playerWentSentToLockerRoom.value = false
     end
-
-    --Testing--Crear luego otro script
-    --[[ if countdownsGame.finishedTimeCustomizationPlayer.value then
-        game.localPlayer.character:Teleport(gameManager.pointRespawnModelingAreaGlobal.transform.position, function()end)
-    end ]]
 end

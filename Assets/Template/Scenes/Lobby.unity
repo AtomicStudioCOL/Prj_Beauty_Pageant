@@ -1092,6 +1092,8 @@ GameObject:
   - component: {fileID: 1311283147}
   - component: {fileID: 1311283146}
   - component: {fileID: 1311283148}
+  - component: {fileID: 1311283149}
+  - component: {fileID: 1311283150}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1186,6 +1188,52 @@ MonoBehaviour:
   _uiOutputSettings:
     rid: -2
   m_minNumPlayersStartRound: 4
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!114 &1311283149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311283144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e62b7d9724e566a161d41e319ce0036f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _networkId: 0
+  _script: {fileID: -974389366465450183, guid: 5cf47d429e3a6674db0b1ee4263f03ba, type: 3}
+  _properties: []
+  _uiOutput: 0
+  _uiOutputSettings:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!114 &1311283150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311283144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d1d0ecdbfa7166163b51e05c669e326, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _networkId: 0
+  _script: {fileID: -974389366465450183, guid: b7c20e18057816b4d96a1ed07cb6e3f3, type: 3}
+  _properties: []
+  _uiOutput: 0
+  _uiOutputSettings:
+    rid: -2
   references:
     version: 2
     RefIds:
