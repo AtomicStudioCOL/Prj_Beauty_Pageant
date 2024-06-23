@@ -29,6 +29,7 @@ numberPlayersSendModelingArea = IntValue.new('NumberPlayersSendModelingArea', 0)
 numberPlayersModeled = IntValue.new('NumberPlayersModeled', 0)
 numPlayersFinishCustomization = IntValue.new('NumPlayersFinishCustomization', 0)
 startingAvatarContest = BoolValue.new('StartingAvatarContest', false)
+playerModelingCurrently = StringValue.new('PlayerModelingCurrently', '')
 
 -- Events
 local showUIVotingClient = Event.new('ShowUIVotingClient')
@@ -44,6 +45,7 @@ goNextPlayerContest = Event.new('GoNextPlayerContest')
 -- Global Variables
 gameObjectManager = self.gameObject
 UIManagerGlobal = nil
+ScorePlayerCompeting = nil
 pointRespawnLobbyGlobal = nil
 pointRespawnLockerRoomGlobal = nil
 pointRespawnModelingAreaGlobal = nil
@@ -57,8 +59,9 @@ local playersAlreadyModeling = {}
 -- UIs
 local UI_Customization = nil
 local UI_EndCustomization = nil
-local UI_ConstestVoting = nil
-local UI_BeautyContest = nil
+UI_BeautyContest = nil
+UI_ConstestVoting = nil
+UI_RatingContest = nil
 
 --Countdowns
 local countdownGameObj = nil
@@ -94,8 +97,10 @@ function self:ClientAwake()
     UI_EndCustomization = uiManager:GetComponent(UI_Screen_Waiting_EndCustomization)
     UI_ConstestVoting = uiManager:GetComponent(UI_Contest_Voting)
     UI_BeautyContest = uiManager:GetComponent(UI_Beauty_Pageant)
+    UI_RatingContest = uiManager:GetComponent(UI_Rating_Contest)
 
     countdownGameObj = self.gameObject:GetComponent(CountdownsGame)
+    ScorePlayerCompeting = self.gameObject:GetComponent(GetScorePlayerCompeting)
 
     showUIAfterCustomization:Connect(function()
         UI_Customization.ShowUIFinishPlayerCustomization()
@@ -136,6 +141,7 @@ function self:ClientAwake()
 
     sendPlayerBackstageContestClient:Connect(function(namePlayer)
         sendPlayersToModelingArea(previousPlayers[namePlayer], playerWithGameObject[namePlayer])
+        UI_ConstestVoting.CleanStarsSelecting()
         countdownGameObj.resetCountdowns()
         countdownGameObj.StopCountdownCurrentGame()
     end)
@@ -172,6 +178,7 @@ function self:ServerUpdate()
         for namePlayer, objPlayer in pairs(playerWithGameObject) do
             if playersCurrentlyCompeting[namePlayer] and not playersAlreadyModeling[namePlayer] then
                 sendPlayerModelingAreaClient:FireAllClients(namePlayer)
+                playerModelingCurrently.value = namePlayer
                 playersAlreadyModeling[namePlayer] = true
                 break
             end

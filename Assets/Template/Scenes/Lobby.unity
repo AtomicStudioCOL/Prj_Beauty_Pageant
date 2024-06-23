@@ -736,11 +736,11 @@ GameObject:
   - component: {fileID: 928806392}
   - component: {fileID: 928806391}
   - component: {fileID: 928806397}
-  - component: {fileID: 928806396}
   - component: {fileID: 928806395}
   - component: {fileID: 928806394}
-  - component: {fileID: 928806393}
   - component: {fileID: 928806398}
+  - component: {fileID: 928806393}
+  - component: {fileID: 928806396}
   m_Layer: 0
   m_Name: UIManager
   m_TagString: Untagged
@@ -793,7 +793,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 928806390}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 55624c368d83dfc112fd45926131c667, type: 3}
   m_Name: 

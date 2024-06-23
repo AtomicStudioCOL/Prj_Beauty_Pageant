@@ -28,7 +28,7 @@ local UI_Pop_up_Confirmation = nil
 local UI_Customization_Player = nil
 
 --Local functions
-local function SettingStartUI()
+function SettingStartUI()
     Waiting_Players:SetPrelocalizedText('')
     Timer_General:SetPrelocalizedText('')
     Txt_Theme:SetPrelocalizedText('')

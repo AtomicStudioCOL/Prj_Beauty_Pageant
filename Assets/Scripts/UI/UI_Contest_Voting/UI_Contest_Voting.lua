@@ -1,6 +1,7 @@
 --!Type(UI)
 --Managers
 local countdownsGame = require('CountdownsGame')
+local gameManager = require('GameManager')
 
 --!Bind
 local Contest_Voting : UILuaView = nil
@@ -31,6 +32,15 @@ local Container_Poses : UIView = nil
 --!Bind
 local Info_Poses : UILabel = nil
 
+--Variables
+local scoreStars = {
+    [1] = 10,
+    [2] = 30,
+    [3] = 55,
+    [4] = 80,
+    [5] = 100,
+}
+
 --Functions
 function SettingStart()
     Name_Contest:SetPrelocalizedText('')
@@ -54,6 +64,10 @@ function EnableContestVoting(status)
 
     if status then
         countdownsGame.StopCountdownCurrentGame()
+    else
+        Container_Rating.visible = status
+        Info_Voting.visible = status
+        Container_Poses.visible = status
     end
 end
 
@@ -61,6 +75,14 @@ function SetPlayerVotingStatus(status)
     Container_Rating.visible = status
     Info_Voting.visible = status
     Container_Poses.visible = not status
+end
+
+function CleanStarsSelecting()
+    Rating_1:RemoveFromClassList('enableStar_01')
+    Rating_2:RemoveFromClassList('enableStar_02')
+    Rating_3:RemoveFromClassList('enableStar_03')
+    Rating_4:RemoveFromClassList('enableStar_04')
+    Rating_5:RemoveFromClassList('enableStar_05')
 end
 
 --Unity Functions
@@ -74,6 +96,9 @@ function self:ClientAwake()
         Rating_3:RemoveFromClassList('enableStar_03')
         Rating_4:RemoveFromClassList('enableStar_04')
         Rating_5:RemoveFromClassList('enableStar_05')
+
+        
+        gameManager.ScorePlayerCompeting.sendScorePlayerCompeting:FireServer(scoreStars[1])
     end)
 
     Rating_2:RegisterPressCallback(function()
@@ -83,6 +108,8 @@ function self:ClientAwake()
         Rating_3:RemoveFromClassList('enableStar_03')
         Rating_4:RemoveFromClassList('enableStar_04')
         Rating_5:RemoveFromClassList('enableStar_05')
+
+        gameManager.ScorePlayerCompeting.sendScorePlayerCompeting:FireServer(scoreStars[2])
     end)
 
     Rating_3:RegisterPressCallback(function()
@@ -92,6 +119,8 @@ function self:ClientAwake()
 
         Rating_4:RemoveFromClassList('enableStar_04')
         Rating_5:RemoveFromClassList('enableStar_05')
+
+        gameManager.ScorePlayerCompeting.sendScorePlayerCompeting:FireServer(scoreStars[3])
     end)
 
     Rating_4:RegisterPressCallback(function()
@@ -101,6 +130,8 @@ function self:ClientAwake()
         Rating_4:AddToClassList('enableStar_04')
 
         Rating_5:RemoveFromClassList('enableStar_05')
+
+        gameManager.ScorePlayerCompeting.sendScorePlayerCompeting:FireServer(scoreStars[4])
     end)
 
     Rating_5:RegisterPressCallback(function()
@@ -109,5 +140,7 @@ function self:ClientAwake()
         Rating_3:AddToClassList('enableStar_03')
         Rating_4:AddToClassList('enableStar_04')
         Rating_5:AddToClassList('enableStar_05')
+
+        gameManager.ScorePlayerCompeting.sendScorePlayerCompeting:FireServer(scoreStars[5])
     end)
 end
