@@ -16,14 +16,14 @@ local Lbl_Clock : UILabel = nil
 local dataLeaderboard = {}
 
 --Functions
-function UpdateLeaderboard(ranking : string, namePlayer : string, score : number)
+function UpdateLeaderboard(ranking : number, namePlayer : string, score : number)
     -- Create a new rank item
     local _rankItem = VisualElement.new()
     _rankItem:AddToClassList("rank-item")
 
     -- Create the rank, name, and score labels
     local _rankLabel = UILabel.new()
-    _rankLabel:SetPrelocalizedText(ranking)
+    _rankLabel:SetPrelocalizedText(tostring(ranking) .. ') ')
     _rankLabel:AddToClassList("rank-label")
 
     -- Set the name and score of the player
@@ -49,15 +49,18 @@ function EnableRatingContest(status)
     Rating_Contest.visible = status
 
     if status then
-        Leaderboard:Clear() -- Clear the previous leaderboard entries
+        --Leaderboard:Clear() -- Clear the previous leaderboard entries
         gameManager.ScorePlayerCompeting.showScoreBeautyContest:FireServer()
-        
     end
+end
+
+function SetTimerEndRound(timer)
+    Lbl_Clock:SetPrelocalizedText(timer)
 end
 
 function StartSetting()
     Txt_Info_Rating:SetPrelocalizedText('Leaderboard Beauty Pageant!')
-    Lbl_Clock:SetPrelocalizedText('00:10')
+    Lbl_Clock:SetPrelocalizedText('')
     EnableRatingContest(false)
 end
 

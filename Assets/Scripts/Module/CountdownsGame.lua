@@ -1,5 +1,6 @@
 -- Local Variables
 local countdownGame : Timer = nil
+local timerEndGame : Timer = nil
 local minutes : string = ''
 local seconds : string = ''
 
@@ -18,6 +19,10 @@ countdownCustomizationPlayer = IntValue.new('CountdownCustomizationPlayer', 180)
 countdownVotingArea = IntValue.new('CountdownVotingArea', 30)
 nextPlayerModelingArea = BoolValue.new('NextPlayerModelingArea', false)
 
+-- Countdown end game - return to the lobby
+countdownEndRound = IntValue.new('CountdownEndRound', 10)
+hasRoundFinished = BoolValue.new('HasRoundFinished', false)
+
 -- Player master
 local playerMaster = StringValue.new('PlayerMaster', '')
 local updateWhoIsPlayerMaster = BoolValue.new('UpdateWhoIsPlayerMaster', true)
@@ -33,6 +38,8 @@ local updateTimerCustomizationPlayer = Event.new('UpdateTimerCustomizationPlayer
 local updateTimerVotingArea = Event.new('UpdateTimerVotingArea')
 local eventNextPlayerVoting = Event.new('NextPlayerVoting')
 eventResetNextPlayerVoting = Event.new('ResetNextPlayerVoting')
+local updateTimerEndRound = Event.new('UpdateTimerEndRound')
+local eventEndRound = Event.new('EventEndRound')
 
 -- Functions
 function resetCountdowns()
@@ -40,7 +47,9 @@ function resetCountdowns()
     updateWhoIsPlayerMaster.value = true
     countdownSendPlayersToLockerRoom.value = 30
     countdownCloseWindowTheme.value = 5
+    countdownCustomizationPlayer.value = 180
     countdownVotingArea.value = 30
+    countdownEndRound.value = 10
 end
 
 function selectMainPlayer(mainClient, namePlayer, countdownCurrent, canUpdate)
@@ -58,7 +67,6 @@ function StartCountdownSendPlayersToLockerRoom(uiManager)
     if countdownGame then countdownGame:Stop() end
     
     uiManager.SetWaitingPlayersRound('Next match starts in..')
-    
     countdownGame = Timer.new(1, function()
         seconds = countdownSendPlayersToLockerRoom.value
 
@@ -109,6 +117,7 @@ end
 function StartCountdownCustomizationPlayer(uiManager)
     if countdownGame then countdownGame:Stop() end
     uiManager.SetThemeBeautyContest(themeSelectedContest.value)
+    print(`Valor inicial: {countdownCustomizationPlayer.value}`)
 
     countdownGame = Timer.new(1, function()
         minutes = tostring(math.floor(countdownCustomizationPlayer.value / 60))
@@ -154,6 +163,27 @@ function StartCountdownVotingArea(uiManager)
     end, true)
 end
 
+function StartCountdownEndRound(uiManager)
+    if timerEndGame then timerEndGame:Stop() end
+    
+    timerEndGame = Timer.new(1, function()
+        seconds = countdownEndRound.value
+
+        if tonumber(seconds) < 10 then
+            seconds = `0{seconds}`
+        end
+
+        uiManager.SetTimerEndRound('00:' .. seconds)
+        updateTimerEndRound:FireServer()
+
+        if countdownEndRound.value <= 0 then
+            eventEndRound:FireServer()
+            resetCountdowns()
+            timerEndGame:Stop()
+        end
+    end, true)
+end
+
 function StopCountdownCurrentGame()
     if countdownGame then
         countdownGame:Stop()
@@ -177,6 +207,11 @@ function self:ServerAwake()
         nextPlayerModelingArea.value = false
     end)
 
+    eventEndRound:Connect(function(player : Player)
+        hasRoundFinished.value = true
+        resetCountdowns()
+    end)
+
     updateTimerSendPlayersToLockerRoom:Connect(function(player : Player)
         selectMainPlayer(playerMaster, player.name, countdownSendPlayersToLockerRoom, updateWhoIsPlayerMaster)
     end)
@@ -191,5 +226,9 @@ function self:ServerAwake()
 
     updateTimerVotingArea:Connect(function(player : Player)        
         selectMainPlayer(playerMaster, player.name, countdownVotingArea, updateWhoIsPlayerMaster)
+    end)
+
+    updateTimerEndRound:Connect(function(player : Player)
+        selectMainPlayer(playerMaster, player.name, countdownEndRound, updateWhoIsPlayerMaster)
     end)
 end

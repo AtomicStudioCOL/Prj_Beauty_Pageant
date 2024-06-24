@@ -23,7 +23,7 @@ local stopTimerSendPlayersToLockerRoom = Event.new('StopTimerSendPlayersToLocker
 local updateNumberPlayersCurrentContest = Event.new('UpdateNumberPlayersCurrentContest')
 
 --Network values
-local hasStartedCountdownSendPlayersLockerRoom = BoolValue.new('StartedCountdownSendPlayersLockerRoom', false)
+hasStartedCountdownSendPlayersLockerRoom = BoolValue.new('StartedCountdownSendPlayersLockerRoom', false)
 randomTheme = IntValue.new('RandomTheme', 0)
 
 local function numPlayersInLobby()
@@ -39,7 +39,7 @@ end
 
 function settingLobbyPlayer()
     if hasStartedCountdownSendPlayersLockerRoom.value and not countdownsGame.playerWentSentToLockerRoom.value then
-        uiManager.SetWaitingPlayersRound('Towards the locker room.')
+        uiManager.SetWaitingPlayersRound('Next match starts in..')
         countdownsGame.StartCountdownSendPlayersToLockerRoom(uiManager)
     elseif not hasStartedCountdownSendPlayersLockerRoom.value and not countdownsGame.playerWentSentToLockerRoom.value then
         uiManager.SetWaitingPlayersRound('Waiting for 4 players to start the pageant.')
@@ -81,6 +81,7 @@ end
 function self:ServerAwake()
     updateNumPlayersLobbyBeforeStartRound:Connect(function(player : Player)
         gameManager.amountPlayersLobby.value = numPlayersInLobby()
+        hasStartedCountdownSendPlayersLockerRoom.value = false
     end)
 
     updateNumberPlayersCurrentContest:Connect(function(player : Player)
@@ -93,7 +94,7 @@ function self:ServerAwake()
     end)
 end
 
-function self:ServerUpdate()
+function self:ServerUpdate()    
     if gameManager.amountPlayersLobby.value >= minNumPlayersStartRound and not countdownsGame.playerWentSentToLockerRoom.value and not hasStartedCountdownSendPlayersLockerRoom.value then
         timerSendPlayersToLockerRoom:FireAllClients()
         hasStartedCountdownSendPlayersLockerRoom.value = true

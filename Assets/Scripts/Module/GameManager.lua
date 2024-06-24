@@ -46,19 +46,22 @@ goNextPlayerContest = Event.new('GoNextPlayerContest')
 gameObjectManager = self.gameObject
 UIManagerGlobal = nil
 ScorePlayerCompeting = nil
+TrackingPlayersLobbyScript = nil
 pointRespawnLobbyGlobal = nil
 pointRespawnLockerRoomGlobal = nil
 pointRespawnModelingAreaGlobal = nil
+mainCameraGlobal = nil
+cameraModelingGlobal = nil
 playerWithGameObject = {} -- Saving the gameObject of each player
 playersCurrentlyCompeting = {}
 
 -- Local Variables
-local previousPlayers = {}
-local playersAlreadyModeling = {}
+previousPlayers = {}
+playersAlreadyModeling = {}
 
 -- UIs
-local UI_Customization = nil
-local UI_EndCustomization = nil
+UI_Customization = nil
+UI_EndCustomization = nil
 UI_BeautyContest = nil
 UI_ConstestVoting = nil
 UI_RatingContest = nil
@@ -76,11 +79,15 @@ function showUIVotingAllPlayers()
 end
 
 function sendPlayersToModelingArea(character : Character, objCharacter : GameObject)
+    if character == nil or objCharacter == nil then return end
+
     objCharacter.transform.position = pointRespawnZoneVoting.transform.position
     character:MoveTo(pointRespawnZoneVoting.transform.position, 6, function()end)
 end
 
 function sendPlayerModelingArea(character : Character, objCharacter : GameObject)
+    if character == nil or objCharacter == nil then return end
+
     objCharacter.transform.position = pointRespawnModelingArea.transform.position
     character:MoveTo(pointRespawnModelingArea.transform.position, 6, function()end)
     character.transform:LookAt(cameraModeling.transform.position)
@@ -92,6 +99,8 @@ function self:ClientAwake()
     pointRespawnLockerRoomGlobal = pointRespawnLockerRoom
     UIManagerGlobal = uiManager
     pointRespawnModelingAreaGlobal = pointRespawnModelingArea
+    mainCameraGlobal = mainCamera
+    cameraModelingGlobal = cameraModeling
 
     UI_Customization = uiManager:GetComponent(UI_Customization_Model)
     UI_EndCustomization = uiManager:GetComponent(UI_Screen_Waiting_EndCustomization)
@@ -101,6 +110,7 @@ function self:ClientAwake()
 
     countdownGameObj = self.gameObject:GetComponent(CountdownsGame)
     ScorePlayerCompeting = self.gameObject:GetComponent(GetScorePlayerCompeting)
+    TrackingPlayersLobbyScript = self.gameObject:GetComponent(TrackingPlayersLobby)
 
     showUIAfterCustomization:Connect(function()
         UI_Customization.ShowUIFinishPlayerCustomization()
@@ -170,6 +180,11 @@ function self:ServerAwake()
         Timer.After(0.15, function()
             startingAvatarContest.value = false
         end)
+    end)
+
+    game.PlayerDisconnected:Connect(function(player : Player)
+        playerWithGameObject[player.name] = nil
+        previousPlayers[player.name] = nil
     end)
 end
 
