@@ -49,7 +49,7 @@ function EnableRatingContest(status)
     Rating_Contest.visible = status
 
     if status then
-        --Leaderboard:Clear() -- Clear the previous leaderboard entries
+        Leaderboard:Clear() -- Clear the previous leaderboard entries
         gameManager.ScorePlayerCompeting.showScoreBeautyContest:FireServer()
     end
 end

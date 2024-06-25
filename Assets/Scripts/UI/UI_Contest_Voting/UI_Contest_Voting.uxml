@@ -7,16 +7,16 @@
     xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
 >
 
-  <hr:UILuaView class="contest_voting" name="Contest_Voting">
-    <hr:UILabel class="name_contest" name="Name_Contest"></hr:UILabel>
+  <hr:UILuaView class="contest_voting" name="Contest_Voting" picking-mode="Ignore">
+    <hr:UILabel class="name_contest" name="Name_Contest" picking-mode="Ignore"></hr:UILabel>
 
-    <hr:UIView class="container_timer" name="Container_Timer">
+    <hr:UIView class="container_timer" name="Container_Timer" picking-mode="Ignore">
       <hr:UIImage class="img_clock" name="Img_Clock" picking-mode="Ignore"/>
       <hr:UILabel class="lbl_clock" name="Lbl_Clock" picking-mode="Ignore"></hr:UILabel>
     </hr:UIView>
 
-    <hr:UILabel class="info_voting" name="Info_Voting"></hr:UILabel>
-    <hr:UIView class="container_rating" name="Container_Rating">
+    <hr:UILabel class="info_voting" name="Info_Voting" picking-mode="Ignore"></hr:UILabel>
+    <hr:UIView class="container_rating" name="Container_Rating" picking-mode="Ignore">
       <hr:UIImage class="rating_1" name="Rating_1" />
       <hr:UIImage class="rating_2" name="Rating_2" />
       <hr:UIImage class="rating_3" name="Rating_3" />
@@ -24,9 +24,9 @@
       <hr:UIImage class="rating_5" name="Rating_5" />
     </hr:UIView>
 
-    <hr:UIView class="container_poses" name="Container_Poses">
-      <hr:UILabel class="info_poses" name="Info_Poses"></hr:UILabel>
-      <hr:UIImage class="img_pose" name="Img_Pose" />
+    <hr:UIView class="container_poses" name="Container_Poses" picking-mode="Ignore">
+      <hr:UILabel class="info_poses" name="Info_Poses" picking-mode="Ignore"></hr:UILabel>
+      <hr:UIImage class="img_pose" name="Img_Pose" picking-mode="Ignore"/>
     </hr:UIView>
   </hr:UILuaView>
 </UXML>

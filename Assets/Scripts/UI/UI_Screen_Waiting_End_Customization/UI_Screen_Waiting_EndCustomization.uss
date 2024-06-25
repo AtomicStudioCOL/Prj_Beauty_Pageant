@@ -66,7 +66,7 @@
     top: 0;
     right: 22%;
     bottom: 0;
-    left: 0;
+    left: 66%;
 }
 
 .close_pop_up {
@@ -78,7 +78,7 @@
     top: 0;
     right: 6%;
     bottom: 0;
-    left: 0;
+    left: 82%;
 }
 
 .decor_model {

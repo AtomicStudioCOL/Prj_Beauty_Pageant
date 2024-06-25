@@ -57,7 +57,6 @@ function self:ClientUpdate()
         countdownsGame.nextPlayerModelingArea.value = false
         countdownsGame.hasRoundFinished.value = false
         countdownsGame.resetCountdowns()
-        countdownsGame.StopCountdownCurrentGame()
 
         resetAllVariablesServer:FireServer()
 
@@ -86,7 +85,6 @@ function self:ServerAwake()
         countdownsGame.nextPlayerModelingArea.value = false
         countdownsGame.hasRoundFinished.value = false
         countdownsGame.resetCountdowns()
-        countdownsGame.StopCountdownCurrentGame()
     end)
 
     updateAllPlayersSendLobbyServer:Connect(function(player : Player)

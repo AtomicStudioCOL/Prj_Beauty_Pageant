@@ -7,14 +7,14 @@
     xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
 >
 
-  <hr:UILuaView class="rating_contest" name="Rating_Contest">
-    <hr:UILabel class="txt_info_rating" name="Txt_Info_Rating"></hr:UILabel>
+  <hr:UILuaView class="rating_contest" name="Rating_Contest" picking-mode="Ignore">
+    <hr:UILabel class="txt_info_rating" name="Txt_Info_Rating" picking-mode="Ignore"></hr:UILabel>
 
-    <hr:UIScrollView class="leaderboard" name="Leaderboard">
+    <hr:UIScrollView class="leaderboard" name="Leaderboard" picking-mode="Ignore">
       <!-- Ranks will be added here -->
     </hr:UIScrollView>
 
-    <hr:UIView class="container_end_round" name="Container_End_Round">
+    <hr:UIView class="container_end_round" name="Container_End_Round" picking-mode="Ignore">
       <hr:UIImage class="img_clock" name="Img_Clock" picking-mode="Ignore"/>
       <hr:UILabel class="lbl_clock" name="Lbl_Clock" picking-mode="Ignore"></hr:UILabel>
     </hr:UIView>

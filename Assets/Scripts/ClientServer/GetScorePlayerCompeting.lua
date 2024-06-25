@@ -102,6 +102,7 @@ function self:ClientAwake()
     end)
 
     startCountdownEnd:Connect(function()
+        print(`Starting timer to: {game.localPlayer.name}`)
         countdownsGame.StartCountdownEndRound(gameManager.UI_RatingContest)
     end)
 end
@@ -116,7 +117,9 @@ function self:ServerAwake()
     end)
 
     showScoreBeautyContest:Connect(function(player : Player)
+        print(`Was printer: {wasPrinterInfo.value}`)
         if not wasPrinterInfo.value then
+            print(`Show leaderboard`)
             sortLeaderboard()
             countdownsGame.resetCountdowns()
             startCountdownEnd:FireAllClients()

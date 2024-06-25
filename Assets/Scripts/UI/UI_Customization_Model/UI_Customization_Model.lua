@@ -69,9 +69,8 @@ function ShowUIFinishPlayerCustomization()
     if numPlayersFinishCustomization < numPlayersContest then
         SettingStart()
         UI_Waiting_EndCustomization.EnableWaitingEndCustomization(true)
-        --countdownsGame.StopCountdownCurrentGame()
     elseif numPlayersFinishCustomization >= numPlayersContest then
-        gameManager.showUIVotingAllPlayers()
+        finishedTimerCustomizationPlayers()
     end
 end
 

@@ -30,6 +30,7 @@ numberPlayersModeled = IntValue.new('NumberPlayersModeled', 0)
 numPlayersFinishCustomization = IntValue.new('NumPlayersFinishCustomization', 0)
 startingAvatarContest = BoolValue.new('StartingAvatarContest', false)
 playerModelingCurrently = StringValue.new('PlayerModelingCurrently', '')
+local playerDisconnected = BoolValue.new('PlayerDisconnected', false)
 
 -- Events
 local showUIVotingClient = Event.new('ShowUIVotingClient')
@@ -41,6 +42,10 @@ local sendAvatarToBackstageClient = Event.new('SendAvatarToBackstageClient')
 local sendPlayerModelingAreaClient = Event.new('SendPlayerModelingAreaClient')
 local sendPlayerBackstageContestClient = Event.new('SendPlayerBackstageContestClient')
 goNextPlayerContest = Event.new('GoNextPlayerContest')
+updateNumPlayersCurrentContest = Event.new('UpdateNumPlayersCurrentContest')
+local mustSelectPlayerMasterTimer = Event.new('SelectPlayerMasterTimer')
+local mustSelectPlayerMasterTimerPlayerDisconnected = Event.new('SelectPlayerMasterTimerPlayerDisconnected')
+local updateIfPlayerDisconnected = Event.new('UpdateIfPlayerDisconnected')
 
 -- Global Variables
 gameObjectManager = self.gameObject
@@ -144,7 +149,7 @@ function self:ClientAwake()
 
         if game.localPlayer.name == namePlayer then
             UI_ConstestVoting.SetPlayerVotingStatus(false)
-        else
+        elseif game.localPlayer.name ~= namePlayer and playersCurrentlyCompeting[game.localPlayer.name] then
             UI_ConstestVoting.SetPlayerVotingStatus(true)
         end
     end)
@@ -154,6 +159,21 @@ function self:ClientAwake()
         UI_ConstestVoting.CleanStarsSelecting()
         countdownGameObj.resetCountdowns()
         countdownGameObj.StopCountdownCurrentGame()
+    end)
+
+    mustSelectPlayerMasterTimer:Connect(function()
+        playersCurrentlyCompeting[game.localPlayer.name] = nil
+        countdownGameObj.selectNewMasterServer:FireServer('')
+    end)
+
+    mustSelectPlayerMasterTimerPlayerDisconnected:Connect(function()
+        print(`Player Disconnected: {playerDisconnected.value}`)
+        if not playerDisconnected.value then
+            print(`Player selected: {game.localPlayer.name}`)
+            countdownGameObj.selectNewMasterServer:FireServer('PlayerLeftGame')
+            updateIfPlayerDisconnected:FireServer()
+            playerDisconnected.value = true
+        end
     end)
 end
 
@@ -182,9 +202,23 @@ function self:ServerAwake()
         end)
     end)
 
+    updateNumPlayersCurrentContest:Connect(function(player : Player)
+        numberPlayersCurrentContest.value -= 1
+        playersCurrentlyCompeting[player.name] = nil
+        mustSelectPlayerMasterTimer:FireClient(player)
+    end)
+
+    updateIfPlayerDisconnected:Connect(function(player : Player)
+        playerDisconnected.value = true
+    end)
+
     game.PlayerDisconnected:Connect(function(player : Player)
         playerWithGameObject[player.name] = nil
         previousPlayers[player.name] = nil
+        playersCurrentlyCompeting[player.name] = nil
+        numberPlayersCurrentContest.value -= 1
+        playerDisconnected.value = false
+        mustSelectPlayerMasterTimerPlayerDisconnected:FireAllClients()
     end)
 end
 

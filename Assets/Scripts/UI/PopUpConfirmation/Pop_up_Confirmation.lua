@@ -46,11 +46,15 @@ local function SettingStartGame()
     UI_CustomizationPlayer = self.gameObject:GetComponent(UI_Customization_Model)
 end
 
-local function ReturnLobbyWithRunningRound()
+local function ReturnLobbyWithRunningRound(typePlayer)
     UI_Beauty_Contest.SetWaitingPlayersRound('Pageant in Progress!')
     UI_Beauty_Contest.EnableSpectatorModeLobby(true)
     UI_Beauty_Contest.SetTimerCloseWindowTheme('')
     UI_Beauty_Contest.SetThemeBeautyContest('')
+
+    if typePlayer == 'contestant' then
+        gameManager.updateNumPlayersCurrentContest:FireServer()
+    end
 
     SetStatusPopupConfirmation(false)
 end
@@ -74,7 +78,7 @@ local function CancelOperationPopup()
         SetStatusPopupConfirmation(false)
         SetWhichWindowReturn(whichUIReturnCancel)
     elseif typePopupConfirmation == 'spectator_contest' then
-        ReturnLobbyWithRunningRound()
+        ReturnLobbyWithRunningRound('')
     end
 end
 
@@ -88,7 +92,7 @@ function self:ClientAwake()
 
     Btn_Confirm:RegisterPressCallback(function()
         if typePopupConfirmation == 'return_lobby' then
-            ReturnLobbyWithRunningRound()
+            ReturnLobbyWithRunningRound('contestant')
         elseif typePopupConfirmation == 'spectator_contest' then
             print(`Enviar a la pantalla de votación`)
         end

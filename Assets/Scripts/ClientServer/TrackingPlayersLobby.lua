@@ -43,6 +43,7 @@ function settingLobbyPlayer()
         countdownsGame.StartCountdownSendPlayersToLockerRoom(uiManager)
     elseif not hasStartedCountdownSendPlayersLockerRoom.value and not countdownsGame.playerWentSentToLockerRoom.value then
         uiManager.SetWaitingPlayersRound('Waiting for 4 players to start the pageant.')
+        uiManager.SetTimerSendPlayerToLockerRoom('')
     end
 
     if countdownsGame.playerWentSentToLockerRoom.value and hasStartedCountdownSendPlayersLockerRoom.value then
@@ -74,6 +75,8 @@ function self:ClientAwake()
     end)
 
     stopTimerSendPlayersToLockerRoom:Connect(function()
+        hasStartedCountdownSendPlayersLockerRoom.value = false
+        settingLobbyPlayer()
         countdownsGame.StopCountdownCurrentGame()
     end)
 end
@@ -102,6 +105,7 @@ function self:ServerUpdate()
 
     if gameManager.amountPlayersLobby.value < minNumPlayersStartRound and not countdownsGame.playerWentSentToLockerRoom.value and hasStartedCountdownSendPlayersLockerRoom.value then
         stopTimerSendPlayersToLockerRoom:FireAllClients()
+        countdownsGame.resetCountdowns()
         hasStartedCountdownSendPlayersLockerRoom.value = false
     end
 

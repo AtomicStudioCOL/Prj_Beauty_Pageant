@@ -7,11 +7,11 @@
     xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
 >
 
-  <hr:UILuaView class="beauty_pageant" name="Beauty_Pageant">
+  <hr:UILuaView class="beauty_pageant" name="Beauty_Pageant" picking-mode="Ignore">
     <hr:UILabel class="waiting_players" name="Waiting_Players" picking-mode="Ignore"></hr:UILabel>
     <hr:UILabel class="timer_general" name="Timer_General" picking-mode="Ignore"></hr:UILabel>
-    <hr:UIView class="container_spectator" name="Container_Spectator">
-      <hr:UILabel class="info_btn_spectator" name="Info_Btn_Spectator"></hr:UILabel>
+    <hr:UIView class="container_spectator" name="Container_Spectator" picking-mode="Ignore">
+      <hr:UILabel class="info_btn_spectator" name="Info_Btn_Spectator" picking-mode="Ignore"></hr:UILabel>
       <hr:UIImage class="spectator_lobby" name="Spectator_Lobby" />
     </hr:UIView>
 
@@ -19,8 +19,8 @@
       <hr:UIImage class="btn_return_lobby" name="Btn_Return_Lobby" />
       <hr:UIImage class="close_pop_up_theme" name="Close_Pop_up_Theme" />
       
-      <hr:UIView class="container_reloj" name="Container_Reloj">
-        <hr:UIImage class="img_timer_theme" name="Img_Timer_Theme" />
+      <hr:UIView class="container_reloj" name="Container_Reloj" picking-mode="Ignore">
+        <hr:UIImage class="img_timer_theme" name="Img_Timer_Theme" picking-mode="Ignore" />
         <hr:UILabel class="timer_theme" name="Timer_Theme" picking-mode="Ignore"></hr:UILabel>
       </hr:UIView>
 

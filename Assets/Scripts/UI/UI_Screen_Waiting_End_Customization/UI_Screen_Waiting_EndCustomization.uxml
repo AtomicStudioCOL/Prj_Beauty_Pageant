@@ -7,8 +7,8 @@
     xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
 >
 
-  <hr:UILuaView class="waiting_end_customization" name="Waiting_End_Customization">
-    <hr:UIView class="container_up" name="Container_Up">
+  <hr:UILuaView class="waiting_end_customization" name="Waiting_End_Customization" picking-mode="Ignore">
+    <hr:UIView class="container_up" name="Container_Up" picking-mode="Ignore">
       <hr:UIImage class="img_clock" name="Img_Clock" picking-mode="Ignore"/>
       <hr:UILabel class="lbl_clock" name="Lbl_Clock" picking-mode="Ignore"></hr:UILabel>
       <hr:UIImage class="btn_return_lobby" name="Btn_Return_Lobby" />

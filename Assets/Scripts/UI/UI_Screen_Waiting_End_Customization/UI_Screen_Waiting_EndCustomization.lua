@@ -43,7 +43,7 @@ function self:ClientAwake()
         UI_Pop_up_Confirmation.SetTypePopupConfirmation('return_lobby')
         UI_Pop_up_Confirmation.SetWhichUIReturnCancel('Waiting_EndCustomization')
         UI_Pop_up_Confirmation.SetStatusPopupConfirmation(true)
-        countdownsGame.StopCountdownCurrentGame() --Stop timer for that user 
+        countdownsGame.StopCountdownCurrentGame() --Stop timer for that user
     end)
 
     Close_Pop_up:RegisterPressCallback(function()

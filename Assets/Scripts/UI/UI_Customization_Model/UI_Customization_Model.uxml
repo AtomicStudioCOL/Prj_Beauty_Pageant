@@ -7,17 +7,17 @@
     xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
 >
 
-  <hr:UILuaView class="customization_model" name="Customization_Model">
+  <hr:UILuaView class="customization_model" name="Customization_Model" picking-mode="Ignore">
     <hr:UIView class="info_customization" name="Info_Customization" picking-mode="Ignore">
       <hr:UILabel class="theme_contest" name="Theme_Contest" picking-mode="Ignore"></hr:UILabel>
       <hr:UIImage class="img_clock" name="Img_Clock" picking-mode="Ignore"/>
       <hr:UILabel class="lbl_clock" name="Lbl_Clock" picking-mode="Ignore"></hr:UILabel>
     </hr:UIView>
 
-    <hr:UIView class="pop_up_info"  name="Pop_Up_Info">
+    <hr:UIView class="pop_up_info"  name="Pop_Up_Info" picking-mode="Ignore">
       <hr:UIImage class="btn_close" name="Btn_Close" />
-      <hr:UILabel class="txt_info_customization" name="Txt_Info_Customization" />
-      <hr:UIImage class="img_instruction" name="Img_Instruction" />
+      <hr:UILabel class="txt_info_customization" name="Txt_Info_Customization" picking-mode="Ignore"></hr:UILabel>
+      <hr:UIImage class="img_instruction" name="Img_Instruction" picking-mode="Ignore"/>
     </hr:UIView>
 
     <hr:UIButton class="finish_customization" name="Finish_Customization" />

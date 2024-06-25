@@ -62,11 +62,10 @@
     background-position: right bottom;
 
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 90%;
+    right: 2%;
     bottom: 0;
-
-    width: 16%;
+    left: 84%;
 }
 
 .pop_up_theme_contest {
@@ -93,7 +92,7 @@
     position: absolute;
     top: 6%;
     right: 20%;
-    bottom: 0;
+    bottom: 80%;
 
     width: 12%;
 }
@@ -107,9 +106,9 @@
     position: absolute;
     top: 6%;
     right: 6%;
+    bottom: 80%;
 
     width: 11%;
-    height: 12%;
 }
 
 .container_reloj {

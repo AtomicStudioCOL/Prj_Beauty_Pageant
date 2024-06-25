@@ -7,7 +7,7 @@
     xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
 >
 
-  <hr:UILuaView class="area_spectator" name="Area_Spectator">
+  <hr:UILuaView class="area_spectator" name="Area_Spectator" picking-mode="Ignore">
     <hr:UIView class="leaderboard_contest" name="Leaderboard_Contest">
       <hr:UIImage class="btn_close" name="Btn_Close" />
       <hr:UIView class="position_players" name="Position_Players">

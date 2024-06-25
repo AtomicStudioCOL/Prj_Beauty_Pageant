@@ -110,7 +110,6 @@
 
     position: absolute;
     top: 15%;
-    right: 0;
     bottom: 15%;
 
     height: 70%;
@@ -119,26 +118,31 @@
 .rating_1 {
     background-image: url('project://database/Assets/Images/Rating/StarDisable.png');
     left: 8%;
+    right: 81%;
 }
 
 .rating_2 {
     background-image: url('project://database/Assets/Images/Rating/StarDisable.png');
     left: 26%;
+    right: 63%;
 }
 
 .rating_3 {
     background-image: url('project://database/Assets/Images/Rating/StarDisable.png');
     left: 44%;
+    right: 45%;
 }
 
 .rating_4 {
     background-image: url('project://database/Assets/Images/Rating/StarDisable.png');
     left: 62%;
+    right: 27%;
 }
 
 .rating_5 {
     background-image: url('project://database/Assets/Images/Rating/StarDisable.png');
     left: 80%;
+    right: 9%;
 }
 
 .enableStar_01 {

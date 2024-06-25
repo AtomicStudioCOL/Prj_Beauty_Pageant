@@ -7,7 +7,7 @@
     xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
 >
 
-  <hr:UILuaView class="pop_up_confirmation" name= "Pop_up_Confirmation">
+  <hr:UILuaView class="pop_up_confirmation" name= "Pop_up_Confirmation" picking-mode="Ignore">
     <hr:UIImage class="bg_pop_up_confirmation" name="Bg_Pop_up_Confirmation" picking-mode="Ignore">
       <hr:UIImage class="close_pop_up_confirmation" name="Close_Pop_up_Confirmation" />
       
