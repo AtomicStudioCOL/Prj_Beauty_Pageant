@@ -63,6 +63,7 @@ function EnableContestVoting(status)
     Contest_Voting.visible = status
 
     if status then
+        gameManager.ScorePlayerCompeting.resetAllData()
         countdownsGame.StopCountdownCurrentGame()
     else
         Container_Rating.visible = status

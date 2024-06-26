@@ -17,6 +17,7 @@ local dataLeaderboard = {}
 
 --Functions
 function UpdateLeaderboard(ranking : number, namePlayer : string, score : number)
+    print(`{ranking}) {namePlayer} - {score}`)
     -- Create a new rank item
     local _rankItem = VisualElement.new()
     _rankItem:AddToClassList("rank-item")

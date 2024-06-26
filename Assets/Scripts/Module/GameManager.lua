@@ -85,16 +85,24 @@ end
 
 function sendPlayersToModelingArea(character : Character, objCharacter : GameObject)
     if character == nil or objCharacter == nil then return end
-
-    objCharacter.transform.position = pointRespawnZoneVoting.transform.position
-    character:MoveTo(pointRespawnZoneVoting.transform.position, 6, function()end)
+    if tostring(objCharacter.transform) == 'null' then return end
+    
+    objCharacter.transform:SetLocalPositionAndRotation(
+        pointRespawnZoneVoting.transform.position, 
+        Quaternion.Euler(0, 0, 0)
+    )
+    character:Teleport(pointRespawnZoneVoting.transform.position, function()end)
 end
 
 function sendPlayerModelingArea(character : Character, objCharacter : GameObject)
     if character == nil or objCharacter == nil then return end
+    if tostring(objCharacter.transform) == 'null' then return end
 
-    objCharacter.transform.position = pointRespawnModelingArea.transform.position
-    character:MoveTo(pointRespawnModelingArea.transform.position, 6, function()end)
+    objCharacter.transform:SetLocalPositionAndRotation(
+        pointRespawnModelingArea.transform.position, 
+        Quaternion.Euler(0, 0, 0)
+    )
+    character:Teleport(pointRespawnModelingArea.transform.position, function()end)
     character.transform:LookAt(cameraModeling.transform.position)
 end
 
@@ -166,12 +174,11 @@ function self:ClientAwake()
         countdownGameObj.selectNewMasterServer:FireServer('')
     end)
 
-    mustSelectPlayerMasterTimerPlayerDisconnected:Connect(function()
-        print(`Player Disconnected: {playerDisconnected.value}`)
+    mustSelectPlayerMasterTimerPlayerDisconnected:Connect(function(namePlayer)
         if not playerDisconnected.value then
-            print(`Player selected: {game.localPlayer.name}`)
             countdownGameObj.selectNewMasterServer:FireServer('PlayerLeftGame')
             updateIfPlayerDisconnected:FireServer()
+            playersCurrentlyCompeting[namePlayer] = nil
             playerDisconnected.value = true
         end
     end)
@@ -197,9 +204,7 @@ function self:ServerAwake()
             sendPlayerBackstageContestClient:FireAllClients(namePlayer)
         end
 
-        Timer.After(0.15, function()
-            startingAvatarContest.value = false
-        end)
+        startingAvatarContest.value = false
     end)
 
     updateNumPlayersCurrentContest:Connect(function(player : Player)
@@ -217,8 +222,10 @@ function self:ServerAwake()
         previousPlayers[player.name] = nil
         playersCurrentlyCompeting[player.name] = nil
         numberPlayersCurrentContest.value -= 1
+        numberPlayersSendModelingArea.value -= 1
         playerDisconnected.value = false
-        mustSelectPlayerMasterTimerPlayerDisconnected:FireAllClients()
+        --startingAvatarContest.value = false --add revisando cuando un player se sale en el area de votación.
+        mustSelectPlayerMasterTimerPlayerDisconnected:FireAllClients(player.name)
     end)
 end
 

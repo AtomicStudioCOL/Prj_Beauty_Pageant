@@ -67,7 +67,6 @@ function selectMainPlayer(mainClient, namePlayer, countdownCurrent, canUpdate)
     if mainClient.value == '' and canUpdate.value then
         mainClient.value = namePlayer
         canUpdate.value = false
-        print(`New Master: {mainClient.value}`)
     end
 end
 
@@ -174,7 +173,7 @@ end
 
 function StartCountdownEndRound(uiManager)
     if timerEndGame then timerEndGame:Stop() end
-    print(`Timer end round!`)
+    
     timerEndGame = Timer.new(1, function()
         seconds = countdownEndRound.value
 
@@ -182,7 +181,6 @@ function StartCountdownEndRound(uiManager)
             seconds = `0{seconds}`
         end
 
-        print(`Timer: {'00:' .. seconds}`)
         uiManager.SetTimerEndRound('00:' .. seconds)
         updateTimerEndRound:FireServer()
 
@@ -206,7 +204,6 @@ function self:ClientAwake()
     gameManagerObj = self.gameObject:GetComponent(GameManager)
 
     playersInCompetingClient:Connect(function()
-        print(`Is competing: {gameManagerObj.playersCurrentlyCompeting[game.localPlayer.name]}`)
         if gameManagerObj.playersCurrentlyCompeting[game.localPlayer.name] and updateWhoIsPlayerMaster.value then
             playersInCompetingServer:FireServer()
             updateWhoIsPlayerMaster.value = false
@@ -248,7 +245,6 @@ function self:ServerAwake()
     end)
 
     updateTimerWindowTheme:Connect(function (player : Player)
-        print(`Updating - {playerMaster.value}`)
         selectMainPlayer(playerMaster, player.name, countdownCloseWindowTheme, updateWhoIsPlayerMaster)
     end)
 
@@ -265,7 +261,6 @@ function self:ServerAwake()
     end)
 
     selectNewMasterServer:Connect(function(player : Player, statusPlayer)
-        print(`{playerMaster.value} - {player.name} - {statusPlayer}`)
         if playerMaster.value == player.name or statusPlayer == 'PlayerLeftGame' then
             playerMaster.value = ''
             updateWhoIsPlayerMaster.value = true
@@ -274,7 +269,6 @@ function self:ServerAwake()
     end)
 
     playersInCompetingServer:Connect(function(player : Player)
-        print(`Select New Master`)
         selectMainPlayer(playerMaster, player.name, countdownCloseWindowTheme, updateWhoIsPlayerMaster)
     end)
 end

@@ -33,11 +33,12 @@ local wasPrinterInfo = BoolValue.new('WasPrinterInfoLeaderboard', false)
 --Event
 local printerPlayerScoreUI = Event.new('PrinterPlayerScoreUI')
 local startCountdownEnd = Event.new('StartCountdownEnd')
+updateCanPrinterInfoLeaderboard = Event.new('CanPrinterInfoLeaderboard')
 sendScorePlayerCompeting = Event.new('SendScorePlayerCompeting')
 showScoreBeautyContest = Event.new('ShowScoreBeautyContest')
 
 --Functions
-local function resetAllData()
+function resetAllData()
     ratingContest = {}
     resultContest = {}
     showResults = {}
@@ -47,8 +48,6 @@ local function resetAllData()
 end
 
 local function sortLeaderboard()
-    --resetAllData()
-
     for i = 1, gameManager.numberPlayersCurrentContest.value do
         for namePlayer, score in pairs(resultContest) do
             if playerSaved[namePlayer] then continue end
@@ -70,6 +69,7 @@ local function sortLeaderboard()
     end
 
     for rank, score in ipairs(showResults) do
+        print(`Rank: {rank} - Player: {namePlayerSaved[score]} - Score: {score}`)
         printerPlayerScoreUI:FireAllClients(rank, namePlayerSaved[score], score)
     end
 end
@@ -98,6 +98,7 @@ end
 --Unity functions
 function self:ClientAwake()
     printerPlayerScoreUI:Connect(function(ranking, namePlayer, score)
+        print(`Updating Leaderboard`)
         gameManager.UI_RatingContest.UpdateLeaderboard(ranking, namePlayer, score)
     end)
 
@@ -125,5 +126,9 @@ function self:ServerAwake()
             startCountdownEnd:FireAllClients()
             wasPrinterInfo.value = true
         end
+    end)
+
+    updateCanPrinterInfoLeaderboard:Connect(function(player : Player)
+        wasPrinterInfo.value = false
     end)
 end
