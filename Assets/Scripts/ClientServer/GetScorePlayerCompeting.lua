@@ -26,6 +26,7 @@ local showResults = {}
 local playerSaved = {}
 local namePlayerSaved = {}
 local beforeScore = 0
+local namePlayerGreaterScore = ''
 
 --Network values
 local wasPrinterInfo = BoolValue.new('WasPrinterInfoLeaderboard', false)
@@ -36,6 +37,7 @@ local startCountdownEnd = Event.new('StartCountdownEnd')
 updateCanPrinterInfoLeaderboard = Event.new('CanPrinterInfoLeaderboard')
 sendScorePlayerCompeting = Event.new('SendScorePlayerCompeting')
 showScoreBeautyContest = Event.new('ShowScoreBeautyContest')
+eventResetAllData = Event.new('ResetAllDataScore')
 
 --Functions
 function resetAllData()
@@ -45,19 +47,22 @@ function resetAllData()
     playerSaved = {}
     namePlayerSaved = {}
     beforeScore = 0
+    namePlayerGreaterScore = ''
 end
 
 local function sortLeaderboard()
     for i = 1, gameManager.numberPlayersCurrentContest.value do
         for namePlayer, score in pairs(resultContest) do
             if playerSaved[namePlayer] then continue end
-            if beforeScore <= score then
+
+            if beforeScore < score then
                 beforeScore = score
+                namePlayerGreaterScore = namePlayer
             end
         end
 
         for namePlayer, score in pairs(resultContest) do
-            if beforeScore == score then 
+            if namePlayerGreaterScore == namePlayer then 
                 namePlayerSaved[beforeScore] = namePlayer
                 playerSaved[namePlayer] = true
                 break
@@ -69,7 +74,6 @@ local function sortLeaderboard()
     end
 
     for rank, score in ipairs(showResults) do
-        print(`Rank: {rank} - Player: {namePlayerSaved[score]} - Score: {score}`)
         printerPlayerScoreUI:FireAllClients(rank, namePlayerSaved[score], score)
     end
 end
@@ -98,12 +102,10 @@ end
 --Unity functions
 function self:ClientAwake()
     printerPlayerScoreUI:Connect(function(ranking, namePlayer, score)
-        print(`Updating Leaderboard`)
         gameManager.UI_RatingContest.UpdateLeaderboard(ranking, namePlayer, score)
     end)
 
     startCountdownEnd:Connect(function()
-        print(`Starting timer to: {game.localPlayer.name}`)
         countdownsGame.StartCountdownEndRound(gameManager.UI_RatingContest)
     end)
 end
@@ -118,9 +120,7 @@ function self:ServerAwake()
     end)
 
     showScoreBeautyContest:Connect(function(player : Player)
-        print(`Was printer: {wasPrinterInfo.value}`)
         if not wasPrinterInfo.value then
-            print(`Show leaderboard`)
             sortLeaderboard()
             countdownsGame.resetCountdowns()
             startCountdownEnd:FireAllClients()
@@ -130,5 +130,9 @@ function self:ServerAwake()
 
     updateCanPrinterInfoLeaderboard:Connect(function(player : Player)
         wasPrinterInfo.value = false
+    end)
+
+    eventResetAllData:Connect(function(player : Player)
+        resetAllData()
     end)
 end

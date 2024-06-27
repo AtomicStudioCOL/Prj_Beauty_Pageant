@@ -224,7 +224,16 @@ function self:ServerAwake()
         numberPlayersCurrentContest.value -= 1
         numberPlayersSendModelingArea.value -= 1
         playerDisconnected.value = false
-        --startingAvatarContest.value = false --add revisando cuando un player se sale en el area de votación.
+        mustSelectPlayerMasterTimerPlayerDisconnected:FireAllClients(player.name)
+    end)
+
+    scene.PlayerLeft:Connect(function(scene, player : Player)
+        playerWithGameObject[player.name] = nil
+        previousPlayers[player.name] = nil
+        playersCurrentlyCompeting[player.name] = nil
+        numberPlayersCurrentContest.value -= 1
+        numberPlayersSendModelingArea.value -= 1
+        playerDisconnected.value = false
         mustSelectPlayerMasterTimerPlayerDisconnected:FireAllClients(player.name)
     end)
 end

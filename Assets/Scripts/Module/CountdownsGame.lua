@@ -15,6 +15,7 @@ countdownCloseWindowTheme = IntValue.new('CountdownCloseWindowTheme', 5)
 
 -- Countdown customization of the player
 countdownCustomizationPlayer = IntValue.new('CountdownCustomizationPlayer', 180)
+finishCustomizationSendModelingArea = BoolValue.new('FinishCustomizationSendModelingArea', false)
 
 -- Countdown voting area
 countdownVotingArea = IntValue.new('CountdownVotingArea', 10)
@@ -43,6 +44,8 @@ local eventNextPlayerVoting = Event.new('NextPlayerVoting')
 eventResetNextPlayerVoting = Event.new('ResetNextPlayerVoting')
 local updateTimerEndRound = Event.new('UpdateTimerEndRound')
 local eventEndRound = Event.new('EventEndRound')
+local eventShootWhenFinishCustomization = Event.new('EventShootWhenFinishCustomization')
+
 -- Select a new master when the master before left contest.
 selectNewMasterServer = Event.new('SelectNewMasterServer')
 local playersInCompetingServer = Event.new('playersInCompetingServer')
@@ -109,6 +112,7 @@ function StartCountdownCloseWindowTheme(uiManager, uiCustomization)
             hasFinishedTimerWindowTheme:FireServer()
             countdownGame:Stop()
             resetCountdowns()
+            finishCustomizationSendModelingArea.value = false
 
             uiManager.EnablePopupThemeContest(false)
             uiManager.SetTimerCloseWindowTheme('')
@@ -141,8 +145,7 @@ function StartCountdownCustomizationPlayer(uiManager)
         uiManager.SetTimerCustomizationPlayer(minutes .. ':' .. seconds)
         updateTimerCustomizationPlayer:FireServer()
 
-        if countdownCustomizationPlayer.value <= 0 then
-            uiManager.finishedTimerCustomizationPlayers()
+        if countdownCustomizationPlayer.value <= 0 then       
             hasFinishedTimerCustomizationPlayer:FireServer()
             countdownGame:Stop()
             resetCountdowns()
@@ -209,6 +212,10 @@ function self:ClientAwake()
             updateWhoIsPlayerMaster.value = false
         end
     end)
+
+    eventShootWhenFinishCustomization:Connect(function()
+        gameManagerObj.UI_Customization.finishedTimerCustomizationPlayers()
+    end)
 end
 
 function self:ServerAwake()
@@ -219,10 +226,16 @@ function self:ServerAwake()
     end)
 
     hasFinishedTimerWindowTheme:Connect(function(player : Player)
+        finishCustomizationSendModelingArea.value = false
         resetCountdowns()
     end)
 
     hasFinishedTimerCustomizationPlayer:Connect(function(player : Player)
+        if not finishCustomizationSendModelingArea.value then
+            eventShootWhenFinishCustomization:FireClient(player)
+            finishCustomizationSendModelingArea.value = true
+        end
+
         resetCountdowns()
     end)
 
