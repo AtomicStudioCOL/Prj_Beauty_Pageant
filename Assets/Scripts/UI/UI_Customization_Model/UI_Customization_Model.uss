@@ -4,8 +4,8 @@
     --fontSize-txtCustomizationInfo: 100%;
     --colorTxt: rgba(255, 235, 249, 1);
     --backgroundColor: rgba(64, 0, 41, 0.7);
-    --btn-backgroundColor: rgba(0, 118, 255, 1);
-    --btn-backgroundColor-hover: rgba(0, 118, 255, 0.85);
+    --btn-backgroundColor: rgba(255, 109, 185, 1); /* rgba(0, 118, 255, 1); */
+    --btn-backgroundColor-hover: rgba(255, 109, 165, 1); /* rgba(0, 118, 255, 0.85); */
     --backgroundColor-element: rgba(64, 0, 41, 0.7);
 }
 

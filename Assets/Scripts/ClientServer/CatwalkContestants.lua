@@ -10,6 +10,7 @@ function self:ClientUpdate()
     local continueContest = gameManager.numberPlayersModeled.value < gameManager.numberPlayersCurrentContest.value
 
     if nextPlayer and continueContest then
+        gameManager.ScorePlayerCompeting.askingIfPlayerHasVoting:FireServer()
         gameManager.goNextPlayerContest:FireServer()
         countdownsGame.eventResetNextPlayerVoting:FireServer()
         countdownsGame.nextPlayerModelingArea.value = false

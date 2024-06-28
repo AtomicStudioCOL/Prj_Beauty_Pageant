@@ -6,6 +6,7 @@ local countdownsGame = require('CountdownsGame')
 local resetAllVariablesServer = Event.new('ResetAllVariablesServer')
 local updateAllPlayersSendLobbyServer = Event.new('UpdateAllPlayersSendLobbyServer')
 local updateAllPlayersSendLobbyClient = Event.new('UpdateAllPlayersSendLobbyClient')
+local onePlayerInCompeting = Event.new('onePlayerInCompeting')
 
 --Functions
 function sendPlayersToLobby(character : Character, objCharacter : GameObject)
@@ -13,81 +14,94 @@ function sendPlayersToLobby(character : Character, objCharacter : GameObject)
     character:MoveTo(gameManager.pointRespawnLobbyGlobal.transform.position, 6, function()end)
 end
 
+function SettingStart()
+    --Change camera
+    gameManager.naveMeshGameGlobal:SetActive(true)
+    gameManager.naveMeshCatwalkGlobal:SetActive(false)
+    gameManager.mainCameraGlobal:SetActive(true)
+    gameManager.cameraModelingGlobal:SetActive(false)
+    
+    --Reset all UIs
+    gameManager.UI_BeautyContest.SettingStartUI()
+    gameManager.UI_ConstestVoting.SettingStart()
+    gameManager.UI_Customization.SettingStart()
+    gameManager.UI_EndCustomization.SettingStart()
+    gameManager.UI_RatingContest.StartSetting()
+
+    --Reset all variables
+    gameManager.TrackingPlayersLobbyScript.hasStartedCountdownSendPlayersLockerRoom.value = false
+    gameManager.TrackingPlayersLobbyScript.settingLobbyPlayer()
+end
+
+function StartingResetAllVariables()
+    --Reset all variables
+    --gameManager.amountPlayersLobby.value = 0
+    gameManager.hasStartedRound.value = false
+    gameManager.numberPlayersCurrentContest.value = 0
+    gameManager.numberPlayersSendModelingArea.value = 0
+    gameManager.numberPlayersModeled.value = 0
+    gameManager.numPlayersFinishCustomization.value = 0
+    gameManager.startingAvatarContest.value = false
+    gameManager.playerModelingCurrently.value = ''
+    gameManager.playersCurrentlyCompeting = {}
+    gameManager.playersAlreadyModeling = {}
+
+    countdownsGame.playerWentSentToLockerRoom.value = false
+    countdownsGame.selectThemeBeautyContest.value = false
+    countdownsGame.nextPlayerModelingArea.value = false
+    countdownsGame.hasRoundFinished.value = false
+    countdownsGame.resetCountdowns()
+end
+
 --Unity functions
 function self:ClientAwake()
+    StartingResetAllVariables()
+
     updateAllPlayersSendLobbyClient:Connect(function(namePlayer)
         if namePlayer ~= game.localPlayer.name then
             sendPlayersToLobby(gameManager.previousPlayers[namePlayer], gameManager.playerWithGameObject[namePlayer])
         end
     end)
+
+    onePlayerInCompeting:Connect(function()
+        SettingStart()
+        StartingResetAllVariables()
+        sendPlayersToLobby(game.localPlayer.character, game.localPlayer.character.gameObject)
+        updateAllPlayersSendLobbyServer:FireServer()
+    end)
 end
 
 function self:ClientUpdate()
     if countdownsGame.hasRoundFinished.value then
-        --Change camera
-        gameManager.mainCameraGlobal:SetActive(true)
-        gameManager.cameraModelingGlobal:SetActive(false)
-        
-        --Reset all UIs
-        gameManager.UI_BeautyContest.SettingStartUI()
-        gameManager.UI_ConstestVoting.SettingStart()
-        gameManager.UI_Customization.SettingStart()
-        gameManager.UI_EndCustomization.SettingStart()
-        gameManager.UI_RatingContest.StartSetting()
+        SettingStart()
 
         --Return all players to the lobby
         sendPlayersToLobby(game.localPlayer.character, game.localPlayer.character.gameObject)
         updateAllPlayersSendLobbyServer:FireServer()
 
-        --Reset all variables
-        gameManager.TrackingPlayersLobbyScript.hasStartedCountdownSendPlayersLockerRoom.value = false
-        gameManager.amountPlayersLobby.value = 0
-        gameManager.hasStartedRound.value = false
-        gameManager.numberPlayersCurrentContest.value = 0
-        gameManager.numberPlayersSendModelingArea.value = 0
-        gameManager.numberPlayersModeled.value = 0
-        gameManager.numPlayersFinishCustomization.value = 0
-        gameManager.startingAvatarContest.value = false
-        gameManager.playerModelingCurrently.value = ''
-        gameManager.playersCurrentlyCompeting = {}
-        gameManager.playersAlreadyModeling = {}
-
-        countdownsGame.playerWentSentToLockerRoom.value = false
-        countdownsGame.selectThemeBeautyContest.value = false
-        countdownsGame.nextPlayerModelingArea.value = false
-        countdownsGame.hasRoundFinished.value = false
-        countdownsGame.resetCountdowns()
-
+        StartingResetAllVariables()
         resetAllVariablesServer:FireServer()
-
-        --Setting Game
-        gameManager.TrackingPlayersLobbyScript.settingLobbyPlayer()
 
         countdownsGame.hasRoundFinished.value = false
     end
 end
 
 function self:ServerAwake()
-    resetAllVariablesServer:Connect(function(player : Player)
-        gameManager.amountPlayersLobby.value = 0
-        gameManager.hasStartedRound.value = false
-        gameManager.numberPlayersCurrentContest.value = 0
-        gameManager.numberPlayersSendModelingArea.value = 0
-        gameManager.numberPlayersModeled.value = 0
-        gameManager.numPlayersFinishCustomization.value = 0
-        gameManager.startingAvatarContest.value = false
-        gameManager.playerModelingCurrently.value = ''
-        gameManager.playersCurrentlyCompeting = {}
-        gameManager.playersAlreadyModeling = {}
+    StartingResetAllVariables()
 
-        countdownsGame.playerWentSentToLockerRoom.value = false
-        countdownsGame.selectThemeBeautyContest.value = false
-        countdownsGame.nextPlayerModelingArea.value = false
-        countdownsGame.hasRoundFinished.value = false
-        countdownsGame.resetCountdowns()
+    resetAllVariablesServer:Connect(function(player : Player)
+        StartingResetAllVariables()
     end)
 
     updateAllPlayersSendLobbyServer:Connect(function(player : Player)
         updateAllPlayersSendLobbyClient:FireAllClients(player.name)
     end)
+end
+
+function self:ServerUpdate()
+    if gameManager.numberPlayersCurrentContest.value == 1 then
+        print(`{gameManager.numberPlayersCurrentContest.value}`)
+        StartingResetAllVariables()
+        onePlayerInCompeting:FireAllClients()
+    end
 end

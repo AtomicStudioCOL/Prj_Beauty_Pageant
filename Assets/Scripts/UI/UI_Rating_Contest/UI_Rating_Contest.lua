@@ -50,7 +50,9 @@ function EnableRatingContest(status)
 
     if status then
         Leaderboard:Clear() -- Clear the previous leaderboard entries
-        gameManager.ScorePlayerCompeting.showScoreBeautyContest:FireServer()
+        Timer.After(0.25, function()
+            gameManager.ScorePlayerCompeting.showScoreBeautyContest:FireServer()
+        end)
     end
 end
 

@@ -37,6 +37,7 @@ function SettingStartUI()
     
     EnablePopupThemeContest(false)
     EnableSpectatorModeLobby(false)
+    Close_Pop_up_Theme.visible = false -- This option will be hidden, while I find a soluction.
     
     UI_Pop_up_Confirmation = self.gameObject:GetComponent(Pop_up_Confirmation)
     UI_Customization_Player = self.gameObject:GetComponent(UI_Customization_Model)

@@ -21,6 +21,12 @@ local cameraModeling : GameObject = nil
 --!SerializeField
 local uiManager : GameObject = nil
 
+--!Header("NavMesh")
+--!SerializeField
+local navMeshGame : GameObject = nil 
+--!SerializeField
+local naveMeshCatwalk : GameObject = nil
+
 -- Network Values
 amountPlayersLobby = IntValue.new('AmountPlayersLobby', 0)
 hasStartedRound = BoolValue.new('HasStartedRound', false)
@@ -30,6 +36,7 @@ numberPlayersModeled = IntValue.new('NumberPlayersModeled', 0)
 numPlayersFinishCustomization = IntValue.new('NumPlayersFinishCustomization', 0)
 startingAvatarContest = BoolValue.new('StartingAvatarContest', false)
 playerModelingCurrently = StringValue.new('PlayerModelingCurrently', '')
+canAskIfPlayerHasVoting = BoolValue.new('CanAskIfPlayerHasVoting', false)
 local playerDisconnected = BoolValue.new('PlayerDisconnected', false)
 
 -- Events
@@ -46,6 +53,7 @@ updateNumPlayersCurrentContest = Event.new('UpdateNumPlayersCurrentContest')
 local mustSelectPlayerMasterTimer = Event.new('SelectPlayerMasterTimer')
 local mustSelectPlayerMasterTimerPlayerDisconnected = Event.new('SelectPlayerMasterTimerPlayerDisconnected')
 local updateIfPlayerDisconnected = Event.new('UpdateIfPlayerDisconnected')
+local playerDisconnectedModeled = Event.new('PlayerDisconnectedModeled')
 
 -- Global Variables
 gameObjectManager = self.gameObject
@@ -57,6 +65,8 @@ pointRespawnLockerRoomGlobal = nil
 pointRespawnModelingAreaGlobal = nil
 mainCameraGlobal = nil
 cameraModelingGlobal = nil
+naveMeshGameGlobal = nil
+naveMeshCatwalkGlobal = nil
 playerWithGameObject = {} -- Saving the gameObject of each player
 playersCurrentlyCompeting = {}
 
@@ -86,7 +96,10 @@ end
 function sendPlayersToModelingArea(character : Character, objCharacter : GameObject)
     if character == nil or objCharacter == nil then return end
     if tostring(objCharacter.transform) == 'null' then return end
-    
+    --if tostring(objCharacter) == 'null' or tostring(character) == 'null' then return end
+    --print(self)
+    --print(`{objCharacter}`)
+    --print(`{objCharacter.transform}`)
     objCharacter.transform:SetLocalPositionAndRotation(
         pointRespawnZoneVoting.transform.position, 
         Quaternion.Euler(0, 0, 0)
@@ -106,6 +119,32 @@ function sendPlayerModelingArea(character : Character, objCharacter : GameObject
     character.transform:LookAt(cameraModeling.transform.position)
 end
 
+function nextPlayerCompeting()
+    for namePlayer, value in pairs(playersAlreadyModeling) do
+        sendPlayerBackstageContestClient:FireAllClients(namePlayer)
+    end
+
+    startingAvatarContest.value = false
+    canAskIfPlayerHasVoting.value = false
+end
+
+function resetAllGameManager(namePlayer)
+    playerWithGameObject[namePlayer] = nil
+    previousPlayers[namePlayer] = nil
+    playersCurrentlyCompeting[namePlayer] = nil
+    if numberPlayersCurrentContest.value > 0 then numberPlayersCurrentContest.value -= 1 end
+    if numberPlayersSendModelingArea.value > 0 then numberPlayersSendModelingArea.value -= 1 end
+    playerDisconnected.value = false
+
+    if playersAlreadyModeling[namePlayer] then
+        --nextPlayerCompeting()
+        startingAvatarContest.value = false
+        canAskIfPlayerHasVoting.value = false
+    end
+
+    mustSelectPlayerMasterTimerPlayerDisconnected:FireAllClients(namePlayer)
+end
+
 --Unity Functions
 function self:ClientAwake()
     pointRespawnLobbyGlobal = pointRespawnLobby
@@ -114,6 +153,8 @@ function self:ClientAwake()
     pointRespawnModelingAreaGlobal = pointRespawnModelingArea
     mainCameraGlobal = mainCamera
     cameraModelingGlobal = cameraModeling
+    naveMeshGameGlobal = navMeshGame
+    naveMeshCatwalkGlobal = naveMeshCatwalk
 
     UI_Customization = uiManager:GetComponent(UI_Customization_Model)
     UI_EndCustomization = uiManager:GetComponent(UI_Screen_Waiting_EndCustomization)
@@ -139,6 +180,8 @@ function self:ClientAwake()
 
             sendPlayersToModelingArea(game.localPlayer.character, game.localPlayer.character.gameObject)
             sendAvatarToBackstageServer:FireServer()
+            navMeshGame:SetActive(false)
+            naveMeshCatwalk:SetActive(true)
             mainCamera:SetActive(false)
             cameraModeling:SetActive(true)
         end
@@ -151,6 +194,7 @@ function self:ClientAwake()
     end)
 
     sendPlayerModelingAreaClient:Connect(function(namePlayer)
+        --print(`Player Zone Modeled: {namePlayer}`)
         sendPlayerModelingArea(previousPlayers[namePlayer], playerWithGameObject[namePlayer])
         UI_ConstestVoting.SetNamePlayerContestant(namePlayer)
         countdownGameObj.StartCountdownVotingArea(UI_ConstestVoting)
@@ -163,6 +207,7 @@ function self:ClientAwake()
     end)
 
     sendPlayerBackstageContestClient:Connect(function(namePlayer)
+        print(`Char: {previousPlayers[namePlayer]} - OBJ: {playerWithGameObject[namePlayer]}`)
         sendPlayersToModelingArea(previousPlayers[namePlayer], playerWithGameObject[namePlayer])
         UI_ConstestVoting.CleanStarsSelecting()
         countdownGameObj.resetCountdowns()
@@ -200,11 +245,7 @@ function self:ServerAwake()
     end)
 
     goNextPlayerContest:Connect(function(player : Player)
-        for namePlayer, value in pairs(playersAlreadyModeling) do
-            sendPlayerBackstageContestClient:FireAllClients(namePlayer)
-        end
-
-        startingAvatarContest.value = false
+        nextPlayerCompeting()
     end)
 
     updateNumPlayersCurrentContest:Connect(function(player : Player)
@@ -218,23 +259,7 @@ function self:ServerAwake()
     end)
 
     game.PlayerDisconnected:Connect(function(player : Player)
-        playerWithGameObject[player.name] = nil
-        previousPlayers[player.name] = nil
-        playersCurrentlyCompeting[player.name] = nil
-        numberPlayersCurrentContest.value -= 1
-        numberPlayersSendModelingArea.value -= 1
-        playerDisconnected.value = false
-        mustSelectPlayerMasterTimerPlayerDisconnected:FireAllClients(player.name)
-    end)
-
-    scene.PlayerLeft:Connect(function(scene, player : Player)
-        playerWithGameObject[player.name] = nil
-        previousPlayers[player.name] = nil
-        playersCurrentlyCompeting[player.name] = nil
-        numberPlayersCurrentContest.value -= 1
-        numberPlayersSendModelingArea.value -= 1
-        playerDisconnected.value = false
-        mustSelectPlayerMasterTimerPlayerDisconnected:FireAllClients(player.name)
+        resetAllGameManager(player.name)
     end)
 end
 
@@ -245,6 +270,7 @@ function self:ServerUpdate()
                 sendPlayerModelingAreaClient:FireAllClients(namePlayer)
                 playerModelingCurrently.value = namePlayer
                 playersAlreadyModeling[namePlayer] = true
+                --print(`Player currently modeling: {playerModelingCurrently.value}`)
                 break
             end
         end

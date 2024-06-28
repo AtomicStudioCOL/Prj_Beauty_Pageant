@@ -63,6 +63,7 @@ end
 function self:ClientAwake()
     uiManager = gameManager.UIManagerGlobal:GetComponent(UI_Beauty_Pageant)
     UI_Customization_Player = gameManager.UIManagerGlobal:GetComponent(UI_Customization_Model)
+    hasStartedCountdownSendPlayersLockerRoom.value = false
     
     localCharacterInstantiatedEvent = client.localPlayer.CharacterChanged:Connect(function(player : Player, character : Character)
         if character then
@@ -97,7 +98,7 @@ function self:ServerAwake()
     end)
 end
 
-function self:ServerUpdate()    
+function self:ServerUpdate()
     if gameManager.amountPlayersLobby.value >= minNumPlayersStartRound and not countdownsGame.playerWentSentToLockerRoom.value and not hasStartedCountdownSendPlayersLockerRoom.value then
         timerSendPlayersToLockerRoom:FireAllClients()
         hasStartedCountdownSendPlayersLockerRoom.value = true

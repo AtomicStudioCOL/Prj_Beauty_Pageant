@@ -38,6 +38,7 @@ updateCanPrinterInfoLeaderboard = Event.new('CanPrinterInfoLeaderboard')
 sendScorePlayerCompeting = Event.new('SendScorePlayerCompeting')
 showScoreBeautyContest = Event.new('ShowScoreBeautyContest')
 eventResetAllData = Event.new('ResetAllDataScore')
+askingIfPlayerHasVoting = Event.new('AskingIfPlayerHasVoting')
 
 --Functions
 function resetAllData()
@@ -58,23 +59,22 @@ local function sortLeaderboard()
             if beforeScore < score then
                 beforeScore = score
                 namePlayerGreaterScore = namePlayer
-            end
-        end
-
-        for namePlayer, score in pairs(resultContest) do
-            if namePlayerGreaterScore == namePlayer then 
-                namePlayerSaved[beforeScore] = namePlayer
-                playerSaved[namePlayer] = true
-                break
+            elseif beforeScore == score and namePlayerGreaterScore ~= namePlayer then
+                beforeScore = score
+                namePlayerGreaterScore = namePlayer
+            elseif beforeScore == score and namePlayerGreaterScore == namePlayer then
+                continue
             end
         end
 
         showResults[i] = beforeScore
+        namePlayerSaved[i] = namePlayerGreaterScore
+        playerSaved[namePlayerGreaterScore] = true
         beforeScore = 0
     end
 
     for rank, score in ipairs(showResults) do
-        printerPlayerScoreUI:FireAllClients(rank, namePlayerSaved[score], score)
+        printerPlayerScoreUI:FireAllClients(rank, namePlayerSaved[rank], score)
     end
 end
 
@@ -134,5 +134,17 @@ function self:ServerAwake()
 
     eventResetAllData:Connect(function(player : Player)
         resetAllData()
+    end)
+
+    askingIfPlayerHasVoting:Connect(function(player : Player)
+        if not gameManager.canAskIfPlayerHasVoting.value then
+            local hasPassedThroughCatwalk = gameManager.playerModelingCurrently.value
+
+            if not resultContest[hasPassedThroughCatwalk] then
+                resultContest[hasPassedThroughCatwalk] = 55
+            end
+            
+            gameManager.canAskIfPlayerHasVoting.value = true
+        end
     end)
 end

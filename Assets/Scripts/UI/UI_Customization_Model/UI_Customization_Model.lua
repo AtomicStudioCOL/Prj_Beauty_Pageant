@@ -34,6 +34,7 @@ function SettingStart()
 
     Txt_Btn_Finish:SetPrelocalizedText('Confirm')
     Finish_Customization:Add(Txt_Btn_Finish)
+    Btn_Close.visible = false -- This option will be hidden, while I find a soluction.
 
     EnableCustomizationPlayer(false)
     EnablePopupInfoCustomization(false)
@@ -65,7 +66,7 @@ end
 function ShowUIFinishPlayerCustomization()
     local numPlayersContest = gameManager.numberPlayersCurrentContest.value
     local numPlayersFinishCustomization = gameManager.numPlayersFinishCustomization.value
-
+    
     if numPlayersFinishCustomization < numPlayersContest then
         SettingStart()
         UI_Waiting_EndCustomization.EnableWaitingEndCustomization(true)
