@@ -1,6 +1,9 @@
 -- Local Variables
 local countdownGame : Timer = nil
 local timerEndGame : Timer = nil
+local timerScreenTheme : Timer = nil
+local timerCustomizationClient : Timer = nil
+local timerVotingArea : Timer = nil
 local minutes : string = ''
 local seconds : string = ''
 local gameManagerObj = nil
@@ -8,7 +11,6 @@ local gameManagerObj = nil
 -- Countdown to send players to locker Room
 countdownSendPlayersToLockerRoom = IntValue.new('CountdownStartHiddenPlayers', 30)
 playerWentSentToLockerRoom = BoolValue.new('PlayerWentSentToLockerRoom', false)
-selectThemeBeautyContest = BoolValue.new('SelectThemeBeautyContest', false)
 
 -- Countdown to close window theme
 countdownCloseWindowTheme = IntValue.new('CountdownCloseWindowTheme', 5)
@@ -45,6 +47,9 @@ eventResetNextPlayerVoting = Event.new('ResetNextPlayerVoting')
 local updateTimerEndRound = Event.new('UpdateTimerEndRound')
 local eventEndRound = Event.new('EventEndRound')
 local eventShootWhenFinishCustomization = Event.new('EventShootWhenFinishCustomization')
+
+--Remotes Functions
+remoteFunctionShowThemeUI = RemoteFunction.new("ShowThemeUI");
 
 -- Select a new master when the master before left contest.
 selectNewMasterServer = Event.new('SelectNewMasterServer')
@@ -96,9 +101,9 @@ function StartCountdownSendPlayersToLockerRoom(uiManager)
 end
 
 function StartCountdownCloseWindowTheme(uiManager, uiCustomization)
-    if countdownGame then countdownGame:Stop() end
+    if timerScreenTheme then timerScreenTheme:Stop() end
     
-    countdownGame = Timer.new(1, function()
+    timerScreenTheme = Timer.new(1, function()
         seconds = countdownCloseWindowTheme.value
 
         if tonumber(seconds) < 10 then
@@ -110,7 +115,7 @@ function StartCountdownCloseWindowTheme(uiManager, uiCustomization)
 
         if countdownCloseWindowTheme.value <= 0 then
             hasFinishedTimerWindowTheme:FireServer()
-            countdownGame:Stop()
+            timerScreenTheme:Stop()
             resetCountdowns()
             finishCustomizationSendModelingArea.value = false
 
@@ -127,10 +132,10 @@ function StartCountdownCloseWindowTheme(uiManager, uiCustomization)
 end
 
 function StartCountdownCustomizationPlayer(uiManager)
-    if countdownGame then countdownGame:Stop() end
+    if timerCustomizationClient then timerCustomizationClient:Stop() end
     uiManager.SetThemeBeautyContest(themeSelectedContest.value)
 
-    countdownGame = Timer.new(1, function()
+    timerCustomizationClient = Timer.new(1, function()
         minutes = tostring(math.floor(countdownCustomizationPlayer.value / 60))
         seconds = tostring(countdownCustomizationPlayer.value % 60)
 
@@ -147,16 +152,16 @@ function StartCountdownCustomizationPlayer(uiManager)
 
         if countdownCustomizationPlayer.value <= 0 then       
             hasFinishedTimerCustomizationPlayer:FireServer()
-            countdownGame:Stop()
+            timerCustomizationClient:Stop()
             resetCountdowns()
         end
     end, true)
 end
 
 function StartCountdownVotingArea(uiManager)
-    if countdownGame then countdownGame:Stop() end
+    if timerVotingArea then timerVotingArea:Stop() end
 
-    countdownGame = Timer.new(1, function()
+    timerVotingArea = Timer.new(1, function()
         seconds = countdownVotingArea.value
 
         if tonumber(seconds) < 10 then
@@ -169,7 +174,7 @@ function StartCountdownVotingArea(uiManager)
         if countdownVotingArea.value <= 0 then
             eventNextPlayerVoting:FireServer()
             resetCountdowns()
-            countdownGame:Stop()
+            timerVotingArea:Stop()
         end
     end, true)
 end
@@ -221,8 +226,13 @@ end
 function self:ServerAwake()
     updateIfPlayersWentSendToLockerRoom:Connect(function(player : Player)
         playerWentSentToLockerRoom.value = true
-        selectThemeBeautyContest.value = true
         resetCountdowns()
+
+        remoteFunctionShowThemeUI:InvokeClient(
+            player, 
+            "Show the theme of the beauty contest!", 
+            function(response)end
+        )
     end)
 
     hasFinishedTimerWindowTheme:Connect(function(player : Player)

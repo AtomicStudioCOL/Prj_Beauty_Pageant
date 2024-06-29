@@ -21,10 +21,14 @@ local updateNumPlayersLobbyBeforeStartRound = Event.new('UpdateNumPlayersLobbyBe
 local timerSendPlayersToLockerRoom = Event.new('TimerSendPlayersToLockerRoom')
 local stopTimerSendPlayersToLockerRoom = Event.new('StopTimerSendPlayersToLockerRoom')
 local updateNumberPlayersCurrentContest = Event.new('UpdateNumberPlayersCurrentContest')
+local selectNewThemeContest = Event.new('SelectNewThemeContest')
+local showUIWithThemeSelected = Event.new('ShowUIWithThemeSelected')
 
 --Network values
 hasStartedCountdownSendPlayersLockerRoom = BoolValue.new('StartedCountdownSendPlayersLockerRoom', false)
 randomTheme = IntValue.new('RandomTheme', 0)
+selectThemeBeautyContest = BoolValue.new('SelectThemeBeautyContest', false)
+themeSelectedCompeting = StringValue.new('ThemeSelectedCompeting', '')
 
 local function numPlayersInLobby()
     local numPlayers = 0
@@ -42,7 +46,7 @@ function settingLobbyPlayer()
         uiManager.SetWaitingPlayersRound('Next match starts in..')
         countdownsGame.StartCountdownSendPlayersToLockerRoom(uiManager)
     elseif not hasStartedCountdownSendPlayersLockerRoom.value and not countdownsGame.playerWentSentToLockerRoom.value then
-        uiManager.SetWaitingPlayersRound('Waiting for 4 players to start the pageant.')
+        uiManager.SetWaitingPlayersRound('Waiting for 3 players to start the pageant.')
         uiManager.SetTimerSendPlayerToLockerRoom('')
     end
 
@@ -80,6 +84,22 @@ function self:ClientAwake()
         settingLobbyPlayer()
         countdownsGame.StopCountdownCurrentGame()
     end)
+
+    showUIWithThemeSelected:Connect(function(theme)
+        uiManager.SetThemeBeautyContest(theme)
+        countdownsGame.StartCountdownCloseWindowTheme(uiManager, UI_Customization_Player)
+    end)
+
+    countdownsGame.remoteFunctionShowThemeUI.OnInvokeClient = function()
+        uiManager.SetWaitingPlayersRound('')
+        uiManager.SetTimerSendPlayerToLockerRoom('')
+        uiManager.EnablePopupThemeContest(true)
+        
+        selectNewThemeContest:FireServer()
+        updateNumberPlayersCurrentContest:FireServer()
+        gameManager.playersCurrentlyCompeting[game.localPlayer.name] = true
+        return true
+    end
 end
 
 function self:ServerAwake()
@@ -91,6 +111,17 @@ function self:ServerAwake()
     updateNumberPlayersCurrentContest:Connect(function(player : Player)
         gameManager.numberPlayersCurrentContest.value += 1
         gameManager.playersCurrentlyCompeting[player.name] = true
+    end)
+
+    selectNewThemeContest:Connect(function(player : Player)
+        if not selectThemeBeautyContest.value then
+            randomTheme.value = math.random(1, 3)
+            countdownsGame.themeSelectedContest.value = themesBeautyContest[randomTheme.value]
+            showUIWithThemeSelected:FireClient(player, themesBeautyContest[randomTheme.value])
+            selectThemeBeautyContest.value = true
+        else
+            showUIWithThemeSelected:FireClient(player, themesBeautyContest[randomTheme.value])
+        end
     end)
 
     server.PlayerDisconnected:Connect(function(player : Player)
@@ -108,26 +139,5 @@ function self:ServerUpdate()
         stopTimerSendPlayersToLockerRoom:FireAllClients()
         countdownsGame.resetCountdowns()
         hasStartedCountdownSendPlayersLockerRoom.value = false
-    end
-
-    if countdownsGame.selectThemeBeautyContest.value then
-        randomTheme.value = math.random(1, 3)
-        countdownsGame.selectThemeBeautyContest.value = false
-        countdownsGame.themeSelectedContest.value = themesBeautyContest[randomTheme.value]
-    end
-end
-
-function self:ClientUpdate()
-    if countdownsGame.playerWentSentToLockerRoom.value then
-        uiManager.SetWaitingPlayersRound('')
-        uiManager.SetTimerSendPlayerToLockerRoom('')
-        uiManager.EnablePopupThemeContest(true)
-
-        uiManager.SetThemeBeautyContest(themesBeautyContest[randomTheme.value])
-        countdownsGame.StartCountdownCloseWindowTheme(uiManager, UI_Customization_Player)
-
-        updateNumberPlayersCurrentContest:FireServer()
-        gameManager.playersCurrentlyCompeting[game.localPlayer.name] = true
-        countdownsGame.playerWentSentToLockerRoom.value = false
     end
 end

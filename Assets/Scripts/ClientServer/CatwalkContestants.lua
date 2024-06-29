@@ -5,6 +5,16 @@ local countdownsGame = require('CountdownsGame')
 --Network value
 local printScore = BoolValue.new('PrinterScore', false)
 
+function endCatwalkShowLeaderboard()
+    gameManager.UI_ConstestVoting.CleanStarsSelecting()
+    gameManager.UI_ConstestVoting.SettingStart()
+    gameManager.UI_BeautyContest.SettingStartUI()
+    gameManager.ScorePlayerCompeting.updateCanPrinterInfoLeaderboard:FireServer()
+    gameManager.UI_RatingContest.EnableRatingContest(true)
+
+    gameManager.numberPlayersModeled.value = 0
+end
+
 function self:ClientUpdate()
     local nextPlayer = countdownsGame.nextPlayerModelingArea.value
     local continueContest = gameManager.numberPlayersModeled.value < gameManager.numberPlayersCurrentContest.value
@@ -21,12 +31,6 @@ function self:ClientUpdate()
     local finishLastPlayer = countdownsGame.nextPlayerModelingArea.value
 
     if playersContestant == playersCurrentContest and playersCurrentContest > 0 and finishLastPlayer then
-        gameManager.UI_ConstestVoting.CleanStarsSelecting()
-        gameManager.UI_ConstestVoting.SettingStart()
-        gameManager.UI_BeautyContest.SettingStartUI()
-        gameManager.ScorePlayerCompeting.updateCanPrinterInfoLeaderboard:FireServer()
-        gameManager.UI_RatingContest.EnableRatingContest(true)
-
-        gameManager.numberPlayersModeled.value = 0
+        endCatwalkShowLeaderboard()
     end
 end

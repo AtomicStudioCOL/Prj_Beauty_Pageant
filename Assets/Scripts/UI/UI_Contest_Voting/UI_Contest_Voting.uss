@@ -167,14 +167,15 @@
 
 .container_poses {
     background-color: var(--backgroundColor-element);
-    background-position: center bottom;
+    background-position: left bottom;
     border-radius: 15px;
     flex-direction: row;
 
     position: absolute;
+    left: 0;
     bottom: 0;
 
-    width: 100%;
+    width: 92%;
     height: 12%;
 }
 

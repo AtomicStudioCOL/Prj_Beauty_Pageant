@@ -47,7 +47,6 @@ function StartingResetAllVariables()
     gameManager.playersAlreadyModeling = {}
 
     countdownsGame.playerWentSentToLockerRoom.value = false
-    countdownsGame.selectThemeBeautyContest.value = false
     countdownsGame.nextPlayerModelingArea.value = false
     countdownsGame.hasRoundFinished.value = false
     countdownsGame.resetCountdowns()
@@ -55,8 +54,6 @@ end
 
 --Unity functions
 function self:ClientAwake()
-    StartingResetAllVariables()
-
     updateAllPlayersSendLobbyClient:Connect(function(namePlayer)
         if namePlayer ~= game.localPlayer.name then
             sendPlayersToLobby(gameManager.previousPlayers[namePlayer], gameManager.playerWithGameObject[namePlayer])
@@ -87,8 +84,6 @@ function self:ClientUpdate()
 end
 
 function self:ServerAwake()
-    StartingResetAllVariables()
-
     resetAllVariablesServer:Connect(function(player : Player)
         StartingResetAllVariables()
     end)
@@ -100,7 +95,6 @@ end
 
 function self:ServerUpdate()
     if gameManager.numberPlayersCurrentContest.value == 1 then
-        print(`{gameManager.numberPlayersCurrentContest.value}`)
         StartingResetAllVariables()
         onePlayerInCompeting:FireAllClients()
     end

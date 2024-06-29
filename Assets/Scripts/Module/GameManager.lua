@@ -54,12 +54,14 @@ local mustSelectPlayerMasterTimer = Event.new('SelectPlayerMasterTimer')
 local mustSelectPlayerMasterTimerPlayerDisconnected = Event.new('SelectPlayerMasterTimerPlayerDisconnected')
 local updateIfPlayerDisconnected = Event.new('UpdateIfPlayerDisconnected')
 local playerDisconnectedModeled = Event.new('PlayerDisconnectedModeled')
+local returnAllPlayersToTheLobby = Event.new('ReturnAllPlayersToTheLobby')
 
 -- Global Variables
 gameObjectManager = self.gameObject
 UIManagerGlobal = nil
 ScorePlayerCompeting = nil
 TrackingPlayersLobbyScript = nil
+CatwalkContestantsScript = nil
 pointRespawnLobbyGlobal = nil
 pointRespawnLockerRoomGlobal = nil
 pointRespawnModelingAreaGlobal = nil
@@ -95,32 +97,35 @@ end
 
 function sendPlayersToModelingArea(character : Character, objCharacter : GameObject)
     if character == nil or objCharacter == nil then return end
-    if tostring(objCharacter.transform) == 'null' then return end
-    --if tostring(objCharacter) == 'null' or tostring(character) == 'null' then return end
-    --print(self)
-    --print(`{objCharacter}`)
-    --print(`{objCharacter.transform}`)
-    objCharacter.transform:SetLocalPositionAndRotation(
+    --if tostring(objCharacter.transform) == 'null' then return end
+    
+    --[[ objCharacter.transform:SetLocalPositionAndRotation(
         pointRespawnZoneVoting.transform.position, 
         Quaternion.Euler(0, 0, 0)
-    )
-    character:Teleport(pointRespawnZoneVoting.transform.position, function()end)
+    ) ]]
+    --character:Teleport(pointRespawnZoneVoting.transform.position, function()end)
+    objCharacter.transform.position = pointRespawnZoneVoting.transform.position
+    character:MoveTo(pointRespawnZoneVoting.transform.position, 6, function()end)
 end
 
 function sendPlayerModelingArea(character : Character, objCharacter : GameObject)
     if character == nil or objCharacter == nil then return end
-    if tostring(objCharacter.transform) == 'null' then return end
+    --if tostring(objCharacter.transform) == 'null' then return end
 
-    objCharacter.transform:SetLocalPositionAndRotation(
+    --[[ objCharacter.transform:SetLocalPositionAndRotation(
         pointRespawnModelingArea.transform.position, 
         Quaternion.Euler(0, 0, 0)
-    )
-    character:Teleport(pointRespawnModelingArea.transform.position, function()end)
+    ) ]]
+    --character:Teleport(pointRespawnModelingArea.transform.position, function()end)
+    objCharacter.transform.position = pointRespawnModelingArea.transform.position
+    character:MoveTo(pointRespawnModelingArea.transform.position, 6, function()end)
     character.transform:LookAt(cameraModeling.transform.position)
 end
 
 function nextPlayerCompeting()
     for namePlayer, value in pairs(playersAlreadyModeling) do
+        if not value then continue end
+        print(`Player backstage: {namePlayer}`)
         sendPlayerBackstageContestClient:FireAllClients(namePlayer)
     end
 
@@ -137,9 +142,14 @@ function resetAllGameManager(namePlayer)
     playerDisconnected.value = false
 
     if playersAlreadyModeling[namePlayer] then
-        --nextPlayerCompeting()
-        startingAvatarContest.value = false
-        canAskIfPlayerHasVoting.value = false
+        if numberPlayersModeled.value > 0 then numberPlayersModeled.value -= 1 end
+        playersAlreadyModeling[namePlayer] = nil
+
+        if numberPlayersModeled.value == numberPlayersCurrentContest.value then
+            returnAllPlayersToTheLobby:FireAllClients()
+        end
+
+        nextPlayerCompeting()
     end
 
     mustSelectPlayerMasterTimerPlayerDisconnected:FireAllClients(namePlayer)
@@ -165,6 +175,7 @@ function self:ClientAwake()
     countdownGameObj = self.gameObject:GetComponent(CountdownsGame)
     ScorePlayerCompeting = self.gameObject:GetComponent(GetScorePlayerCompeting)
     TrackingPlayersLobbyScript = self.gameObject:GetComponent(TrackingPlayersLobby)
+    CatwalkContestantsScript = self.gameObject:GetComponent(CatwalkContestants)
 
     showUIAfterCustomization:Connect(function()
         UI_Customization.ShowUIFinishPlayerCustomization()
@@ -194,7 +205,8 @@ function self:ClientAwake()
     end)
 
     sendPlayerModelingAreaClient:Connect(function(namePlayer)
-        --print(`Player Zone Modeled: {namePlayer}`)
+        if not previousPlayers[namePlayer] or not playerWithGameObject[namePlayer] then return end
+        
         sendPlayerModelingArea(previousPlayers[namePlayer], playerWithGameObject[namePlayer])
         UI_ConstestVoting.SetNamePlayerContestant(namePlayer)
         countdownGameObj.StartCountdownVotingArea(UI_ConstestVoting)
@@ -207,11 +219,11 @@ function self:ClientAwake()
     end)
 
     sendPlayerBackstageContestClient:Connect(function(namePlayer)
-        print(`Char: {previousPlayers[namePlayer]} - OBJ: {playerWithGameObject[namePlayer]}`)
+        if not previousPlayers[namePlayer] or not playerWithGameObject[namePlayer] then return end
+        
         sendPlayersToModelingArea(previousPlayers[namePlayer], playerWithGameObject[namePlayer])
         UI_ConstestVoting.CleanStarsSelecting()
         countdownGameObj.resetCountdowns()
-        countdownGameObj.StopCountdownCurrentGame()
     end)
 
     mustSelectPlayerMasterTimer:Connect(function()
@@ -226,6 +238,11 @@ function self:ClientAwake()
             playersCurrentlyCompeting[namePlayer] = nil
             playerDisconnected.value = true
         end
+    end)
+
+    returnAllPlayersToTheLobby:Connect(function()
+        if not CatwalkContestantsScript then return end
+        CatwalkContestantsScript.endCatwalkShowLeaderboard()
     end)
 end
 
@@ -245,6 +262,7 @@ function self:ServerAwake()
     end)
 
     goNextPlayerContest:Connect(function(player : Player)
+        print(`Next Player! -> {player.name}`)
         nextPlayerCompeting()
     end)
 
@@ -266,11 +284,14 @@ end
 function self:ServerUpdate()
     if numberPlayersCurrentContest.value == numberPlayersSendModelingArea.value and not startingAvatarContest.value and numberPlayersCurrentContest.value > 0 then --Ya todos estan tras banbalinas
         for namePlayer, objPlayer in pairs(playerWithGameObject) do
+            if not objPlayer or tostring(objPlayer) == 'null' then continue end
+            if not playersCurrentlyCompeting[namePlayer] then continue end
+
             if playersCurrentlyCompeting[namePlayer] and not playersAlreadyModeling[namePlayer] then
+                print(`Send Player Modeling Area: {namePlayer}`)
                 sendPlayerModelingAreaClient:FireAllClients(namePlayer)
                 playerModelingCurrently.value = namePlayer
                 playersAlreadyModeling[namePlayer] = true
-                --print(`Player currently modeling: {playerModelingCurrently.value}`)
                 break
             end
         end
