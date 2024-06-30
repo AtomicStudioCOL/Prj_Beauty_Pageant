@@ -11,6 +11,8 @@ local Bg_Pop_up_Confirmation : UIImage = nil
 local Close_Pop_up_Confirmation : UIImage = nil
 --!Bind
 local Txt_Confirmation : UILabel = nil
+--[[ --!Bind
+local Txt_CommingSoon : UILabel = nil ]]
 --!Bind
 local Btn_Confirm : UIButton = nil
 --!Bind
@@ -19,6 +21,8 @@ local Txt_Btn_Confirm : UILabel = nil
 local Btn_Cancel : UIButton = nil
 --!Bind
 local Txt_Btn_Cancel : UILabel = nil
+--!Bind
+local Img_Contest : UIImage = nil
 
 --UIs
 local UI_Beauty_Contest = nil
@@ -53,7 +57,7 @@ local function ReturnLobbyWithRunningRound(typePlayer)
     UI_Beauty_Contest.SetThemeBeautyContest('')
 
     if typePlayer == 'contestant' then
-        gameManager.updateNumPlayersCurrentContest:FireServer()
+        gameManager.RF_UpdateNumPlayersCurrentContest:InvokeServer(game.localPlayer, function(response)end)
     end
 
     SetStatusPopupConfirmation(false)
@@ -82,6 +86,14 @@ local function CancelOperationPopup()
     end
 end
 
+--[[ local function CommingSoonSpectator(status)
+    Btn_Confirm.visible = status
+    Btn_Cancel.visible = status
+    Img_Contest.visible = status
+    Txt_Confirmation.visible = status
+    Txt_CommingSoon.visible = not status
+end ]]
+
 --Unity Functions
 function self:ClientAwake()
     SettingStartGame()
@@ -95,6 +107,8 @@ function self:ClientAwake()
             ReturnLobbyWithRunningRound('contestant')
         elseif typePopupConfirmation == 'spectator_contest' then
             print(`Enviar a la pantalla de votación`)
+            --[[ CommingSoonSpectator(false)
+            Txt_CommingSoon:SetPrelocalizedText('COMING SOON!') ]]
         end
     end)
 
@@ -115,6 +129,7 @@ function SetStatusPopupConfirmation(status)
         Txt_Confirmation:SetPrelocalizedText('Do you want to head to lobby?')
     elseif typePopupConfirmation == 'spectator_contest' then
         Txt_Confirmation:SetPrelocalizedText('Do you want to spectate and vote in the on-going pageant?')
+        --CommingSoonSpectator(true)
     end
 end
 

@@ -55,7 +55,7 @@ function self:ClientAwake()
         countdownsGame.StopCountdownCurrentGame() --Stop timer for that user
     end)
 
-    Close_Pop_up_Theme:RegisterPressCallback(function()
+    --[[ Close_Pop_up_Theme:RegisterPressCallback(function()
         countdownsGame.StopCountdownCurrentGame()
         countdownsGame.resetCountdowns()
 
@@ -67,7 +67,7 @@ function self:ClientAwake()
         UI_Customization_Player.EnableCustomizationPlayer(true)
         UI_Customization_Player.EnablePopupInfoCustomization(true)
         countdownsGame.StartCountdownCustomizationPlayer(UI_Customization_Player)
-    end)
+    end) ]]
 
     Spectator_Lobby:RegisterPressCallback(function()
         UI_Pop_up_Confirmation.SetTypePopupConfirmation('spectator_contest')

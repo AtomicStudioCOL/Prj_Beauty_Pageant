@@ -9,28 +9,30 @@ function endCatwalkShowLeaderboard()
     gameManager.UI_ConstestVoting.CleanStarsSelecting()
     gameManager.UI_ConstestVoting.SettingStart()
     gameManager.UI_BeautyContest.SettingStartUI()
-    gameManager.ScorePlayerCompeting.updateCanPrinterInfoLeaderboard:FireServer()
     gameManager.UI_RatingContest.EnableRatingContest(true)
+    gameManager.ScorePlayerCompeting.updateCanPrinterInfoLeaderboard:FireServer()
 
     gameManager.numberPlayersModeled.value = 0
 end
 
-function self:ClientUpdate()
-    local nextPlayer = countdownsGame.nextPlayerModelingArea.value
+--function self:ClientUpdate()
+    --[[ local nextPlayer = countdownsGame.nextPlayerModelingArea.value
     local continueContest = gameManager.numberPlayersModeled.value < gameManager.numberPlayersCurrentContest.value
 
     if nextPlayer and continueContest then
-        gameManager.ScorePlayerCompeting.askingIfPlayerHasVoting:FireServer()
-        gameManager.goNextPlayerContest:FireServer()
-        countdownsGame.eventResetNextPlayerVoting:FireServer()
+        print(`Catwalk -> Name: {game.localPlayer.name} - {nextPlayer}`)
+        --gameManager.ScorePlayerCompeting.askingIfPlayerHasVoting:FireServer()
+        gameManager.RF_GoNextPlayerContest:InvokeServer(game.localPlayer.name, function(response)end)
+        
+        countdownsGame.RF_ResetNextPlayerVoting:InvokeServer(game.localPlayer.name, function(response)end)
         countdownsGame.nextPlayerModelingArea.value = false
-    end
+    end ]]
 
-    local playersContestant = gameManager.numberPlayersModeled.value
+    --[[ local playersContestant = gameManager.numberPlayersModeled.value
     local playersCurrentContest = gameManager.numberPlayersCurrentContest.value
     local finishLastPlayer = countdownsGame.nextPlayerModelingArea.value
 
     if playersContestant == playersCurrentContest and playersCurrentContest > 0 and finishLastPlayer then
         endCatwalkShowLeaderboard()
-    end
-end
+    end ]]
+--end

@@ -74,6 +74,7 @@ local function sortLeaderboard()
     end
 
     for rank, score in ipairs(showResults) do
+        --print(`{rank}) {namePlayerSaved[rank]} - {score}`)
         printerPlayerScoreUI:FireAllClients(rank, namePlayerSaved[rank], score)
     end
 end
@@ -99,9 +100,22 @@ function updateRatingContest(playerContestant, playerVote, valueVote)
     end
 end
 
+--[[ function askingIfPlayerHasVoting()
+    if not gameManager.canAskIfPlayerHasVoting.value then
+        local hasPassedThroughCatwalk = gameManager.playerModelingCurrently.value
+
+        if not resultContest[hasPassedThroughCatwalk] then
+            resultContest[hasPassedThroughCatwalk] = 55
+        end
+        
+        gameManager.canAskIfPlayerHasVoting.value = true
+    end
+end ]]
+
 --Unity functions
-function self:ClientAwake()
+function self:ClientStart()
     printerPlayerScoreUI:Connect(function(ranking, namePlayer, score)
+        --print(`Printer INFO`)
         gameManager.UI_RatingContest.UpdateLeaderboard(ranking, namePlayer, score)
     end)
 
@@ -110,7 +124,7 @@ function self:ClientAwake()
     end)
 end
 
-function self:ServerAwake()
+function self:ServerStart()
     sendScorePlayerCompeting:Connect(function(player : Player, score)
         updateRatingContest(
             gameManager.playerModelingCurrently.value,
@@ -130,13 +144,14 @@ function self:ServerAwake()
 
     updateCanPrinterInfoLeaderboard:Connect(function(player : Player)
         wasPrinterInfo.value = false
+        --print(`Reset can printer: {wasPrinterInfo.value}`)
     end)
 
     eventResetAllData:Connect(function(player : Player)
         resetAllData()
     end)
 
-    askingIfPlayerHasVoting:Connect(function(player : Player)
+    --[[ askingIfPlayerHasVoting:Connect(function(player : Player)
         if not gameManager.canAskIfPlayerHasVoting.value then
             local hasPassedThroughCatwalk = gameManager.playerModelingCurrently.value
 
@@ -146,5 +161,5 @@ function self:ServerAwake()
             
             gameManager.canAskIfPlayerHasVoting.value = true
         end
-    end)
+    end) ]]
 end

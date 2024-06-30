@@ -6,7 +6,7 @@ local countdownsGame = require('CountdownsGame')
 local resetAllVariablesServer = Event.new('ResetAllVariablesServer')
 local updateAllPlayersSendLobbyServer = Event.new('UpdateAllPlayersSendLobbyServer')
 local updateAllPlayersSendLobbyClient = Event.new('UpdateAllPlayersSendLobbyClient')
-local onePlayerInCompeting = Event.new('onePlayerInCompeting')
+--local onePlayerInCompeting = Event.new('onePlayerInCompeting')
 
 --Functions
 function sendPlayersToLobby(character : Character, objCharacter : GameObject)
@@ -35,16 +35,7 @@ end
 
 function StartingResetAllVariables()
     --Reset all variables
-    --gameManager.amountPlayersLobby.value = 0
-    gameManager.hasStartedRound.value = false
-    gameManager.numberPlayersCurrentContest.value = 0
-    gameManager.numberPlayersSendModelingArea.value = 0
-    gameManager.numberPlayersModeled.value = 0
-    gameManager.numPlayersFinishCustomization.value = 0
-    gameManager.startingAvatarContest.value = false
-    gameManager.playerModelingCurrently.value = ''
-    gameManager.playersCurrentlyCompeting = {}
-    gameManager.playersAlreadyModeling = {}
+    gameManager.resetAllData()
 
     countdownsGame.playerWentSentToLockerRoom.value = false
     countdownsGame.nextPlayerModelingArea.value = false
@@ -53,37 +44,38 @@ function StartingResetAllVariables()
 end
 
 --Unity functions
-function self:ClientAwake()
+function self:ClientStart()
     updateAllPlayersSendLobbyClient:Connect(function(namePlayer)
         if namePlayer ~= game.localPlayer.name then
-            sendPlayersToLobby(gameManager.previousPlayers[namePlayer], gameManager.playerWithGameObject[namePlayer])
+            sendPlayersToLobby(gameManager.playerCharacter[namePlayer], gameManager.playerWithGameObject[namePlayer])
         end
     end)
 
-    onePlayerInCompeting:Connect(function()
+    --[[ onePlayerInCompeting:Connect(function()
+        print(`Player alone!!!`)
         SettingStart()
         StartingResetAllVariables()
         sendPlayersToLobby(game.localPlayer.character, game.localPlayer.character.gameObject)
         updateAllPlayersSendLobbyServer:FireServer()
-    end)
+    end) ]]
 end
 
 function self:ClientUpdate()
     if countdownsGame.hasRoundFinished.value then
+        --print(`Round Finished`)
+        StartingResetAllVariables()
+        resetAllVariablesServer:FireServer()
         SettingStart()
 
         --Return all players to the lobby
         sendPlayersToLobby(game.localPlayer.character, game.localPlayer.character.gameObject)
         updateAllPlayersSendLobbyServer:FireServer()
 
-        StartingResetAllVariables()
-        resetAllVariablesServer:FireServer()
-
         countdownsGame.hasRoundFinished.value = false
     end
 end
 
-function self:ServerAwake()
+function self:ServerStart()
     resetAllVariablesServer:Connect(function(player : Player)
         StartingResetAllVariables()
     end)
@@ -93,9 +85,9 @@ function self:ServerAwake()
     end)
 end
 
-function self:ServerUpdate()
-    if gameManager.numberPlayersCurrentContest.value == 1 then
+--[[ function self:ServerUpdate()
+    if gameManager.numberPlayersCurrentContest.value == 1 and countdownsGame.playerWentSentToLockerRoom.value then
         StartingResetAllVariables()
         onePlayerInCompeting:FireAllClients()
     end
-end
+end ]]

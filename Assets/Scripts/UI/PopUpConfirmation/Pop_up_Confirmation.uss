@@ -1,6 +1,7 @@
 :root {
     --container-width: 95%;
     --fontSize-txtConfirmation: 140%;
+    --fontSize-txtComingSoon: 200%;
     --fontSize-txtBtnsConfirmation: 100%;
     --colorTxt: rgba(255, 235, 249, 1);
 }
@@ -49,6 +50,21 @@
 
     margin: 25% 6% 0% 6%;
 }
+
+/* .txt_commingSoon {
+    font-size: var(--fontSize-txtComingSoon);
+    color: var(--colorTxt);
+    white-space: normal;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    -unity-text-overflow-position: middle;
+
+    position: absolute;
+    top: 0;
+    right: 20%;
+    bottom: 0;
+    left: 20%;
+} */
 
 .img_contest {
     background-image: url('project://database/Assets/Images/model_confirmation.png');

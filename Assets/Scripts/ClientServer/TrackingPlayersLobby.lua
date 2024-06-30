@@ -8,7 +8,6 @@ local minNumPlayersStartRound : number = 4
 
 -- Local Variables
 local uiManager = nil
-local UI_Customization_Player = nil
 local localCharacterInstantiatedEvent = nil
 themesBeautyContest = {
     [1] = 'Rock and Roll',
@@ -17,18 +16,24 @@ themesBeautyContest = {
 }
 
 --Events
-local updateNumPlayersLobbyBeforeStartRound = Event.new('UpdateNumPlayersLobbyBeforeStartRound')
 local timerSendPlayersToLockerRoom = Event.new('TimerSendPlayersToLockerRoom')
 local stopTimerSendPlayersToLockerRoom = Event.new('StopTimerSendPlayersToLockerRoom')
-local updateNumberPlayersCurrentContest = Event.new('UpdateNumberPlayersCurrentContest')
-local selectNewThemeContest = Event.new('SelectNewThemeContest')
-local showUIWithThemeSelected = Event.new('ShowUIWithThemeSelected')
 
---Network values
+--Remotes Functions Local
+local RF_UpdateNumPlayersLobbyBeforeStartRound = RemoteFunction.new('UpdateNumPlayersLobbyBeforeStartRound')
+local RF_UpdateNumberPlayersCurrentContest = RemoteFunction.new('UpdateNumberPlayersCurrentContest')
+local RF_ShowUIWithThemeSelected = RemoteFunction.new('ShowUIWithThemeSelected')
+
+--Remotes Functions Global
+RF_SelectNewThemeContest = RemoteFunction.new('SelectNewThemeContest')
+
+--Network values local
+local selectThemeBeautyContest = BoolValue.new('SelectThemeBeautyContest', false)
+local randomTheme = IntValue.new('RandomTheme', 0)
+local amountPlayersLobby = IntValue.new('AmountPlayersLobby', 0)
+
+--Network values global
 hasStartedCountdownSendPlayersLockerRoom = BoolValue.new('StartedCountdownSendPlayersLockerRoom', false)
-randomTheme = IntValue.new('RandomTheme', 0)
-selectThemeBeautyContest = BoolValue.new('SelectThemeBeautyContest', false)
-themeSelectedCompeting = StringValue.new('ThemeSelectedCompeting', '')
 
 local function numPlayersInLobby()
     local numPlayers = 0
@@ -37,7 +42,7 @@ local function numPlayersInLobby()
         if not objPlayer and tostring(objPlayer) == 'null' then continue end
         numPlayers += 1
     end
-    
+
     return numPlayers
 end
 
@@ -55,7 +60,7 @@ function settingLobbyPlayer()
         uiManager.EnableSpectatorModeLobby(true)
         countdownsGame.playerWentSentToLockerRoom.value = false
     else
-        updateNumPlayersLobbyBeforeStartRound:FireServer()
+        RF_UpdateNumPlayersLobbyBeforeStartRound:InvokeServer('', function(response)end)
     end
 
     if localCharacterInstantiatedEvent then
@@ -65,8 +70,7 @@ function settingLobbyPlayer()
 end
 
 function self:ClientAwake()
-    uiManager = gameManager.UIManagerGlobal:GetComponent(UI_Beauty_Pageant)
-    UI_Customization_Player = gameManager.UIManagerGlobal:GetComponent(UI_Customization_Model)
+    uiManager = gameManager.UI_BeautyContest
     hasStartedCountdownSendPlayersLockerRoom.value = false
     
     localCharacterInstantiatedEvent = client.localPlayer.CharacterChanged:Connect(function(player : Player, character : Character)
@@ -85,57 +89,55 @@ function self:ClientAwake()
         countdownsGame.StopCountdownCurrentGame()
     end)
 
-    showUIWithThemeSelected:Connect(function(theme)
+    RF_ShowUIWithThemeSelected.OnInvokeClient = function(theme)
         uiManager.SetThemeBeautyContest(theme)
-        countdownsGame.StartCountdownCloseWindowTheme(uiManager, UI_Customization_Player)
-    end)
-
-    countdownsGame.remoteFunctionShowThemeUI.OnInvokeClient = function()
-        uiManager.SetWaitingPlayersRound('')
-        uiManager.SetTimerSendPlayerToLockerRoom('')
-        uiManager.EnablePopupThemeContest(true)
-        
-        selectNewThemeContest:FireServer()
-        updateNumberPlayersCurrentContest:FireServer()
-        gameManager.playersCurrentlyCompeting[game.localPlayer.name] = true
-        return true
+        countdownsGame.StartCountdownCloseWindowTheme(uiManager, gameManager.UI_Customization)
+        return true;
     end
 end
 
-function self:ServerAwake()
-    updateNumPlayersLobbyBeforeStartRound:Connect(function(player : Player)
-        gameManager.amountPlayersLobby.value = numPlayersInLobby()
+function self:ServerStart()
+    RF_UpdateNumPlayersLobbyBeforeStartRound.OnInvokeServer = function(player)
+        amountPlayersLobby.value = numPlayersInLobby()
         hasStartedCountdownSendPlayersLockerRoom.value = false
-    end)
+        return true;
+    end
 
-    updateNumberPlayersCurrentContest:Connect(function(player : Player)
-        gameManager.numberPlayersCurrentContest.value += 1
-        gameManager.playersCurrentlyCompeting[player.name] = true
-    end)
-
-    selectNewThemeContest:Connect(function(player : Player)
+    RF_SelectNewThemeContest.OnInvokeServer = function(player)
         if not selectThemeBeautyContest.value then
             randomTheme.value = math.random(1, 3)
             countdownsGame.themeSelectedContest.value = themesBeautyContest[randomTheme.value]
-            showUIWithThemeSelected:FireClient(player, themesBeautyContest[randomTheme.value])
+            RF_ShowUIWithThemeSelected:InvokeClient(
+                player, 
+                themesBeautyContest[randomTheme.value], 
+                function(response)end
+            )
             selectThemeBeautyContest.value = true
         else
-            showUIWithThemeSelected:FireClient(player, themesBeautyContest[randomTheme.value])
+            RF_ShowUIWithThemeSelected:InvokeClient(
+                player, 
+                themesBeautyContest[randomTheme.value], 
+                function(response)end
+            )
         end
-    end)
+
+        gameManager.numberPlayersCurrentContest.value += 1
+        gameManager.playersCurrentlyCompeting[player.name] = true
+        return true
+    end
 
     server.PlayerDisconnected:Connect(function(player : Player)
-        gameManager.amountPlayersLobby.value = numPlayersInLobby()
+        amountPlayersLobby.value = numPlayersInLobby()
     end)
 end
 
 function self:ServerUpdate()
-    if gameManager.amountPlayersLobby.value >= minNumPlayersStartRound and not countdownsGame.playerWentSentToLockerRoom.value and not hasStartedCountdownSendPlayersLockerRoom.value then
+    if amountPlayersLobby.value >= minNumPlayersStartRound and not countdownsGame.playerWentSentToLockerRoom.value and not hasStartedCountdownSendPlayersLockerRoom.value then
         timerSendPlayersToLockerRoom:FireAllClients()
         hasStartedCountdownSendPlayersLockerRoom.value = true
     end
 
-    if gameManager.amountPlayersLobby.value < minNumPlayersStartRound and not countdownsGame.playerWentSentToLockerRoom.value and hasStartedCountdownSendPlayersLockerRoom.value then
+    if amountPlayersLobby.value < minNumPlayersStartRound and not countdownsGame.playerWentSentToLockerRoom.value and hasStartedCountdownSendPlayersLockerRoom.value then
         stopTimerSendPlayersToLockerRoom:FireAllClients()
         countdownsGame.resetCountdowns()
         hasStartedCountdownSendPlayersLockerRoom.value = false

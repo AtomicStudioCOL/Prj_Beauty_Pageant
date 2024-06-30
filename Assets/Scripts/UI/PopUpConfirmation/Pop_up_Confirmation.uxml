@@ -13,6 +13,7 @@
       
       <hr:UILabel class="txt_confirmation" name="Txt_Confirmation" picking-mode="Ignore"></hr:UILabel>
       <hr:UIImage class="img_contest" name="Img_Contest" picking-mode="Ignore" />
+      <!-- <hr:UILabel class="txt_commingSoon" name="Txt_CommingSoon" picking-mode="Ignore"></hr:UILabel> -->
 
       <hr:UIButton class="btn_confirm" name="Btn_Confirm" />
       <hr:UILabel class="txt_btn_confirm" name="Txt_Btn_Confirm" />

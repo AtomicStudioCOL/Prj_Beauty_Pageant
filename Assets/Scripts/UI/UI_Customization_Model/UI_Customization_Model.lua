@@ -80,7 +80,7 @@ function StopCurrentTimerPlaying()
 end
 
 --Unity Functions
-function self:ClientAwake()
+function self:ClientStart()
     SettingStart()
 
     Btn_Close:RegisterPressCallback(function()
