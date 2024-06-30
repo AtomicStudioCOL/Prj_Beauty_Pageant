@@ -39,15 +39,16 @@ numberPlayersSendModelingArea = IntValue.new('NumberPlayersSendModelingArea', 0)
 startingAvatarContest = BoolValue.new('StartingAvatarContest', false)
 local playerDisconnected = BoolValue.new('PlayerDisconnected', false)
 
--- Events
+-- Events Local
 local showUIVotingClient = Event.new('ShowUIVotingClient')
 local sendAvatarToBackstageClient = Event.new('SendAvatarToBackstageClient')
-sendPlayerModelingAreaClient = Event.new('SendPlayerModelingAreaClient')
 local mustSelectPlayerMasterTimerPlayerDisconnected = Event.new('SelectPlayerMasterTimerPlayerDisconnected')
 local returnAllPlayersToTheLobby = Event.new('ReturnAllPlayersToTheLobby')
 
+--Events Global
+sendPlayerModelingAreaClient = Event.new('SendPlayerModelingAreaClient')
 sendPlayerBackstageContestClient = Event.new('SendPlayerBackstageContestClient')
---sendOtherPlayerVoting = Event.new('SendOtherPlayerVoting')
+noThereAreEnoughPlayersInContest = Event.new('NoThereAreEnoughPlayersInContest')
 
 -- Remote Functions Global
 RF_GoNextPlayerContest = RemoteFunction.new('GoNextPlayerContest')
@@ -57,7 +58,6 @@ RF_UpdateNumPlayersCurrentContest = RemoteFunction.new('UpdateNumPlayersCurrentC
 local RF_ShowUIVotingServer = RemoteFunction.new('ShowUIVotingServer')
 local RF_UpdateNumPlayersFinishCustomization = RemoteFunction.new('UpdateNumPlayersFinishCustomization')
 local RF_SendAvatarToBackstageServer = RemoteFunction.new('SendAvatarToBackstageServer')
---local RF_SendPlayerBackstageContestClient = RemoteFunction.new('SendPlayerBackstageContestClient')
 local RF_CanSelectPlayerMasterTimer = RemoteFunction.new('SelectPlayerMasterTimer')
 local RF_UpdateIfPlayerDisconnected = RemoteFunction.new('UpdateIfPlayerDisconnected')
 
@@ -66,6 +66,7 @@ gameObjectManager = self.gameObject
 UIManagerGlobal = nil
 ScorePlayerCompeting = nil
 TrackingPlayersLobbyScript = nil
+TrackingPlayersEndRoundScript = nil
 CatwalkContestantsScript = nil
 VotingZoneScript = nil
 pointRespawnLobbyGlobal = nil
@@ -115,7 +116,6 @@ function showUIVotingAllPlayers()
 end
 
 function sendPlayersToModelingArea(character : Character, objCharacter : GameObject)
-    print(`Player send: {game.localPlayer.name} - {pointRespawnZoneVoting}`)
     if character == nil or objCharacter == nil then return end
     if tostring(objCharacter.transform) == 'null' then return end
     
@@ -138,29 +138,7 @@ function sendPlayerModelingArea(character : Character, objCharacter : GameObject
     character.transform:LookAt(cameraModeling.transform.position)
 end
 
---[[ function nextPlayerCompeting(player)
-    print(`nextPlayerCompeting`)
-    for namePlayer, value in pairs(playersAlreadyModeling) do
-        if not value then continue end
-        if namePlayer == playerModelingCurrently.value then
-            --RF_SendPlayerBackstageContestClient:InvokeClient(
-            --    player, 
-            --    namePlayer, 
-            --    function(response)end
-            --)
-            
-            sendPlayerBackstageContestClient:FireClient(player, namePlayer)
-        end
-    end
-
-    Timer.After(0.25, function()
-        startingAvatarContest.value = false
-        canAskIfPlayerHasVoting.value = false
-    end)
-end ]]
-
 function resetAllGameManager(player, namePlayer)
-    print(`resetAllGameManager`)
     playerWithGameObject[namePlayer] = nil
     playerCharacter[namePlayer] = nil
     playersCurrentlyCompeting[namePlayer] = nil
@@ -168,19 +146,23 @@ function resetAllGameManager(player, namePlayer)
     if numberPlayersSendModelingArea.value > 0 then numberPlayersSendModelingArea.value -= 1 end
     playerDisconnected.value = false
 
+    print(`Name: {namePlayer} - Modeled: {playersAlreadyModeling[namePlayer]}`)
     if playersAlreadyModeling[namePlayer] then
         if numberPlayersModeled.value > 0 then numberPlayersModeled.value -= 1 end
         playersAlreadyModeling[namePlayer] = nil
-
-        if numberPlayersModeled.value == numberPlayersCurrentContest.value then
+        
+        if numberPlayersModeled.value == numberPlayersCurrentContest.value or numberPlayersCurrentContest.value == 1 then
             returnAllPlayersToTheLobby:FireAllClients()
         end
 
-        --nextPlayerCompeting(player)
         sendPlayersToModelingArea(
             playerCharacter[namePlayer], 
             playerWithGameObject[namePlayer]
         )
+    else
+        if numberPlayersCurrentContest.value == 1 then
+            noThereAreEnoughPlayersInContest:FireAllClients()
+        end
     end
 
     mustSelectPlayerMasterTimerPlayerDisconnected:FireAllClients(namePlayer)
@@ -204,6 +186,7 @@ function self:ClientAwake()
     countdownGameObj = self.gameObject:GetComponent(CountdownsGame)
     ScorePlayerCompeting = self.gameObject:GetComponent(GetScorePlayerCompeting)
     TrackingPlayersLobbyScript = self.gameObject:GetComponent(TrackingPlayersLobby)
+    TrackingPlayersEndRoundScript = self.gameObject:GetComponent(TrackingPlayersEndRound)
     CatwalkContestantsScript = self.gameObject:GetComponent(CatwalkContestants)
     VotingZoneScript = self.gameObject:GetComponent(VotingZone)
 
@@ -235,31 +218,13 @@ function self:ClientAwake()
         
         sendPlayerModelingArea(playerCharacter[namePlayer], playerWithGameObject[namePlayer])
         UI_ConstestVoting.SetNamePlayerContestant(namePlayer)
-        --countdownGameObj.StartCountdownVotingArea(UI_ConstestVoting)
-
+        
         if game.localPlayer.name == namePlayer then
             UI_ConstestVoting.SetPlayerVotingStatus(false)
         elseif game.localPlayer.name ~= namePlayer and playersCurrentlyCompeting[game.localPlayer.name] then
             UI_ConstestVoting.SetPlayerVotingStatus(true)
         end
     end)
-
-    --[[ RF_SendPlayerBackstageContestClient.OnInvokeClient = function(namePlayer)
-        if not playerCharacter[namePlayer] or not playerWithGameObject[namePlayer] then return end
-        
-        sendPlayersToModelingArea(playerCharacter[namePlayer], playerWithGameObject[namePlayer])
-        UI_ConstestVoting.CleanStarsSelecting()
-        countdownGameObj.resetCountdowns()
-        return true;
-    end ]]
-
-    --[[ sendPlayerBackstageContestClient:Connect(function(namePlayer)
-        if not playerCharacter[namePlayer] or not playerWithGameObject[namePlayer] then return end
-        
-        sendPlayersToModelingArea(playerCharacter[namePlayer], playerWithGameObject[namePlayer])
-        UI_ConstestVoting.CleanStarsSelecting()
-        countdownGameObj.resetCountdowns()
-    end) ]]
 
     RF_CanSelectPlayerMasterTimer.OnInvokeClient = function()
         playersCurrentlyCompeting[game.localPlayer.name] = nil
@@ -280,6 +245,10 @@ function self:ClientAwake()
         if not CatwalkContestantsScript then return end
         CatwalkContestantsScript.endCatwalkShowLeaderboard()
     end)
+
+    noThereAreEnoughPlayersInContest:Connect(function()
+        TrackingPlayersEndRoundScript.ResetAllInformationGame()
+    end)
 end
 
 function self:ServerStart()
@@ -299,11 +268,6 @@ function self:ServerStart()
         return true
     end
 
-    --[[ RF_GoNextPlayerContest.OnInvokeServer = function(player)
-        nextPlayerCompeting(player)
-        return true
-    end ]]
-
     RF_UpdateNumPlayersCurrentContest.OnInvokeServer = function(player)
         numberPlayersCurrentContest.value -= 1
         playersCurrentlyCompeting[player.name] = nil
@@ -320,36 +284,10 @@ function self:ServerStart()
         return true
     end
 
-    --[[ sendOtherPlayerVoting:Connect(function(player : Player, namePlayer)
-        --VotingZoneScript.sendNextPlayerToVoting()
-        --startingAvatarContest.value = false
-        sendPlayerModelingAreaClient:FireAllClients(namePlayer)
-    end) ]]
-
     server.PlayerDisconnected:Connect(function(player : Player)
         resetAllGameManager(player, player.name)
     end)
 end
-
---[[ function self:ServerUpdate() --self:ServerLateUpdate()
-    if numberPlayersCurrentContest.value == numberPlayersSendModelingArea.value and not startingAvatarContest.value and numberPlayersCurrentContest.value > 0 then --Ya todos estan tras banbalinas
-        for namePlayer, objPlayer in pairs(playerWithGameObject) do
-            if not objPlayer or tostring(objPlayer) == 'null' then continue end
-            
-            if playersCurrentlyCompeting[namePlayer] and not playersAlreadyModeling[namePlayer] then
-                print(`Name Server update: {namePlayer}`)
-                sendPlayerModelingAreaClient:FireAllClients(namePlayer)
-                countdownGameObj.StartCountdownVotingArea()
-                playerModelingCurrently.value = namePlayer
-                playersAlreadyModeling[namePlayer] = true
-                break
-            end
-        end
-
-        startingAvatarContest.value = true
-        numberPlayersModeled.value += 1
-    end
-end ]]
 
 scene.PlayerJoined:Connect(function(scene, player : Player)
     player.CharacterChanged:Connect(function (player : Player, character : Character)

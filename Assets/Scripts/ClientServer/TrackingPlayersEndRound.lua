@@ -2,11 +2,10 @@
 local gameManager = require('GameManager')
 local countdownsGame = require('CountdownsGame')
 
---Event
+--Event local
 local resetAllVariablesServer = Event.new('ResetAllVariablesServer')
 local updateAllPlayersSendLobbyServer = Event.new('UpdateAllPlayersSendLobbyServer')
 local updateAllPlayersSendLobbyClient = Event.new('UpdateAllPlayersSendLobbyClient')
---local onePlayerInCompeting = Event.new('onePlayerInCompeting')
 
 --Functions
 function sendPlayersToLobby(character : Character, objCharacter : GameObject)
@@ -43,6 +42,16 @@ function StartingResetAllVariables()
     countdownsGame.resetCountdowns()
 end
 
+function ResetAllInformationGame()
+    StartingResetAllVariables()
+    resetAllVariablesServer:FireServer()
+    SettingStart()
+
+    --Return all players to the lobby
+    sendPlayersToLobby(game.localPlayer.character, game.localPlayer.character.gameObject)
+    updateAllPlayersSendLobbyServer:FireServer()
+end
+
 --Unity functions
 function self:ClientStart()
     updateAllPlayersSendLobbyClient:Connect(function(namePlayer)
@@ -50,27 +59,11 @@ function self:ClientStart()
             sendPlayersToLobby(gameManager.playerCharacter[namePlayer], gameManager.playerWithGameObject[namePlayer])
         end
     end)
-
-    --[[ onePlayerInCompeting:Connect(function()
-        print(`Player alone!!!`)
-        SettingStart()
-        StartingResetAllVariables()
-        sendPlayersToLobby(game.localPlayer.character, game.localPlayer.character.gameObject)
-        updateAllPlayersSendLobbyServer:FireServer()
-    end) ]]
 end
 
 function self:ClientUpdate()
     if countdownsGame.hasRoundFinished.value then
-        --print(`Round Finished`)
-        StartingResetAllVariables()
-        resetAllVariablesServer:FireServer()
-        SettingStart()
-
-        --Return all players to the lobby
-        sendPlayersToLobby(game.localPlayer.character, game.localPlayer.character.gameObject)
-        updateAllPlayersSendLobbyServer:FireServer()
-
+        ResetAllInformationGame()
         countdownsGame.hasRoundFinished.value = false
     end
 end
@@ -84,10 +77,3 @@ function self:ServerStart()
         updateAllPlayersSendLobbyClient:FireAllClients(player.name)
     end)
 end
-
---[[ function self:ServerUpdate()
-    if gameManager.numberPlayersCurrentContest.value == 1 and countdownsGame.playerWentSentToLockerRoom.value then
-        StartingResetAllVariables()
-        onePlayerInCompeting:FireAllClients()
-    end
-end ]]

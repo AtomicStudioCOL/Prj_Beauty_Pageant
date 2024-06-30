@@ -67,7 +67,7 @@ function resetCountdowns()
     playerMaster.value = ''
     updateWhoIsPlayerMaster.value = true
     
-    countdownSendPlayersToLockerRoom.value = 10 --testing--
+    countdownSendPlayersToLockerRoom.value = 10
     countdownCloseWindowTheme.value = 5
     countdownCustomizationPlayer.value = 180
     countdownVotingArea.value = 10
@@ -138,8 +138,7 @@ function StartCountdownCloseWindowTheme(uiManager, uiCustomization)
                 uiManager.SetTimerCloseWindowTheme('')
                 uiManager.SetThemeBeautyContest('')
                 uiManager.SetWaitingPlayersRound('LOCKER ROOM')
-
-                print(`Player competing: {gameManagerObj.playersCurrentlyCompeting[game.localPlayer.name]} - {game.localPlayer.name}`)
+                
                 uiCustomization.EnableCustomizationPlayer(true)
                 uiCustomization.EnablePopupInfoCustomization(true)
                 StartCountdownCustomizationPlayer(uiCustomization)
@@ -177,24 +176,18 @@ end
 
 function StartCountdownVotingArea(modelCurrent)
     if timerVotingArea then timerVotingArea:Stop() end
-
-    print(`Value Timer Voting Area: {countdownVotingArea.value}`)
+    
     timerVotingArea = Timer.new(1, function()
         seconds = countdownVotingArea.value
 
         if tonumber(seconds) < 10 then
             seconds = `0{seconds}`
         end
-
-
-        --gameManagerObj.UI_ConstestVoting.SetTimerForVoting('00:' .. seconds)
-        --RF_UpdateTimerVotingArea:InvokeServer('', function(response)end)
+        
         updateUIVotingArea:FireAllClients(seconds)
         countdownVotingArea.value -= 1
 
         if countdownVotingArea.value <= 0 then
-            --RF_NextPlayerVoting:InvokeServer('', function(response)end)
-            --nextPlayerModelingArea.value = true
             hasFinishedContestant:FireAllClients(modelCurrent)
             goNextPlayerContestant:FireAllClients(modelCurrent)
             resetCountdowns()
@@ -231,16 +224,6 @@ function StopCountdownCurrentGame()
     end
 end
 
-function endCatwalkShowLeaderboard()
-    gameManagerObj.UI_ConstestVoting.CleanStarsSelecting()
-    gameManagerObj.UI_ConstestVoting.SettingStart()
-    gameManagerObj.UI_BeautyContest.SettingStartUI()
-    gameManagerObj.UI_RatingContest.EnableRatingContest(true)
-    gameManagerObj.ScorePlayerCompeting.updateCanPrinterInfoLeaderboard:FireServer()
-
-    gameManagerObj.numberPlayersModeled.value = 0
-end
-
 -- Unity Functions
 function self:ClientStart()
     gameManagerObj = self.gameObject:GetComponent(GameManager)
@@ -266,15 +249,14 @@ function self:ClientStart()
         playersCurrentContest = gameManagerObj.numberPlayersCurrentContest.value
 
         if playersContestant < playersCurrentContest and playersCurrentContest > 0 then
-            print(`Player modeled: {gameManagerObj.playerModelingCurrently.value}`)
             gameManagerObj.sendPlayersToModelingArea(
                 gameManagerObj.playerCharacter[gameManagerObj.playerModelingCurrently.value], 
                 gameManagerObj.playerWithGameObject[gameManagerObj.playerModelingCurrently.value]
             )
 
             if game.localPlayer.name == namePlayer then
-                --gameManagerObj.RF_GoNextPlayerContest:InvokeServer(game.localPlayer.name, function(response)end)
                 gameManagerObj.UI_ConstestVoting.CleanStarsSelecting()
+                gameManagerObj.ScorePlayerCompeting.askingIfPlayerHasVoting:FireServer()
 
                 Timer.After(0.15, function()
                     gameManagerObj.VotingZoneScript.eventStartTimerAreaVoting:FireServer()
@@ -294,7 +276,7 @@ function self:ClientStart()
                 gameManagerObj.playerCharacter[gameManagerObj.playerModelingCurrently], 
                 gameManagerObj.playerWithGameObject[gameManagerObj.playerModelingCurrently]
             )
-            endCatwalkShowLeaderboard()
+            gameManagerObj.CatwalkContestantsScript.endCatwalkShowLeaderboard()
         end
     end)
 end
@@ -325,17 +307,6 @@ function self:ServerStart()
         resetCountdowns()
         return true;
     end
-
-    --[[ RF_NextPlayerVoting.OnInvokeServer = function(player)
-        nextPlayerModelingArea.value = true
-        return true;
-    end ]]
-
-    --[[ RF_ResetNextPlayerVoting.OnInvokeServer = function(player)
-        nextPlayerModelingArea.value = false
-        resetCountdowns()
-        return true;
-    end ]]
 
     RF_EndRound.OnInvokeServer = function(player)
         hasRoundFinished.value = true
