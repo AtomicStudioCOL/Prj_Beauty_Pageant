@@ -30,6 +30,7 @@ namespace Highrise.Lua.Generated
         [SerializeField] public UnityEngine.GameObject m_pointRespawnModelingArea = default;
         [Header("Cameras")]
         [SerializeField] public UnityEngine.GameObject m_mainCamera = default;
+        [SerializeField] public UnityEngine.GameObject m_cameraLockerRoom = default;
         [SerializeField] public UnityEngine.GameObject m_cameraModeling = default;
         [Header("UI")]
         [SerializeField] public UnityEngine.GameObject m_uiManager = default;
@@ -49,10 +50,11 @@ namespace Highrise.Lua.Generated
                 CreateSerializedProperty(_script.GetPropertyAt(2), m_pointRespawnZoneVoting),
                 CreateSerializedProperty(_script.GetPropertyAt(3), m_pointRespawnModelingArea),
                 CreateSerializedProperty(_script.GetPropertyAt(4), m_mainCamera),
-                CreateSerializedProperty(_script.GetPropertyAt(5), m_cameraModeling),
-                CreateSerializedProperty(_script.GetPropertyAt(6), m_uiManager),
-                CreateSerializedProperty(_script.GetPropertyAt(7), m_navMeshGame),
-                CreateSerializedProperty(_script.GetPropertyAt(8), m_naveMeshCatwalk),
+                CreateSerializedProperty(_script.GetPropertyAt(5), m_cameraLockerRoom),
+                CreateSerializedProperty(_script.GetPropertyAt(6), m_cameraModeling),
+                CreateSerializedProperty(_script.GetPropertyAt(7), m_uiManager),
+                CreateSerializedProperty(_script.GetPropertyAt(8), m_navMeshGame),
+                CreateSerializedProperty(_script.GetPropertyAt(9), m_naveMeshCatwalk),
             };
         }
     }

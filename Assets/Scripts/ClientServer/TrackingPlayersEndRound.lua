@@ -4,8 +4,10 @@ local countdownsGame = require('CountdownsGame')
 
 --Event local
 local resetAllVariablesServer = Event.new('ResetAllVariablesServer')
-local updateAllPlayersSendLobbyServer = Event.new('UpdateAllPlayersSendLobbyServer')
 local updateAllPlayersSendLobbyClient = Event.new('UpdateAllPlayersSendLobbyClient')
+
+--Event global
+updateAllPlayersSendLobbyServer = Event.new('UpdateAllPlayersSendLobbyServer')
 
 --Functions
 function sendPlayersToLobby(character : Character, objCharacter : GameObject)
@@ -18,6 +20,7 @@ function SettingStart()
     gameManager.naveMeshGameGlobal:SetActive(true)
     gameManager.naveMeshCatwalkGlobal:SetActive(false)
     gameManager.mainCameraGlobal:SetActive(true)
+    gameManager.cameraLockerRoomGlobal:SetActive(false)
     gameManager.cameraModelingGlobal:SetActive(false)
     
     --Reset all UIs
@@ -37,8 +40,6 @@ function StartingResetAllVariables()
     gameManager.resetAllData()
 
     countdownsGame.playerWentSentToLockerRoom.value = false
-    countdownsGame.nextPlayerModelingArea.value = false
-    countdownsGame.hasRoundFinished.value = false
     countdownsGame.resetCountdowns()
 end
 
@@ -59,13 +60,6 @@ function self:ClientStart()
             sendPlayersToLobby(gameManager.playerCharacter[namePlayer], gameManager.playerWithGameObject[namePlayer])
         end
     end)
-end
-
-function self:ClientUpdate()
-    if countdownsGame.hasRoundFinished.value then
-        ResetAllInformationGame()
-        countdownsGame.hasRoundFinished.value = false
-    end
 end
 
 function self:ServerStart()

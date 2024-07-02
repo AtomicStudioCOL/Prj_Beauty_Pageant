@@ -21,52 +21,47 @@ finishCustomizationSendModelingArea = BoolValue.new('FinishCustomizationSendMode
 
 -- Countdown voting area
 countdownVotingArea = IntValue.new('CountdownVotingArea', 10)
-nextPlayerModelingArea = BoolValue.new('NextPlayerModelingArea', false)
 
 -- Countdown end game - return to the lobby
 countdownEndRound = IntValue.new('CountdownEndRound', 10)
-hasRoundFinished = BoolValue.new('HasRoundFinished', false)
-
--- Player master
-local playerMaster = StringValue.new('PlayerMaster', '')
-local updateWhoIsPlayerMaster = BoolValue.new('UpdateWhoIsPlayerMaster', true)
 
 -- Theme Contest
 themeSelectedContest = StringValue.new('ThemeSelectedContest', '')
 
 --Remotes Functions Local
-local RF_UpdateIfPlayersWentSendToLockerRoom = RemoteFunction.new('UpdateIfPlayersWentSendToLockerRoom')
-local RF_UpdateTimerSendPlayersToLockerRoom = RemoteFunction.new('UpdateTimerSendPlayersToLockerRoom')
-local RF_HasFinishedTimerWindowTheme = RemoteFunction.new('HasFinishedTimerWindowTheme')
-local RF_UpdateTimerWindowTheme = RemoteFunction.new('UpdateTimerWindowTheme')
 local RF_HasFinishedTimerCustomizationPlayer = RemoteFunction.new('HasFinishedTimerCustomizationPlayer')
 local RF_ShootWhenFinishCustomization = RemoteFunction.new('ShootWhenFinishCustomization')
-local RF_UpdateTimerCustomizationPlayer = RemoteFunction.new('UpdateTimerCustomizationPlayer')
-local RF_UpdateTimerVotingArea = RemoteFunction.new('UpdateTimerVotingArea')
-local RF_UpdateTimerEndRound = RemoteFunction.new('UpdateTimerEndRound')
-local RF_EndRound = RemoteFunction.new('EndRound') 
-local RF_NextPlayerVoting = RemoteFunction.new('NextPlayerVoting')
 
---Remotes Functions Global
-RF_ResetNextPlayerVoting = RemoteFunction.new('ResetNextPlayerVoting')
+--Locker Room
+local updateUILockerRoom = Event.new('UpdateUILockerRoom')
+local goLockerRoom = Event.new('GoLockerRoom')
 
--- Select a new master when the master before left contest.
-local playersInCompetingClient = Event.new('PlayersInCompetingClient')
-local RF_PlayersInCompetingServer = RemoteFunction.new('PlayersInCompetingServer')
-RF_SelectNewMasterServer = RemoteFunction.new('SelectNewMasterServer')
-
+--Voting Area
 local updateUIVotingArea = Event.new('UpdateUIVotingArea')
 local goNextPlayerContestant = Event.new('GoNextPlayerContestant')
 local hasFinishedContestant = Event.new('HasFinishedContestant')
+
+--Screen theme
+local updateUIScreenTheme = Event.new('UpdateUIScreenTheme')
+local goPlayerCustomization = Event.new('GoPlayerCustomization')
+reactiveTimerScreenTheme = Event.new('ReactiveTimerScreenTheme')
+
+--Customization Player
+local updateScreenPlayerCustomization = Event.new('updateScreenPlayerCustomization')
+local goAreaVoting = Event.new('GoAreaVoting')
+
+--End Round
+local updateUIEndRound = Event.new('UpdateUIEndRound')
+local goLobby = Event.new('GoLobby')
+
+--Reset - Stop
+eventResetStopTimers = Event.new('EventResetStopTimers')
 
 local playersContestant = nil
 local playersCurrentContest = nil
 
 -- Functions
-function resetCountdowns()
-    playerMaster.value = ''
-    updateWhoIsPlayerMaster.value = true
-    
+function resetCountdowns()    
     countdownSendPlayersToLockerRoom.value = 10
     countdownCloseWindowTheme.value = 5
     countdownCustomizationPlayer.value = 180
@@ -74,21 +69,9 @@ function resetCountdowns()
     countdownEndRound.value = 10
 end
 
-function selectMainPlayer(mainClient, namePlayer, countdownCurrent, canUpdate)
-    if mainClient.value ~= '' and namePlayer == mainClient.value then
-        countdownCurrent.value -= 1
-    end
-
-    if mainClient.value == '' and canUpdate.value then
-        mainClient.value = namePlayer
-        canUpdate.value = false
-    end
-end
-
-function StartCountdownSendPlayersToLockerRoom(uiManager)
+function StartCountdownSendPlayersToLockerRoom()
     if countdownGame then countdownGame:Stop() end
     
-    uiManager.SetWaitingPlayersRound('Next match starts in..')
     countdownGame = Timer.new(1, function()
         seconds = countdownSendPlayersToLockerRoom.value
 
@@ -96,25 +79,20 @@ function StartCountdownSendPlayersToLockerRoom(uiManager)
             seconds = `0{seconds}`
         end
 
-        uiManager.SetTimerSendPlayerToLockerRoom('00:' .. seconds)
-        RF_UpdateTimerSendPlayersToLockerRoom:InvokeServer('', function(response)end)
+        updateUILockerRoom:FireAllClients(seconds)
+        countdownSendPlayersToLockerRoom.value -= 1
 
-        if countdownSendPlayersToLockerRoom.value <= 0 then
-            RF_UpdateIfPlayersWentSendToLockerRoom:InvokeServer('', function(response)end)
-            
-            uiManager.SetWaitingPlayersRound('')
-            uiManager.SetTimerSendPlayerToLockerRoom('')
-            uiManager.EnablePopupThemeContest(true)
-
-            gameManagerObj.TrackingPlayersLobbyScript.RF_SelectNewThemeContest:InvokeServer('', function(response)end)
-            gameManagerObj.playersCurrentlyCompeting[game.localPlayer.name] = true
+        if countdownSendPlayersToLockerRoom.value <= -1 then
+            playerWentSentToLockerRoom.value = true
+            goLockerRoom:FireAllClients()
             countdownGame:Stop()
             resetCountdowns()
+            StartCountdownCloseWindowTheme()
         end
     end, true)
 end
 
-function StartCountdownCloseWindowTheme(uiManager, uiCustomization)
+function StartCountdownCloseWindowTheme()
     if timerScreenTheme then timerScreenTheme:Stop() end
     
     timerScreenTheme = Timer.new(1, function()
@@ -124,32 +102,21 @@ function StartCountdownCloseWindowTheme(uiManager, uiCustomization)
             seconds = `0{seconds}`
         end
 
-        uiManager.SetTimerCloseWindowTheme('00:' .. seconds)
-        RF_UpdateTimerWindowTheme:InvokeServer('', function(response)end)
+        updateUIScreenTheme:FireAllClients(seconds)
+        countdownCloseWindowTheme.value -= 1
 
-        if countdownCloseWindowTheme.value <= 0 then
-            if gameManagerObj.playersCurrentlyCompeting[game.localPlayer.name] then
-                RF_HasFinishedTimerWindowTheme:InvokeServer('', function(response)end)
-                timerScreenTheme:Stop()
-                resetCountdowns()
-                finishCustomizationSendModelingArea.value = false
-
-                uiManager.EnablePopupThemeContest(false)
-                uiManager.SetTimerCloseWindowTheme('')
-                uiManager.SetThemeBeautyContest('')
-                uiManager.SetWaitingPlayersRound('LOCKER ROOM')
-                
-                uiCustomization.EnableCustomizationPlayer(true)
-                uiCustomization.EnablePopupInfoCustomization(true)
-                StartCountdownCustomizationPlayer(uiCustomization)
-            end
+        if countdownCloseWindowTheme.value <= -1 then
+            goPlayerCustomization:FireAllClients()
+            timerScreenTheme:Stop()
+            resetCountdowns()
+            finishCustomizationSendModelingArea.value = false
+            StartCountdownCustomizationPlayer()
         end
     end, true)
 end
 
-function StartCountdownCustomizationPlayer(uiManager)
+function StartCountdownCustomizationPlayer()
     if timerCustomizationClient then timerCustomizationClient:Stop() end
-    uiManager.SetThemeBeautyContest(themeSelectedContest.value)
 
     timerCustomizationClient = Timer.new(1, function()
         minutes = tostring(math.floor(countdownCustomizationPlayer.value / 60))
@@ -163,11 +130,11 @@ function StartCountdownCustomizationPlayer(uiManager)
             seconds = `0{seconds}`
         end
 
-        uiManager.SetTimerCustomizationPlayer(minutes .. ':' .. seconds)
-        RF_UpdateTimerCustomizationPlayer:InvokeServer('', function(response)end)
+        updateScreenPlayerCustomization:FireAllClients(minutes, seconds, countdownCustomizationPlayer.value)
+        countdownCustomizationPlayer.value -= 1
 
-        if countdownCustomizationPlayer.value <= 0 then       
-            RF_HasFinishedTimerCustomizationPlayer:InvokeServer('', function(response)end)
+        if countdownCustomizationPlayer.value <= -1 then
+            goAreaVoting:FireAllClients()
             timerCustomizationClient:Stop()
             resetCountdowns()
         end
@@ -187,7 +154,8 @@ function StartCountdownVotingArea(modelCurrent)
         updateUIVotingArea:FireAllClients(seconds)
         countdownVotingArea.value -= 1
 
-        if countdownVotingArea.value <= 0 then
+        if countdownVotingArea.value <= -1 then
+            print(`Fin timer Voting Area!`)
             hasFinishedContestant:FireAllClients(modelCurrent)
             goNextPlayerContestant:FireAllClients(modelCurrent)
             resetCountdowns()
@@ -196,7 +164,7 @@ function StartCountdownVotingArea(modelCurrent)
     end, true)
 end
 
-function StartCountdownEndRound(uiManager)
+function StartCountdownEndRound()
     if timerEndGame then timerEndGame:Stop() end
     
     timerEndGame = Timer.new(1, function()
@@ -206,11 +174,11 @@ function StartCountdownEndRound(uiManager)
             seconds = `0{seconds}`
         end
 
-        uiManager.SetTimerEndRound('00:' .. seconds)
-        RF_UpdateTimerEndRound:InvokeServer('', function(response)end)
+        updateUIEndRound:FireAllClients(seconds)
+        countdownEndRound.value -= 1
 
-        if countdownEndRound.value <= 0 then
-            RF_EndRound:InvokeServer('', function(response)end)
+        if countdownEndRound.value <= -1 then
+            goLobby:FireAllClients()
             resetCountdowns()
             timerEndGame:Stop()
         end
@@ -228,17 +196,58 @@ end
 function self:ClientStart()
     gameManagerObj = self.gameObject:GetComponent(GameManager)
 
-    playersInCompetingClient:Connect(function()
-        if gameManagerObj.playersCurrentlyCompeting[game.localPlayer.name] and updateWhoIsPlayerMaster.value then
-            RF_PlayersInCompetingServer:InvokeServer('', function(response)end)
-            updateWhoIsPlayerMaster.value = false
-        end
-    end)
-
     RF_ShootWhenFinishCustomization.OnInvokeClient = function(message)
         gameManagerObj.UI_Customization.finishedTimerCustomizationPlayers()
         return true;
     end
+
+    updateUILockerRoom:Connect(function(seconds)
+        if seconds == 10 then
+            gameManagerObj.UI_BeautyContest.SetWaitingPlayersRound('Next match starts in..')
+        end
+        gameManagerObj.UI_BeautyContest.SetTimerSendPlayerToLockerRoom('00:' .. seconds)
+    end)
+
+    goLockerRoom:Connect(function()
+        gameManagerObj.UI_BeautyContest.SetWaitingPlayersRound('')
+        gameManagerObj.UI_BeautyContest.SetTimerSendPlayerToLockerRoom('')
+        gameManagerObj.UI_BeautyContest.EnablePopupThemeContest(true)
+
+        gameManagerObj.TrackingPlayersLobbyScript.RF_SelectNewThemeContest:InvokeServer('', function(response)end)
+        gameManagerObj.playersCurrentlyCompeting[game.localPlayer.name] = true
+        gameManagerObj.teleportPlayersLockerRoom(
+            gameManagerObj.playerCharacter[game.localPlayer.name],
+            gameManagerObj.playerWithGameObject[game.localPlayer.name]
+        )
+        gameManagerObj.sendPlayerLockerRoom:FireServer()
+    end)
+
+    updateUIScreenTheme:Connect(function(seconds)
+        gameManagerObj.UI_BeautyContest.SetTimerCloseWindowTheme('00:' .. seconds)
+    end)
+
+    goPlayerCustomization:Connect(function()
+        if gameManagerObj.playersCurrentlyCompeting[game.localPlayer.name] then
+            gameManagerObj.UI_BeautyContest.EnablePopupThemeContest(false)
+            gameManagerObj.UI_BeautyContest.SetTimerCloseWindowTheme('')
+            gameManagerObj.UI_BeautyContest.SetThemeBeautyContest('')
+            gameManagerObj.UI_BeautyContest.SetWaitingPlayersRound('LOCKER ROOM')
+            
+            gameManagerObj.UI_Customization.EnableCustomizationPlayer(true)
+            gameManagerObj.UI_Customization.EnablePopupInfoCustomization(true)
+        end
+    end)
+
+    updateScreenPlayerCustomization:Connect(function(minutes, seconds, valueStart)
+        if valueStart == 180 then
+            gameManagerObj.UI_Customization.SetThemeBeautyContest(themeSelectedContest.value)
+        end
+        gameManagerObj.UI_Customization.SetTimerCustomizationPlayer(minutes .. ':' .. seconds)
+    end)
+
+    goAreaVoting:Connect(function()
+        RF_HasFinishedTimerCustomizationPlayer:InvokeServer('', function(response)end)
+    end)
 
     updateUIVotingArea:Connect(function(seconds)
         gameManagerObj.UI_ConstestVoting.SetTimerForVoting('00:' .. seconds)
@@ -271,29 +280,30 @@ function self:ClientStart()
         playersContestant = gameManagerObj.numberPlayersModeled.value
         playersCurrentContest = gameManagerObj.numberPlayersCurrentContest.value
 
-        if playersContestant == playersCurrentContest and playersCurrentContest > 0 then
-            gameManagerObj.sendPlayersToModelingArea(
-                gameManagerObj.playerCharacter[gameManagerObj.playerModelingCurrently], 
-                gameManagerObj.playerWithGameObject[gameManagerObj.playerModelingCurrently]
-            )
+        print(`Players Fin concurso: {playersContestant} - {playersCurrentContest}`)
+        if playersContestant >= playersCurrentContest and playersCurrentContest > 0 then
+            if game.localPlayer.name == gameManagerObj.playerModelingCurrently.value then
+                gameManagerObj.ScorePlayerCompeting.askingIfPlayerHasVoting:FireServer()
+                gameManagerObj.ScorePlayerCompeting.showScoreBeautyContest:FireServer()
+            end
             gameManagerObj.CatwalkContestantsScript.endCatwalkShowLeaderboard()
+            gameManagerObj.sendPlayersToModelingArea(
+                gameManagerObj.playerCharacter[gameManagerObj.playerModelingCurrently.value], 
+                gameManagerObj.playerWithGameObject[gameManagerObj.playerModelingCurrently.value]
+            )
         end
+    end)
+
+    updateUIEndRound:Connect(function(seconds)
+        gameManagerObj.UI_RatingContest.SetTimerEndRound('00:' .. seconds)
+    end)
+
+    goLobby:Connect(function()
+        gameManagerObj.TrackingPlayersEndRoundScript.ResetAllInformationGame()
     end)
 end
 
 function self:ServerStart()
-    RF_UpdateIfPlayersWentSendToLockerRoom.OnInvokeServer = function(player)
-        playerWentSentToLockerRoom.value = true
-        resetCountdowns()
-        return true;
-    end
-
-    RF_HasFinishedTimerWindowTheme.OnInvokeServer = function(player)
-        finishCustomizationSendModelingArea.value = false
-        resetCountdowns()
-        return true;
-    end
-
     RF_HasFinishedTimerCustomizationPlayer.OnInvokeServer = function(player)
         if not finishCustomizationSendModelingArea.value then
             RF_ShootWhenFinishCustomization:InvokeClient(
@@ -303,53 +313,14 @@ function self:ServerStart()
             )
             finishCustomizationSendModelingArea.value = true
         end
+        return true;
+    end
 
+    reactiveTimerScreenTheme:Connect(function(player : Player)
+        StartCountdownCloseWindowTheme()
+    end)
+
+    eventResetStopTimers:Connect(function(player : Player)
         resetCountdowns()
-        return true;
-    end
-
-    RF_EndRound.OnInvokeServer = function(player)
-        hasRoundFinished.value = true
-        resetCountdowns()
-        return true;
-    end
-
-    RF_UpdateTimerSendPlayersToLockerRoom.OnInvokeServer = function(player)
-        selectMainPlayer(playerMaster, player.name, countdownSendPlayersToLockerRoom, updateWhoIsPlayerMaster)
-        return true;
-    end
-
-    RF_UpdateTimerWindowTheme.OnInvokeServer = function(player)
-        selectMainPlayer(playerMaster, player.name, countdownCloseWindowTheme, updateWhoIsPlayerMaster)
-        return true;
-    end
-
-    RF_UpdateTimerCustomizationPlayer.OnInvokeServer = function(player)
-        selectMainPlayer(playerMaster, player.name, countdownCustomizationPlayer, updateWhoIsPlayerMaster)
-        return true;
-    end
-
-    RF_UpdateTimerVotingArea.OnInvokeServer = function(player)
-        selectMainPlayer(playerMaster, player.name, countdownVotingArea, updateWhoIsPlayerMaster)
-        return true;
-    end
-
-    RF_UpdateTimerEndRound.OnInvokeServer = function(player)
-        selectMainPlayer(playerMaster, player.name, countdownEndRound, updateWhoIsPlayerMaster)
-        return true;
-    end
-
-    RF_SelectNewMasterServer.OnInvokeServer = function(player, statusPlayer)
-        if playerMaster.value == player.name or statusPlayer == 'PlayerLeftGame' then
-            playerMaster.value = ''
-            updateWhoIsPlayerMaster.value = true
-            playersInCompetingClient:FireAllClients()
-        end
-        return true;
-    end
-
-    RF_PlayersInCompetingServer.OnInvokeServer = function(player)
-        selectMainPlayer(playerMaster, player.name, countdownCloseWindowTheme, updateWhoIsPlayerMaster)
-        return true
-    end
+    end)
 end

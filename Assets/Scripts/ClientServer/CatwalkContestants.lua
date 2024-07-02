@@ -6,11 +6,10 @@ local countdownsGame = require('CountdownsGame')
 local printScore = BoolValue.new('PrinterScore', false)
 
 function endCatwalkShowLeaderboard()
+    print(`SHOW UI`)
     gameManager.UI_ConstestVoting.CleanStarsSelecting()
     gameManager.UI_ConstestVoting.SettingStart()
     gameManager.UI_BeautyContest.SettingStartUI()
     gameManager.UI_RatingContest.EnableRatingContest(true)
-    gameManager.ScorePlayerCompeting.updateCanPrinterInfoLeaderboard:FireServer()
-
     gameManager.numberPlayersModeled.value = 0
 end

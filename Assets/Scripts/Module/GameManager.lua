@@ -14,6 +14,8 @@ local pointRespawnModelingArea : GameObject = nil
 --!SerializeField
 local mainCamera : GameObject = nil
 --!SerializeField
+local cameraLockerRoom : GameObject = nil
+--!SerializeField
 local cameraModeling : GameObject = nil
 
 -- UI
@@ -32,34 +34,33 @@ numberPlayersCurrentContest = IntValue.new('NumberPlayersCurrentContest', 0)
 numberPlayersModeled = IntValue.new('NumberPlayersModeled', 0)
 numPlayersFinishCustomization = IntValue.new('NumPlayersFinishCustomization', 0)
 playerModelingCurrently = StringValue.new('PlayerModelingCurrently', '')
-canAskIfPlayerHasVoting = BoolValue.new('CanAskIfPlayerHasVoting', false)
-
--- Network Values local
 numberPlayersSendModelingArea = IntValue.new('NumberPlayersSendModelingArea', 0)
 startingAvatarContest = BoolValue.new('StartingAvatarContest', false)
-local playerDisconnected = BoolValue.new('PlayerDisconnected', false)
+hasBeenSentNewAvatarCatwalk = BoolValue.new('HasBeenSentNewAvatarCatwalk', false)
 
 -- Events Local
 local showUIVotingClient = Event.new('ShowUIVotingClient')
 local sendAvatarToBackstageClient = Event.new('SendAvatarToBackstageClient')
-local mustSelectPlayerMasterTimerPlayerDisconnected = Event.new('SelectPlayerMasterTimerPlayerDisconnected')
 local returnAllPlayersToTheLobby = Event.new('ReturnAllPlayersToTheLobby')
+local sendPlayersLockerRoomClient = Event.new('SendPlayersLockerRoomClient')
 
 --Events Global
 sendPlayerModelingAreaClient = Event.new('SendPlayerModelingAreaClient')
 sendPlayerBackstageContestClient = Event.new('SendPlayerBackstageContestClient')
 noThereAreEnoughPlayersInContest = Event.new('NoThereAreEnoughPlayersInContest')
+sendPlayerLockerRoom = Event.new('SendPlayerLockerRoom')
+eventCleanDataClient = Event.new('CleanDataClient')
+playerLeftNextAvatarModel = Event.new('PlayerLeftNextAvatarModel')
+newAvatarToTheCatwalk = Event.new('NewAvatarToTheCatwalk')
+newAvatarToTheCatwalkClient = Event.new('NewAvatarToTheCatwalkClient')
 
 -- Remote Functions Global
-RF_GoNextPlayerContest = RemoteFunction.new('GoNextPlayerContest')
 RF_UpdateNumPlayersCurrentContest = RemoteFunction.new('UpdateNumPlayersCurrentContest')
 
 -- Remote Functions Locals
 local RF_ShowUIVotingServer = RemoteFunction.new('ShowUIVotingServer')
 local RF_UpdateNumPlayersFinishCustomization = RemoteFunction.new('UpdateNumPlayersFinishCustomization')
 local RF_SendAvatarToBackstageServer = RemoteFunction.new('SendAvatarToBackstageServer')
-local RF_CanSelectPlayerMasterTimer = RemoteFunction.new('SelectPlayerMasterTimer')
-local RF_UpdateIfPlayerDisconnected = RemoteFunction.new('UpdateIfPlayerDisconnected')
 
 -- Global Variables
 gameObjectManager = self.gameObject
@@ -71,14 +72,13 @@ CatwalkContestantsScript = nil
 VotingZoneScript = nil
 pointRespawnLobbyGlobal = nil
 mainCameraGlobal = nil
+cameraLockerRoomGlobal = nil
 cameraModelingGlobal = nil
 naveMeshGameGlobal = nil
 naveMeshCatwalkGlobal = nil
 playerWithGameObject = {} -- Saving the gameObject of each player
 playerCharacter = {} -- Saving the gameObject of each player
 playersCurrentlyCompeting = {}
-
--- Local Variables
 playersAlreadyModeling = {}
 
 -- UIs
@@ -98,6 +98,7 @@ function resetAllData()
     numberPlayersCurrentContest.value = 0
     numberPlayersModeled.value = 0
     numPlayersFinishCustomization.value = 0
+    hasBeenSentNewAvatarCatwalk.value = false
 
     playersCurrentlyCompeting = {}
     playersAlreadyModeling = {}
@@ -113,6 +114,20 @@ end
 
 function showUIVotingAllPlayers()
     RF_ShowUIVotingServer:InvokeServer('', function(response)end)
+end
+
+function teleportPlayersLockerRoom(character : Character, objCharacter : GameObject)
+    if character == nil or objCharacter == nil then return end
+    if tostring(objCharacter.transform) == 'null' then return end
+    
+    objCharacter.transform:SetLocalPositionAndRotation(
+        pointRespawnLockerRoom.transform.position, 
+        Quaternion.Euler(0, 0, 0)
+    )
+    character:Teleport(pointRespawnLockerRoom.transform.position, function()end)
+    mainCamera:SetActive(false)
+    cameraLockerRoom:SetActive(true)
+    character.transform:LookAt(cameraLockerRoom.transform.position)
 end
 
 function sendPlayersToModelingArea(character : Character, objCharacter : GameObject)
@@ -144,28 +159,22 @@ function resetAllGameManager(player, namePlayer)
     playersCurrentlyCompeting[namePlayer] = nil
     if numberPlayersCurrentContest.value > 0 then numberPlayersCurrentContest.value -= 1 end
     if numberPlayersSendModelingArea.value > 0 then numberPlayersSendModelingArea.value -= 1 end
-    playerDisconnected.value = false
-
-    print(`Name: {namePlayer} - Modeled: {playersAlreadyModeling[namePlayer]}`)
+    if numPlayersFinishCustomization.value > 0 then numPlayersFinishCustomization.value -= 1 end
+    
     if playersAlreadyModeling[namePlayer] then
         if numberPlayersModeled.value > 0 then numberPlayersModeled.value -= 1 end
         playersAlreadyModeling[namePlayer] = nil
-        
+
         if numberPlayersModeled.value == numberPlayersCurrentContest.value or numberPlayersCurrentContest.value == 1 then
             returnAllPlayersToTheLobby:FireAllClients()
         end
-
-        sendPlayersToModelingArea(
-            playerCharacter[namePlayer], 
-            playerWithGameObject[namePlayer]
-        )
+        
+        playerLeftNextAvatarModel:FireAllClients(namePlayer)
     else
         if numberPlayersCurrentContest.value == 1 then
             noThereAreEnoughPlayersInContest:FireAllClients()
         end
     end
-
-    mustSelectPlayerMasterTimerPlayerDisconnected:FireAllClients(namePlayer)
 end
 
 --Unity Functions
@@ -174,6 +183,7 @@ function self:ClientAwake()
     UIManagerGlobal = uiManager
     mainCameraGlobal = mainCamera
     cameraModelingGlobal = cameraModeling
+    cameraLockerRoomGlobal = cameraLockerRoom
     naveMeshGameGlobal = navMeshGame
     naveMeshCatwalkGlobal = naveMeshCatwalk
 
@@ -202,8 +212,14 @@ function self:ClientAwake()
             RF_SendAvatarToBackstageServer:InvokeServer(game.localPlayer, function(response)end)
             navMeshGame:SetActive(false)
             naveMeshCatwalk:SetActive(true)
-            mainCamera:SetActive(false)
+            cameraLockerRoom:SetActive(false)
             cameraModeling:SetActive(true)
+        end
+    end)
+
+    sendPlayersLockerRoomClient:Connect(function(namePlayer)
+        if game.localPlayer.name ~= namePlayer then
+            teleportPlayersLockerRoom(playerCharacter[namePlayer], playerWithGameObject[namePlayer])
         end
     end)
     
@@ -226,21 +242,6 @@ function self:ClientAwake()
         end
     end)
 
-    RF_CanSelectPlayerMasterTimer.OnInvokeClient = function()
-        playersCurrentlyCompeting[game.localPlayer.name] = nil
-        countdownGameObj.RF_SelectNewMasterServer:InvokeServer('', function(response)end)
-        return true;
-    end
-
-    mustSelectPlayerMasterTimerPlayerDisconnected:Connect(function(namePlayer)
-        if not playerDisconnected.value then
-            countdownGameObj.RF_SelectNewMasterServer:InvokeServer('PlayerLeftGame', function(response)end)
-            RF_UpdateIfPlayerDisconnected:InvokeServer(game.localPlayer, function(response)end)
-            playersCurrentlyCompeting[namePlayer] = nil
-            playerDisconnected.value = true
-        end
-    end)
-
     returnAllPlayersToTheLobby:Connect(function()
         if not CatwalkContestantsScript then return end
         CatwalkContestantsScript.endCatwalkShowLeaderboard()
@@ -249,9 +250,31 @@ function self:ClientAwake()
     noThereAreEnoughPlayersInContest:Connect(function()
         TrackingPlayersEndRoundScript.ResetAllInformationGame()
     end)
+
+    eventCleanDataClient:Connect(function(namePlayer)
+        playersCurrentlyCompeting[namePlayer] = nil
+    end)
+    
+    playerLeftNextAvatarModel:Connect(function(namePlayer)
+        if numberPlayersModeled.value < numberPlayersCurrentContest.value and numberPlayersCurrentContest.value > 0 then
+            UI_ConstestVoting.CleanStarsSelecting()
+            newAvatarToTheCatwalk:FireServer(namePlayer)
+        end
+    end)
+
+    newAvatarToTheCatwalkClient:Connect(function(namePlayer)
+        VotingZoneScript.eventStartTimerAreaVoting:FireServer()
+        countdownGameObj.eventResetStopTimers:FireServer()
+        print(`Player left: {namePlayer}`)
+        ScorePlayerCompeting.cleanInfoLeaderboardPlayerLeftGame:FireServer(namePlayer)
+    end)
 end
 
-function self:ServerStart()
+function self:ServerAwake()
+    sendPlayerLockerRoom:Connect(function(player : Player)
+        sendPlayersLockerRoomClient:FireAllClients(player.name)
+    end)
+
     RF_UpdateNumPlayersFinishCustomization.OnInvokeServer = function ()
         numPlayersFinishCustomization.value += 1
         return true
@@ -269,23 +292,31 @@ function self:ServerStart()
     end
 
     RF_UpdateNumPlayersCurrentContest.OnInvokeServer = function(player)
-        numberPlayersCurrentContest.value -= 1
         playersCurrentlyCompeting[player.name] = nil
-        RF_CanSelectPlayerMasterTimer:InvokeClient(
-            player, 
-            '', 
-            function(response)end
-        )
+
+        if numberPlayersCurrentContest.value > 0 then numberPlayersCurrentContest.value -= 1 end
+        if numberPlayersSendModelingArea.value > 0 then numberPlayersSendModelingArea.value -= 1 end
+        if numPlayersFinishCustomization.value > 0 then numPlayersFinishCustomization.value -= 1 end
+
+        if numberPlayersCurrentContest.value == 1 then
+            noThereAreEnoughPlayersInContest:FireAllClients()
+        end
+
+        eventCleanDataClient:FireClient(player, player.name)
         return true
     end
 
-    RF_UpdateIfPlayerDisconnected.OnInvokeServer = function(player)
-        playerDisconnected.value = true
-        return true
-    end
+    newAvatarToTheCatwalk:Connect(function(player : Player, namePlayer)
+        print(`Has been sent: {hasBeenSentNewAvatarCatwalk.value} - {player.name}`)
+        if not hasBeenSentNewAvatarCatwalk.value then
+            newAvatarToTheCatwalkClient:FireClient(player, namePlayer)
+            hasBeenSentNewAvatarCatwalk.value = true
+        end
+    end)
 
     server.PlayerDisconnected:Connect(function(player : Player)
         resetAllGameManager(player, player.name)
+        eventCleanDataClient:FireClient(player, player.name)
     end)
 end
 

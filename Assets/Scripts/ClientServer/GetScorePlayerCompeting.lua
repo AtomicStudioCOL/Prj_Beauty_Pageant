@@ -28,17 +28,13 @@ local namePlayerSaved = {}
 local beforeScore = 0
 local namePlayerGreaterScore = ''
 
---Network values
-local wasPrinterInfo = BoolValue.new('WasPrinterInfoLeaderboard', false)
-
 --Event
 local printerPlayerScoreUI = Event.new('PrinterPlayerScoreUI')
-local startCountdownEnd = Event.new('StartCountdownEnd')
-updateCanPrinterInfoLeaderboard = Event.new('CanPrinterInfoLeaderboard')
 sendScorePlayerCompeting = Event.new('SendScorePlayerCompeting')
 showScoreBeautyContest = Event.new('ShowScoreBeautyContest')
 eventResetAllData = Event.new('ResetAllDataScore')
 askingIfPlayerHasVoting = Event.new('AskingIfPlayerHasVoting')
+cleanInfoLeaderboardPlayerLeftGame = Event.new('CleanInfoLeaderboardPlayerLeftGame')
 
 --Functions
 function resetAllData()
@@ -54,6 +50,7 @@ end
 local function sortLeaderboard()
     for i = 1, gameManager.numberPlayersCurrentContest.value do
         for namePlayer, score in pairs(resultContest) do
+            if not score then continue end
             if playerSaved[namePlayer] then continue end
 
             if beforeScore < score then
@@ -104,13 +101,9 @@ function self:ClientStart()
     printerPlayerScoreUI:Connect(function(ranking, namePlayer, score)
         gameManager.UI_RatingContest.UpdateLeaderboard(ranking, namePlayer, score)
     end)
-
-    startCountdownEnd:Connect(function()
-        countdownsGame.StartCountdownEndRound(gameManager.UI_RatingContest)
-    end)
 end
 
-function self:ServerStart()
+function self:ServerAwake()
     sendScorePlayerCompeting:Connect(function(player : Player, score)
         updateRatingContest(
             gameManager.playerModelingCurrently.value,
@@ -120,16 +113,9 @@ function self:ServerStart()
     end)
 
     showScoreBeautyContest:Connect(function(player : Player)
-        if not wasPrinterInfo.value then
-            sortLeaderboard()
-            countdownsGame.resetCountdowns()
-            startCountdownEnd:FireAllClients()
-            wasPrinterInfo.value = true
-        end
-    end)
-
-    updateCanPrinterInfoLeaderboard:Connect(function(player : Player)
-        wasPrinterInfo.value = false
+        sortLeaderboard()
+        countdownsGame.resetCountdowns()
+        countdownsGame.StartCountdownEndRound()
     end)
 
     eventResetAllData:Connect(function(player : Player)
@@ -137,14 +123,15 @@ function self:ServerStart()
     end)
 
     askingIfPlayerHasVoting:Connect(function(player : Player)
-        if not gameManager.canAskIfPlayerHasVoting.value then
-            local hasPassedThroughCatwalk = gameManager.playerModelingCurrently.value
+        local hasPassedThroughCatwalk = gameManager.playerModelingCurrently.value
 
-            if not resultContest[hasPassedThroughCatwalk] then
-                resultContest[hasPassedThroughCatwalk] = 55
-            end
-            
-            gameManager.canAskIfPlayerHasVoting.value = true
+        if not resultContest[hasPassedThroughCatwalk] then
+            resultContest[hasPassedThroughCatwalk] = 55
         end
+    end)
+
+    cleanInfoLeaderboardPlayerLeftGame:Connect(function(player : Player, namePlayer)
+        print(`Player left score: {namePlayer}`)
+        resultContest[namePlayer] = nil
     end)
 end

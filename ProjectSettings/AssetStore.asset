@@ -17,3 +17,23 @@ MonoBehaviour:
     StoreId: 66747aafe33913810177f292
     Name: Leaderboard UI
     ThumbnailUrl: https://d4v5j9dz6t9fz.cloudfront.net/web_uploads/world_builder_assets/55bb64735531104341039ca8/66747aafe33913810177f292/19036ff6a78_0.jpg
+  - Guid: 4593cfbddd958c9449deceb1fb8dbc53
+    StoreId: 6658c3c16e9f2ad62c40e79f
+    Name: Mirror Lights
+    ThumbnailUrl: https://d4v5j9dz6t9fz.cloudfront.net/web_uploads/world_builder_assets/647622d2106a74bac609d8ea/6658c3c16e9f2ad62c40e79f/18fcabcd8c8_0.jpg
+  - Guid: afc6405cd5de23742a24d67ba6490f4b
+    StoreId: 6658d9636e9f2ad62c40e7f4
+    Name: Golden Mirror
+    ThumbnailUrl: https://d4v5j9dz6t9fz.cloudfront.net/web_uploads/world_builder_assets/647622d2106a74bac609d8ea/6658d9636e9f2ad62c40e7f4/18fcb115998_0.jpg
+  - Guid: 06bb89efc7aa93e459a6541e07c283a9
+    StoreId: 6658e74c6e9f2ad62c40e8a2
+    Name: Poster RISE 2
+    ThumbnailUrl: https://d4v5j9dz6t9fz.cloudfront.net/web_uploads/world_builder_assets/647622d2106a74bac609d8ea/6658e74c6e9f2ad62c40e8a2/18fcb47b3a8_0.jpg
+  - Guid: a2142611fedbcc34b902a107f6a7fdb2
+    StoreId: 6658e5b66e9f2ad62c40e894
+    Name: Poster Elixir 2
+    ThumbnailUrl: https://d4v5j9dz6t9fz.cloudfront.net/web_uploads/world_builder_assets/647622d2106a74bac609d8ea/6658e5b66e9f2ad62c40e894/18fcb421df8_0.jpg
+  - Guid: f6da9371b9cecce4686fe2d4c46951e5
+    StoreId: 6658e58c6e9f2ad62c40e892
+    Name: Poster Elixir 1
+    ThumbnailUrl: https://d4v5j9dz6t9fz.cloudfront.net/web_uploads/world_builder_assets/647622d2106a74bac609d8ea/6658e58c6e9f2ad62c40e892/18fcb411840_0.jpg

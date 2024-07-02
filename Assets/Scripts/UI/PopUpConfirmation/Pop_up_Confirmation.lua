@@ -58,6 +58,14 @@ local function ReturnLobbyWithRunningRound(typePlayer)
 
     if typePlayer == 'contestant' then
         gameManager.RF_UpdateNumPlayersCurrentContest:InvokeServer(game.localPlayer, function(response)end)
+        gameManager.TrackingPlayersEndRoundScript.sendPlayersToLobby(
+            game.localPlayer.character, 
+            game.localPlayer.character.gameObject
+        )
+        gameManager.TrackingPlayersEndRoundScript.updateAllPlayersSendLobbyServer:FireServer()
+        gameManager.cameraLockerRoomGlobal:SetActive(false)
+        gameManager.cameraModelingGlobal:SetActive(false)
+        gameManager.mainCameraGlobal:SetActive(true)
     end
 
     SetStatusPopupConfirmation(false)
@@ -71,7 +79,7 @@ local function SetWhichWindowReturn(window)
         UI_Beauty_Contest.SetThemeBeautyContest(
             trackingPlayersScript.themesBeautyContest[trackingPlayersScript.randomTheme.value]
         )
-        countdownsGame.StartCountdownCloseWindowTheme(UI_Beauty_Contest, UI_CustomizationPlayer)
+        countdownsGame.reactiveTimerScreenTheme:FireServer()
     elseif window == 'Waiting_EndCustomization' then
         UI_Waiting_EndCustomization.EnableWaitingEndCustomization(true)
     end
@@ -86,14 +94,6 @@ local function CancelOperationPopup()
     end
 end
 
---[[ local function CommingSoonSpectator(status)
-    Btn_Confirm.visible = status
-    Btn_Cancel.visible = status
-    Img_Contest.visible = status
-    Txt_Confirmation.visible = status
-    Txt_CommingSoon.visible = not status
-end ]]
-
 --Unity Functions
 function self:ClientAwake()
     SettingStartGame()
@@ -107,8 +107,6 @@ function self:ClientAwake()
             ReturnLobbyWithRunningRound('contestant')
         elseif typePopupConfirmation == 'spectator_contest' then
             print(`Enviar a la pantalla de votación`)
-            --[[ CommingSoonSpectator(false)
-            Txt_CommingSoon:SetPrelocalizedText('COMING SOON!') ]]
         end
     end)
 
@@ -129,7 +127,6 @@ function SetStatusPopupConfirmation(status)
         Txt_Confirmation:SetPrelocalizedText('Do you want to head to lobby?')
     elseif typePopupConfirmation == 'spectator_contest' then
         Txt_Confirmation:SetPrelocalizedText('Do you want to spectate and vote in the on-going pageant?')
-        --CommingSoonSpectator(true)
     end
 end
 
