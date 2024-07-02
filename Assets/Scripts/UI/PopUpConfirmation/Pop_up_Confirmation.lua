@@ -30,7 +30,7 @@ local UI_Waiting_EndCustomization = nil
 local UI_CustomizationPlayer = nil
 
 --Variables
-local trackingPlayersScript = nil
+--local trackingPlayersScript = nil
 local typePopupConfirmation = ''
 local whichUIReturnCancel = ''
 
@@ -45,7 +45,7 @@ local function SettingStartGame()
     Btn_Cancel:Add(Txt_Btn_Cancel)
 
     UI_Beauty_Contest = self.gameObject:GetComponent(UI_Beauty_Pageant)
-    trackingPlayersScript = gameManager.gameObjectManager:GetComponent(TrackingPlayersLobby)
+    --trackingPlayersScript = gameManager.gameObjectManager:GetComponent(TrackingPlayersLobby)
     UI_Waiting_EndCustomization = self.gameObject:GetComponent(UI_Screen_Waiting_EndCustomization)
     UI_CustomizationPlayer = self.gameObject:GetComponent(UI_Customization_Model)
 end
@@ -77,7 +77,7 @@ local function SetWhichWindowReturn(window)
         UI_Beauty_Contest.SetTimerSendPlayerToLockerRoom('')
         UI_Beauty_Contest.EnablePopupThemeContest(true)
         UI_Beauty_Contest.SetThemeBeautyContest(
-            trackingPlayersScript.themesBeautyContest[trackingPlayersScript.randomTheme.value]
+            countdownsGame.themeSelectedContest.value
         )
         countdownsGame.reactiveTimerScreenTheme:FireServer()
     elseif window == 'Waiting_EndCustomization' then
@@ -89,6 +89,7 @@ local function CancelOperationPopup()
     if typePopupConfirmation == 'return_lobby' then
         SetStatusPopupConfirmation(false)
         SetWhichWindowReturn(whichUIReturnCancel)
+        gameManager.playersCurrentlyCompeting[game.localPlayer.name] = true
     elseif typePopupConfirmation == 'spectator_contest' then
         ReturnLobbyWithRunningRound('')
     end
@@ -125,6 +126,7 @@ function SetStatusPopupConfirmation(status)
 
     if typePopupConfirmation == 'return_lobby' then
         Txt_Confirmation:SetPrelocalizedText('Do you want to head to lobby?')
+        gameManager.playersCurrentlyCompeting[game.localPlayer.name] = nil
     elseif typePopupConfirmation == 'spectator_contest' then
         Txt_Confirmation:SetPrelocalizedText('Do you want to spectate and vote in the on-going pageant?')
     end

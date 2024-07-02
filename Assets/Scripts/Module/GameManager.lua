@@ -28,6 +28,8 @@ local uiManager : GameObject = nil
 local navMeshGame : GameObject = nil 
 --!SerializeField
 local naveMeshCatwalk : GameObject = nil
+--!SerializeField
+local naveMeshLockerRoom : GameObject = nil
 
 -- Network Values Global
 numberPlayersCurrentContest = IntValue.new('NumberPlayersCurrentContest', 0)
@@ -76,6 +78,7 @@ cameraLockerRoomGlobal = nil
 cameraModelingGlobal = nil
 naveMeshGameGlobal = nil
 naveMeshCatwalkGlobal = nil
+naveMeshLockerRoomGlobal = nil
 playerWithGameObject = {} -- Saving the gameObject of each player
 playerCharacter = {} -- Saving the gameObject of each player
 playersCurrentlyCompeting = {}
@@ -125,6 +128,9 @@ function teleportPlayersLockerRoom(character : Character, objCharacter : GameObj
         Quaternion.Euler(0, 0, 0)
     )
     character:Teleport(pointRespawnLockerRoom.transform.position, function()end)
+    navMeshGame:SetActive(false)
+    naveMeshLockerRoom:SetActive(true)
+    naveMeshCatwalk:SetActive(false)
     mainCamera:SetActive(false)
     cameraLockerRoom:SetActive(true)
     character.transform:LookAt(cameraLockerRoom.transform.position)
@@ -186,6 +192,7 @@ function self:ClientAwake()
     cameraLockerRoomGlobal = cameraLockerRoom
     naveMeshGameGlobal = navMeshGame
     naveMeshCatwalkGlobal = naveMeshCatwalk
+    naveMeshLockerRoomGlobal = naveMeshLockerRoom
 
     UI_Customization = uiManager:GetComponent(UI_Customization_Model)
     UI_EndCustomization = uiManager:GetComponent(UI_Screen_Waiting_EndCustomization)
@@ -211,7 +218,8 @@ function self:ClientAwake()
             sendPlayersToModelingArea(game.localPlayer.character, game.localPlayer.character.gameObject)
             RF_SendAvatarToBackstageServer:InvokeServer(game.localPlayer, function(response)end)
             navMeshGame:SetActive(false)
-            naveMeshCatwalk:SetActive(true)
+            naveMeshLockerRoom:SetActive(false)
+            naveMeshCatwalk:SetActive(true) --testing--
             cameraLockerRoom:SetActive(false)
             cameraModeling:SetActive(true)
         end
@@ -265,8 +273,8 @@ function self:ClientAwake()
     newAvatarToTheCatwalkClient:Connect(function(namePlayer)
         VotingZoneScript.eventStartTimerAreaVoting:FireServer()
         countdownGameObj.eventResetStopTimers:FireServer()
-        print(`Player left: {namePlayer}`)
         ScorePlayerCompeting.cleanInfoLeaderboardPlayerLeftGame:FireServer(namePlayer)
+        print(`Player left: {namePlayer}`)
     end)
 end
 

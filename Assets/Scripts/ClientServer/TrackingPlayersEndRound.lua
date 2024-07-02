@@ -18,6 +18,7 @@ end
 function SettingStart()
     --Change camera
     gameManager.naveMeshGameGlobal:SetActive(true)
+    gameManager.naveMeshLockerRoomGlobal:SetActive(false)
     gameManager.naveMeshCatwalkGlobal:SetActive(false)
     gameManager.mainCameraGlobal:SetActive(true)
     gameManager.cameraLockerRoomGlobal:SetActive(false)

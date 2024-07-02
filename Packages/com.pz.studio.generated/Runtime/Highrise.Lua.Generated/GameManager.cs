@@ -37,6 +37,7 @@ namespace Highrise.Lua.Generated
         [Header("NavMesh")]
         [SerializeField] public UnityEngine.GameObject m_navMeshGame = default;
         [SerializeField] public UnityEngine.GameObject m_naveMeshCatwalk = default;
+        [SerializeField] public UnityEngine.GameObject m_naveMeshLockerRoom = default;
 
         protected override SerializedPropertyValue[] SerializeProperties()
         {
@@ -55,6 +56,7 @@ namespace Highrise.Lua.Generated
                 CreateSerializedProperty(_script.GetPropertyAt(7), m_uiManager),
                 CreateSerializedProperty(_script.GetPropertyAt(8), m_navMeshGame),
                 CreateSerializedProperty(_script.GetPropertyAt(9), m_naveMeshCatwalk),
+                CreateSerializedProperty(_script.GetPropertyAt(10), m_naveMeshLockerRoom),
             };
         }
     }

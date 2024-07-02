@@ -227,6 +227,7 @@ function self:ClientStart()
     end)
 
     goPlayerCustomization:Connect(function()
+        print(`Is competing: {gameManagerObj.playersCurrentlyCompeting[game.localPlayer.name]}`)
         if gameManagerObj.playersCurrentlyCompeting[game.localPlayer.name] then
             gameManagerObj.UI_BeautyContest.EnablePopupThemeContest(false)
             gameManagerObj.UI_BeautyContest.SetTimerCloseWindowTheme('')
@@ -317,6 +318,7 @@ function self:ServerStart()
     end
 
     reactiveTimerScreenTheme:Connect(function(player : Player)
+        print(`finishCustomizationSendModelingArea: {finishCustomizationSendModelingArea.value}`)
         StartCountdownCloseWindowTheme()
     end)
 
