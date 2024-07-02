@@ -48,8 +48,13 @@ function resetAllData()
 end
 
 local function sortLeaderboard()
+    --print(`Num Players Contest: {gameManager.numberPlayersCurrentContest.value} debe ser 3`) --> 3
     for i = 1, gameManager.numberPlayersCurrentContest.value do
+        --[[ print(`HugoUruena - Server: {resultContest['HugoUruena']}`)
+        print(`VirtualPlayer2 - Server: {resultContest['VirtualPlayer2']}`)
+        print(`VirtualPlayer3 - Server: {resultContest['VirtualPlayer3']}`) ]]
         for namePlayer, score in pairs(resultContest) do
+            --print(`Name: {namePlayer} - Score: {score}`)
             if not score then continue end
             if playerSaved[namePlayer] then continue end
 
@@ -67,10 +72,12 @@ local function sortLeaderboard()
         showResults[i] = beforeScore
         namePlayerSaved[i] = namePlayerGreaterScore
         playerSaved[namePlayerGreaterScore] = true
+        --print(`showResults: {showResults[i]} - NamePlayerSaved: {namePlayerSaved[i]}`)
         beforeScore = 0
     end
 
     for rank, score in ipairs(showResults) do
+        --print(`{rank}) {namePlayerSaved[rank]} - {score}`)
         printerPlayerScoreUI:FireAllClients(rank, namePlayerSaved[rank], score)
     end
 end
@@ -94,6 +101,8 @@ function updateRatingContest(playerContestant, playerVote, valueVote)
             resultContest[playerContestant] += valueVote
         end
     end
+
+    --print(`Score: {resultContest[playerContestant]} - Player votante {playerVote} - Player Concursante {playerContestant}`)
 end
 
 --Unity functions
@@ -112,13 +121,20 @@ function self:ServerAwake()
         )
     end)
 
-    showScoreBeautyContest:Connect(function(player : Player)
-        sortLeaderboard()
-        countdownsGame.resetCountdowns()
-        countdownsGame.StartCountdownEndRound()
+    showScoreBeautyContest:Connect(function(player : Player, lastModel)
+        --[[ print(`Player call me: {player.name}`)
+        print(`HugoUruena - Server: {resultContest['HugoUruena']}`)
+        print(`VirtualPlayer2 - Server: {resultContest['VirtualPlayer2']}`)
+        print(`VirtualPlayer3 - Server: {resultContest['VirtualPlayer3']}`) ]]
+        if player.name == lastModel then
+            sortLeaderboard()
+            countdownsGame.resetCountdowns()
+            countdownsGame.StartCountdownEndRound()
+        end
     end)
 
     eventResetAllData:Connect(function(player : Player)
+        --print(`Reset all data`)
         resetAllData()
     end)
 
@@ -126,12 +142,14 @@ function self:ServerAwake()
         local hasPassedThroughCatwalk = gameManager.playerModelingCurrently.value
 
         if not resultContest[hasPassedThroughCatwalk] then
-            resultContest[hasPassedThroughCatwalk] = 55
+            resultContest[hasPassedThroughCatwalk] = 1
         end
+
+        --print(`Print default result: {resultContest[hasPassedThroughCatwalk]}`)
     end)
 
     cleanInfoLeaderboardPlayerLeftGame:Connect(function(player : Player, namePlayer)
-        print(`Player left score: {namePlayer}`)
+        --print(`Clean Info`)
         resultContest[namePlayer] = nil
     end)
 end

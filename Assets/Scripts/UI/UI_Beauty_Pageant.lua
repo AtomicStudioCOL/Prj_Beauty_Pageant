@@ -89,7 +89,7 @@ function EnableSpectatorModeLobby(status)
     Info_Btn_Spectator.visible = status
 
     if status then
-        Info_Btn_Spectator:SetPrelocalizedText('Click on the spectate button and vote for the on-going pageant')
+        ChangeInformationPageantInProgress('Click on the spectate button and vote for the on-going pageant')
     end
 end
 
@@ -103,4 +103,8 @@ end
 
 function SetThemeBeautyContest(text)
     Txt_Theme:SetPrelocalizedText('Theme: ' .. text)
+end
+
+function ChangeInformationPageantInProgress(text)
+    Info_Btn_Spectator:SetPrelocalizedText(text)
 end

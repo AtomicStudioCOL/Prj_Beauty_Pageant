@@ -30,12 +30,11 @@ local UI_Waiting_EndCustomization = nil
 local UI_CustomizationPlayer = nil
 
 --Variables
---local trackingPlayersScript = nil
 local typePopupConfirmation = ''
 local whichUIReturnCancel = ''
 
 --Functions
-local function SettingStartGame()
+function SettingStartGame()
     Txt_Confirmation:SetPrelocalizedText('')
 
     Txt_Btn_Confirm:SetPrelocalizedText('Confirm')
@@ -45,7 +44,6 @@ local function SettingStartGame()
     Btn_Cancel:Add(Txt_Btn_Cancel)
 
     UI_Beauty_Contest = self.gameObject:GetComponent(UI_Beauty_Pageant)
-    --trackingPlayersScript = gameManager.gameObjectManager:GetComponent(TrackingPlayersLobby)
     UI_Waiting_EndCustomization = self.gameObject:GetComponent(UI_Screen_Waiting_EndCustomization)
     UI_CustomizationPlayer = self.gameObject:GetComponent(UI_Customization_Model)
 end
@@ -92,7 +90,15 @@ local function CancelOperationPopup()
         gameManager.playersCurrentlyCompeting[game.localPlayer.name] = true
     elseif typePopupConfirmation == 'spectator_contest' then
         ReturnLobbyWithRunningRound('')
+        gameManager.spectatorsWaitingVoting[game.localPlayer.name] = nil
+        UI_Beauty_Contest.ChangeInformationPageantInProgress('Click on the spectate button and vote for the on-going pageant')
     end
+end
+
+local function ActivateVotingSpectator()
+    ReturnLobbyWithRunningRound('') --Apagamos el PopUp de confirmación
+    gameManager.spectatorsWaitingVoting[game.localPlayer.name] = true --Etiqueta de que es un jugador a la espera de ser votante
+    UI_Beauty_Contest.ChangeInformationPageantInProgress('You have confirmed to be a voter in the current contest, you must wait for the voting to begin.')
 end
 
 --Unity Functions
@@ -108,6 +114,7 @@ function self:ClientAwake()
             ReturnLobbyWithRunningRound('contestant')
         elseif typePopupConfirmation == 'spectator_contest' then
             print(`Enviar a la pantalla de votación`)
+            ActivateVotingSpectator()
         end
     end)
 

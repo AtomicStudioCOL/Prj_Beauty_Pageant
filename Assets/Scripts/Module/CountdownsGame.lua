@@ -20,7 +20,7 @@ countdownCustomizationPlayer = IntValue.new('CountdownCustomizationPlayer', 180)
 finishCustomizationSendModelingArea = BoolValue.new('FinishCustomizationSendModelingArea', false)
 
 -- Countdown voting area
-countdownVotingArea = IntValue.new('CountdownVotingArea', 10)
+countdownVotingArea = IntValue.new('CountdownVotingArea', 10) --testing--
 
 -- Countdown end game - return to the lobby
 countdownEndRound = IntValue.new('CountdownEndRound', 10)
@@ -65,7 +65,7 @@ function resetCountdowns()
     countdownSendPlayersToLockerRoom.value = 10
     countdownCloseWindowTheme.value = 5
     countdownCustomizationPlayer.value = 180
-    countdownVotingArea.value = 10
+    countdownVotingArea.value = 10 --testing--
     countdownEndRound.value = 10
 end
 
@@ -155,7 +155,7 @@ function StartCountdownVotingArea(modelCurrent)
         countdownVotingArea.value -= 1
 
         if countdownVotingArea.value <= -1 then
-            print(`Fin timer Voting Area!`)
+            --print(`Fin timer Voting Area!`)
             hasFinishedContestant:FireAllClients(modelCurrent)
             goNextPlayerContestant:FireAllClients(modelCurrent)
             resetCountdowns()
@@ -192,6 +192,7 @@ function StopCountdownCurrentGame()
     end
 end
 
+testingScorePlayers = Event.new('TestingScorePlayers')
 -- Unity Functions
 function self:ClientStart()
     gameManagerObj = self.gameObject:GetComponent(GameManager)
@@ -227,7 +228,7 @@ function self:ClientStart()
     end)
 
     goPlayerCustomization:Connect(function()
-        print(`Is competing: {gameManagerObj.playersCurrentlyCompeting[game.localPlayer.name]}`)
+        --print(`Is competing: {gameManagerObj.playersCurrentlyCompeting[game.localPlayer.name]}`)
         if gameManagerObj.playersCurrentlyCompeting[game.localPlayer.name] then
             gameManagerObj.UI_BeautyContest.EnablePopupThemeContest(false)
             gameManagerObj.UI_BeautyContest.SetTimerCloseWindowTheme('')
@@ -268,9 +269,9 @@ function self:ClientStart()
                 gameManagerObj.UI_ConstestVoting.CleanStarsSelecting()
                 gameManagerObj.ScorePlayerCompeting.askingIfPlayerHasVoting:FireServer()
 
-                Timer.After(0.15, function()
-                    gameManagerObj.VotingZoneScript.eventStartTimerAreaVoting:FireServer()
-                end)
+                --[[ Timer.After(0.15, function()
+                end) ]]
+                gameManagerObj.VotingZoneScript.eventStartTimerAreaVoting:FireServer()
             else
                 gameManagerObj.UI_ConstestVoting.CleanStarsSelecting()
             end
@@ -281,11 +282,12 @@ function self:ClientStart()
         playersContestant = gameManagerObj.numberPlayersModeled.value
         playersCurrentContest = gameManagerObj.numberPlayersCurrentContest.value
 
-        print(`Players Fin concurso: {playersContestant} - {playersCurrentContest}`)
+        --print(`Players Fin concurso: {playersContestant} - {playersCurrentContest}`)
         if playersContestant >= playersCurrentContest and playersCurrentContest > 0 then
             if game.localPlayer.name == gameManagerObj.playerModelingCurrently.value then
                 gameManagerObj.ScorePlayerCompeting.askingIfPlayerHasVoting:FireServer()
-                gameManagerObj.ScorePlayerCompeting.showScoreBeautyContest:FireServer()
+                --testingScorePlayers:FireServer()
+                gameManagerObj.ScorePlayerCompeting.showScoreBeautyContest:FireServer(gameManagerObj.playerModelingCurrently.value)
             end
             gameManagerObj.CatwalkContestantsScript.endCatwalkShowLeaderboard()
             gameManagerObj.sendPlayersToModelingArea(
@@ -318,11 +320,17 @@ function self:ServerStart()
     end
 
     reactiveTimerScreenTheme:Connect(function(player : Player)
-        print(`finishCustomizationSendModelingArea: {finishCustomizationSendModelingArea.value}`)
+        --print(`finishCustomizationSendModelingArea: {finishCustomizationSendModelingArea.value}`)
         StartCountdownCloseWindowTheme()
     end)
 
     eventResetStopTimers:Connect(function(player : Player)
         resetCountdowns()
     end)
+
+    --[[ testingScorePlayers:Connect(function()
+        print(`HugoUruena - Client: {gameManagerObj.ScorePlayerCompeting.resultContest['HugoUruena']}`)
+        print(`VirtualPlayer2 - Client: {gameManagerObj.ScorePlayerCompeting.resultContest['VirtualPlayer2']}`)
+        print(`VirtualPlayer3 - Client: {gameManagerObj.ScorePlayerCompeting.resultContest['VirtualPlayer3']}`)
+    end) ]]
 end

@@ -34,6 +34,8 @@ function SettingStart()
     --Reset all variables
     gameManager.TrackingPlayersLobbyScript.hasStartedCountdownSendPlayersLockerRoom.value = false
     gameManager.TrackingPlayersLobbyScript.settingLobbyPlayer()
+    gameManager.ScorePlayerCompeting.resetAllData()
+    gameManager.ScorePlayerCompeting.eventResetAllData:FireServer()
 end
 
 function StartingResetAllVariables()

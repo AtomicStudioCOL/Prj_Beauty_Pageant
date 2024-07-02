@@ -82,6 +82,7 @@ naveMeshLockerRoomGlobal = nil
 playerWithGameObject = {} -- Saving the gameObject of each player
 playerCharacter = {} -- Saving the gameObject of each player
 playersCurrentlyCompeting = {}
+spectatorsWaitingVoting = {}
 playersAlreadyModeling = {}
 
 -- UIs
@@ -90,6 +91,7 @@ UI_EndCustomization = nil
 UI_BeautyContest = nil
 UI_ConstestVoting = nil
 UI_RatingContest = nil
+UI_PopupConfirmation = nil
 
 --Countdowns
 local countdownGameObj = nil
@@ -105,6 +107,7 @@ function resetAllData()
 
     playersCurrentlyCompeting = {}
     playersAlreadyModeling = {}
+    spectatorsWaitingVoting = {}
 end
 
 function updateNumPlayersFinish()
@@ -151,12 +154,15 @@ function sendPlayerModelingArea(character : Character, objCharacter : GameObject
     if character == nil or objCharacter == nil then return end
     if tostring(objCharacter.transform) == 'null' then return end
 
-    objCharacter.transform:SetLocalPositionAndRotation(
+    --print(`Char: {character} - OBJ: {objCharacter}`)
+    --[[ objCharacter.transform:SetLocalPositionAndRotation(
         pointRespawnModelingArea.transform.position, 
         Quaternion.Euler(0, 0, 0)
-    )
+    ) ]]
+    objCharacter.transform.position = pointRespawnModelingArea.transform.position
     character:Teleport(pointRespawnModelingArea.transform.position, function()end)
     character.transform:LookAt(cameraModeling.transform.position)
+    --print(`{pointRespawnModelingArea.transform.position} - {objCharacter.transform.position}`)
 end
 
 function resetAllGameManager(player, namePlayer)
@@ -199,6 +205,7 @@ function self:ClientAwake()
     UI_ConstestVoting = uiManager:GetComponent(UI_Contest_Voting)
     UI_BeautyContest = uiManager:GetComponent(UI_Beauty_Pageant)
     UI_RatingContest = uiManager:GetComponent(UI_Rating_Contest)
+    UI_PopupConfirmation = uiManager:GetComponent(Pop_up_Confirmation)
 
     countdownGameObj = self.gameObject:GetComponent(CountdownsGame)
     ScorePlayerCompeting = self.gameObject:GetComponent(GetScorePlayerCompeting)
@@ -208,7 +215,7 @@ function self:ClientAwake()
     VotingZoneScript = self.gameObject:GetComponent(VotingZone)
 
     showUIVotingClient:Connect(function()
-        if playersCurrentlyCompeting[game.localPlayer.name] then
+        if playersCurrentlyCompeting[game.localPlayer.name] then --or spectatorsWaitingVoting[game.localPlayer.name]
             UI_BeautyContest.SetWaitingPlayersRound('Voting Area!')
             UI_Customization.SettingStart()
             UI_Customization.StopCurrentTimerPlaying()
@@ -219,7 +226,7 @@ function self:ClientAwake()
             RF_SendAvatarToBackstageServer:InvokeServer(game.localPlayer, function(response)end)
             navMeshGame:SetActive(false)
             naveMeshLockerRoom:SetActive(false)
-            naveMeshCatwalk:SetActive(true) --testing--
+            naveMeshCatwalk:SetActive(true)
             cameraLockerRoom:SetActive(false)
             cameraModeling:SetActive(true)
         end
@@ -239,13 +246,30 @@ function self:ClientAwake()
 
     sendPlayerModelingAreaClient:Connect(function(namePlayer)
         if not playerCharacter[namePlayer] or not playerWithGameObject[namePlayer] then return end
+        local isCompeting = playersCurrentlyCompeting[game.localPlayer.name]
+        local isSpectator = spectatorsWaitingVoting[game.localPlayer.name]
         
+        --print(`Is Spectator Client: {isSpectator} - {game.localPlayer.name} - `)
+        if isSpectator then
+            UI_BeautyContest.SetWaitingPlayersRound('Voting Area!')
+            UI_BeautyContest.EnableSpectatorModeLobby(false)
+            UI_Customization.SettingStart()
+            UI_Customization.StopCurrentTimerPlaying()
+            UI_EndCustomization.SettingStart()
+            UI_PopupConfirmation.SettingStartGame()
+            UI_PopupConfirmation.SetStatusPopupConfirmation(false)
+            UI_ConstestVoting.EnableContestVoting(true)
+
+            cameraLockerRoom:SetActive(false)
+            cameraModeling:SetActive(true)
+        end
+
         sendPlayerModelingArea(playerCharacter[namePlayer], playerWithGameObject[namePlayer])
         UI_ConstestVoting.SetNamePlayerContestant(namePlayer)
         
         if game.localPlayer.name == namePlayer then
             UI_ConstestVoting.SetPlayerVotingStatus(false)
-        elseif game.localPlayer.name ~= namePlayer and playersCurrentlyCompeting[game.localPlayer.name] then
+        elseif game.localPlayer.name ~= namePlayer and (isCompeting or isSpectator) then
             UI_ConstestVoting.SetPlayerVotingStatus(true)
         end
     end)
@@ -274,7 +298,7 @@ function self:ClientAwake()
         VotingZoneScript.eventStartTimerAreaVoting:FireServer()
         countdownGameObj.eventResetStopTimers:FireServer()
         ScorePlayerCompeting.cleanInfoLeaderboardPlayerLeftGame:FireServer(namePlayer)
-        print(`Player left: {namePlayer}`)
+        --print(`Player left: {namePlayer}`)
     end)
 end
 
@@ -315,7 +339,7 @@ function self:ServerAwake()
     end
 
     newAvatarToTheCatwalk:Connect(function(player : Player, namePlayer)
-        print(`Has been sent: {hasBeenSentNewAvatarCatwalk.value} - {player.name}`)
+        --print(`Has been sent: {hasBeenSentNewAvatarCatwalk.value} - {player.name}`)
         if not hasBeenSentNewAvatarCatwalk.value then
             newAvatarToTheCatwalkClient:FireClient(player, namePlayer)
             hasBeenSentNewAvatarCatwalk.value = true

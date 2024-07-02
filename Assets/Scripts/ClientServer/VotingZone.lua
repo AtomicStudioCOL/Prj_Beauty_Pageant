@@ -7,8 +7,12 @@ eventStartTimerAreaVoting = Event.new('StartTimerAreaVoting')
 function sendNextPlayerToVoting()
     for namePlayer, objPlayer in pairs(gameManager.playerWithGameObject) do
         if not objPlayer or tostring(objPlayer) == 'null' then continue end
-        
-        if gameManager.playersCurrentlyCompeting[namePlayer] and not gameManager.playersAlreadyModeling[namePlayer] then
+        local isCompeting = gameManager.playersCurrentlyCompeting[namePlayer]
+        --local isSpectators = gameManager.spectatorsWaitingVoting[namePlayer]
+        local hasModeled = gameManager.playersAlreadyModeling[namePlayer]
+
+        --print(`Is Spectator Server: {isSpectators} - {namePlayer}`)
+        if isCompeting and not hasModeled then
             gameManager.sendPlayerModelingAreaClient:FireAllClients(namePlayer)
             gameManager.playerModelingCurrently.value = namePlayer
             countdownsGame.StartCountdownVotingArea(gameManager.playerModelingCurrently.value)
