@@ -260,7 +260,7 @@ function self:ClientAwake()
             UI_PopupConfirmation.SetStatusPopupConfirmation(false)
             UI_ConstestVoting.EnableContestVoting(true)
 
-            cameraLockerRoom:SetActive(false)
+            mainCamera:SetActive(false)
             cameraModeling:SetActive(true)
         end
 
